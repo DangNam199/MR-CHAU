@@ -1099,15 +1099,15 @@ getJasmineRequireObj().Clock = function() {
       return Function.prototype.apply.apply(timer.setTimeout, [global, arguments]);
     };
 
-    self.setInterval = function(fn, delay, params) {
-      if (legacyIE()) {
-        if (arguments.length > 2) {
-          throw new Error('IE < 9 cannot support extra params to setInterval without a polyfill');
-        }
-        return timer.setInterval(fn, delay);
-      }
-      return Function.prototype.apply.apply(timer.setInterval, [global, arguments]);
-    };
+    // self.setInterval = function(fn, delay, params) {
+    //   if (legacyIE()) {
+    //     if (arguments.length > 2) {
+    //       throw new Error('IE < 9 cannot support extra params to setInterval without a polyfill');
+    //     }
+    //     return timer.setInterval(fn, delay);
+    //   }
+    //   return Function.prototype.apply.apply(timer.setInterval, [global, arguments]);
+    // };
 
     self.clearTimeout = function(id) {
       return Function.prototype.call.apply(timer.clearTimeout, [global, id]);
@@ -1131,7 +1131,7 @@ getJasmineRequireObj().Clock = function() {
     function originalTimingFunctionsIntact() {
       return global.setTimeout === realTimingFunctions.setTimeout &&
         global.clearTimeout === realTimingFunctions.clearTimeout &&
-        global.setInterval === realTimingFunctions.setInterval &&
+        //global.setInterval === realTimingFunctions.setInterval &&
         global.clearInterval === realTimingFunctions.clearInterval;
     }
 

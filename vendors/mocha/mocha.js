@@ -5667,7 +5667,7 @@ global = (function() { return this; })();
 
 var Date = global.Date;
 var setTimeout = global.setTimeout;
-var setInterval = global.setInterval;
+// var setInterval = global.setInterval;
 var clearTimeout = global.clearTimeout;
 var clearInterval = global.clearInterval;
 

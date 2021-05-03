@@ -6,7 +6,7 @@
         $context = $_POST["textarea"];
         $sql = "INSERT INTO `tintuc`(`id`, `TenTT`, `NoiDungTT`, `thumbnail`) VALUES ('','$name','$context','$file')";
         if(mysqli_query($conn, $sql)){
-            echo 'dang ky tai cong';
+            header("location: ../administration/all_news.php");
         }
     }
 ?>

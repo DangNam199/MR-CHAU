@@ -22475,10 +22475,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        // in angle axis with angle 0 - 360. Interval calculated in interval scale is hard
 	        // to be 60.
 	        // FIXME
-	        var interval = model.get('interval');
-	        if (interval != null) {
-	            scale.setInterval && scale.setInterval(interval);
-	        }
+	        // var interval = model.get('interval');
+	        // if (interval != null) {
+	        //     scale.setInterval && scale.setInterval(interval);
+	        // }
 	    };
 
 	    /**

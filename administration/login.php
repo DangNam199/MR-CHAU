@@ -1,3 +1,21 @@
+<?php
+    include '../php/connect.php';
+    session_start();
+    if ( isset($_POST['submit'])){
+        $user = $_POST['user'];
+        $password = $_POST['password'];
+        $password = md5($password);
+        $sql = "SELECT email, password FROM `nhanvien` WHERE email='$user' and password='$password'";
+        $res = mysqli_query($conn, $sql);
+        if (mysqli_num_rows($res) == 1){
+            header("location: ../administration/index.php");
+            $_SESSION['user']=$user;
+        }
+        else {
+            $_SESSION['message'] = 'Wrong email or password';   
+        }
+    }
+?>
 
 
 <!DOCTYPE html>
@@ -32,15 +50,13 @@
       <div class="login_wrapper">
         <div class="animate form login_form">
           <section class="login_content">
-            <form action='../php/login.php'  method="POST" >
+            <form  method="POST" >
               <h1>Đăng Nhập</h1>
               <?php 
-                session_start();
                 if (isset($_SESSION["message"])){
                   echo "<p>" . $_SESSION["message"] . "</p>";
                   unset($_SESSION["message"]); 
                 }
-
               ?>
               <div>
                 <input type="text" class="form-control" placeholder="Username" required="" name="user" />

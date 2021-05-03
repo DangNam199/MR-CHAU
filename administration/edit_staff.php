@@ -1,4 +1,28 @@
+<?php 
+    include '../php/connect.php';
+    $sql = "SELECT `id`, `TenNV`, `NgaySinh`, `gender`, `SoDT`, `address`, `CMND`, `ChungChi`, `HSL`, `email`, `password`, `level`, `avatar` FROM `nhanvien` WHERE id=".$_GET['id'];
+    $row=mysqli_fetch_assoc(mysqli_query($conn, $sql));
+    if (isset( $_POST['submit'])){
+    $user_name = $_POST['user_name'];
+    $address = $_POST['address'];
+    $email = $_POST['email'];
+    $date = $_POST['dob'];
+    $phone = $_POST['phone'];
+    $chungchi = $_POST['chungchi'];
+    $chucvu = $_POST['position'];
+    $cmnd = $_POST['cmnd'];
+    $gender = $_POST['gender'];
+    $hsl = $_POST['hsl'];
+    $sql_update ="UPDATE `nhanvien` SET `TenNV`='$user_name',`NgaySinh`='$date',`gender`='$gender',`SoDT`=$phone,`address`='$address',`CMND`='$cmnd',`ChungChi`='$chungchi',`HSL`='$hsl',`email`='$email',`level`='$chucvu' WHERE id= ".$_GET['id'];
+    $res = mysqli_query($conn,$sql_update);
+    if ($res){
+        header("location: contacts.php");
+    }
+    echo $sql_update;       
+    }
+    
 
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -65,7 +89,7 @@
                                       <li><a href="form.html">General Form</a></li>
                                       <li><a href="form_advanced.html">Advanced Components</a></li>
                                       <li><a href="form_staff.html">Tạo Nhân Viên</a></li>
-                                      <li><a href="form_events.html">Tạo Sự Kiện</a></li>
+                                      <li><a href="form_news.php">Tạo Sự Kiện</a></li>
                                       <li><a href="form_wizards.html">Form Wizard</a></li>
                                       <li><a href="form_upload.html">Form Upload</a></li>
                                       <li><a href="form_buttons.html">Form Buttons</a></li>
@@ -255,84 +279,74 @@
                                     <div class="clearfix"></div>
                                 </div>
                                 <div class="x_content">
-                                    <form  action="../php/nhanvien/add_staff.php" method="post" enctype="multipart/form-data">
+                                    <form  action="#" method="post" enctype="multipart/form-data">
                                         <div class="field item form-group">
                                             <label class="col-form-label col-md-3 col-sm-3  label-align">Họ Và Tên<span class="required">*</span></label>
                                             <div class="col-md-6 col-sm-6">
-                                                <input class="form-control" data-validate-length-range="6" data-validate-words="2" name="user_name" required="required" />
+                                                <input class="form-control" value="<?=$row['TenNV']?>"  data-validate-length-range="6" data-validate-words="2" name="user_name" required="required" />
                                             </div>
                                         </div>
                                         <div class="field item form-group">
                                             <label class="col-form-label col-md-3 col-sm-3  label-align">Địa Chỉ<span class="required">*</span></label>
                                             <div class="col-md-6 col-sm-6">
-                                                <input class="form-control" class='optional' name="address" data-validate-length-range="5,15" type="text" /></div>
+                                                <input class="form-control" value="<?=$row['address']?>" class='optional' name="address" data-validate-length-range="5,15" type="text" /></div>
                                         </div>
                                         <div class="field item form-group">
                                             <label class="col-form-label col-md-3 col-sm-3  label-align">Email<span class="required">*</span></label>
                                             <div class="col-md-6 col-sm-6">
-                                                <input class="form-control" type="email" class='email' name="email" data-validate-linked='email' required='required' /></div>
+                                                <input class="form-control" type="email" value="<?=$row['email']?>" class='email' name="email" data-validate-linked='email' required='required' /></div>
                                         </div>
-                                        <div class="item form-group">
-											<label class="col-form-label col-md-3 col-sm-3 label-align">Gender</label>
-											<div class="col-md-6 col-sm-6 ">
-												<div id="gender" class="btn-group" data-toggle="buttons">
-													<label class="btn btn-secondary" data-toggle-class="btn-primary" data-toggle-passive-class="btn-default">
-														<input type="radio" name="gender" value="male" class="join-btn">  Male 
-													</label>
-													<label class="btn btn-primary" data-toggle-class="btn-primary" data-toggle-passive-class="btn-default">
-														<input type="radio" name="gender" value="female" class="join-btn"> Female
-													</label>
-												</div>
-											</div>
-										</div>
+                                        <div class="field item form-group">
+                                            <label class="col-form-label col-md-3 col-sm-3  label-align">Giới Tính<span class="required">*</span></label>
+                                            <div class="col-md-6 col-sm-6">
+                                            <select name="gender" class="form-control" value="<?=$row['level']?>"  > 
+                                                <option value="male"  <?php if($row['gender']=="male") echo 'selected="selected"'; ?> >Nam</option>
+                                                <option value="female" <?php if($row['level']=="female") echo 'selected="selected"'; ?> >Nữ</option>
+                                            </select>
+                                        </div>
+                                        </div>
                                         <div class="field item form-group">
                                             <label class="col-form-label col-md-3 col-sm-3  label-align">Date<span class="required">*</span></label>
                                             <div class="col-md-6 col-sm-6">
-                                                <input class="form-control" class='date' type="date" name="dob" required='required'></div>
+                                                <input class="form-control" value="<?=$row['NgaySinh']?>" class='date' type="date" name="dob" required='required'></div>
                                         </div>
 
                                         <div class="field item form-group">
                                             <label class="col-form-label col-md-3 col-sm-3  label-align">Số điện thoại<span class="required">*</span></label>
                                             <div class="col-md-6 col-sm-6">
-                                                <input class="form-control" type="tel" class='tel' name="phone" required='required' data-validate-length-range="8,20" /></div>
+                                                <input class="form-control" type="tel" value="<?=$row['SoDT']?>" class='tel' name="phone" required='required' data-validate-length-range="8,20" /></div>
                                         </div>
                                         <div class="field item form-group">
                                             <label class="col-form-label col-md-3 col-sm-3  label-align">Chức Vụ<span class="required">*</span></label>
                                             <div class="col-md-6 col-sm-6">
-                                            <select name="position" class="form-control"  > 
-                                                <option value="giangvien">Giảng Viên</option>
-                                                <option value="trogiang">Trợ Giảng</option>
-                                                <option value="tapvu">Tạp Vụ</option>
-                                                <option value="IT">IT</option>
-                                                <option value="quantrivien">Quản Trị Viên</option>
+                                            <select name="position" class="form-control" value="<?=$row['level']?>"  > 
+                                                <option value="giangvien"  <?php if($row['level']=="giangvien") echo 'selected="selected"'; ?> >Giảng Viên</option>
+                                                <option value="trogiang" <?php if($row['level']=="trogiang") echo 'selected="selected"'; ?> >Trợ Giảng</option>
+                                                <option value="tapvu" <?php if($row['level']=="tapvu") echo 'selected="selected"'; ?> >Tạp Vụ</option>
+                                                <option value="IT" <?php if($row['level']=="IT") echo 'selected="selected"'; ?> >IT</option>
+                                                <option value="quantrivien" <?php if($row['level']=="quantrivien") echo 'selected="selected"'; ?> >Quản Trị Viên</option>
                                             </select>
                                         </div>
                                         </div>
                                         <div class="field item form-group">
                                             <label class="col-form-label col-md-3 col-sm-3  label-align">Chứng Chỉ<span class="required">*</span></label>
                                             <div class="col-md-6 col-sm-6">
-                                                <input class="form-control" class='text' name="chungchi" required='required' data-validate-length-range="5,20" /></div>
-                                        </div>
+                                                <input class="form-control" class='text' value="<?=$row['ChungChi']?>" name="chungchi" required='required' data-validate-length-range="5,20" /></div>
+                                        </div>  
                                         <div class="field item form-group">
                                             <label class="col-form-label col-md-3 col-sm-3  label-align">Số Chứng Minh Thư<span class="required">*</span></label>
                                             <div class="col-md-6 col-sm-6">
-                                                <input class="form-control" type="number" name="cmnd" required='required' data-validate-length-range="10,15" /></div>
+                                                <input class="form-control" type="number" value="<?=$row['CMND']?>" name="cmnd" required='required' data-validate-length-range="10,15" /></div>
                                         </div>
                                         <div class="field item form-group">
                                             <label class="col-form-label col-md-3 col-sm-3  label-align">Hệ số lương<span class="required">*</span></label>
                                             <div class="col-md-6 col-sm-6">
-                                                <input class="form-control" type="number"  name="hsl" required='required' data-validate-length-range="0,10" /></div>
-                                        </div>
-                                        <div class="field item form-group">
-                                            <label class="col-form-label col-md-3 col-sm-3  label-align">Avatar<span class="required">*</span></label>
-                                            <div class="col-md-6 col-sm-6">
-                                                <input class="form-control" type="file" id='image' name="image" required='required'/></div>
+                                                <input class="form-control" type="number"  name="hsl" value="<?=$row['HSL']?>" required='required' data-validate-length-range="0,10" /></div>
                                         </div>
                                         <div class="ln_solid">
                                             <div class="form-group">
                                                 <div class="col-md-6 offset-md-3">
-                                                    <button type='submit' name='submit' class="btn btn-primary">Tạo mới</button>
-                                                    <button type='reset' class="btn btn-success">Nhập lại</button>
+                                                    <button type='submit' name='submit' class="btn btn-primary">Save</button>
                                                 </div>  
                                             </div>
                                         </div>
