@@ -1,6 +1,6 @@
 <?php 
     include '../php/connect.php';
-    $sql= "SELECT * FROM `course` ORDER BY id DESC";
+    $sql= "SELECT * from `course` INNER JOIN `degree` on course.degree_id = degree.id ORDER BY `course`.`id` DESC";
     $res = mysqli_query($conn,$sql);
     $number_row = mysqli_num_rows($res);
     $result_per_page = 6;
@@ -12,7 +12,7 @@
       $page = $_GET['page'];
     }
     $this_page_result = ($page-1)*$result_per_page;
-    $sql = "SELECT * FROM `course` ORDER BY id DESC limit ".$this_page_result. ','.$result_per_page;
+    $sql = "SELECT * from `course` INNER JOIN `degree` on course.degree_id = degree.id ORDER BY `course`.`id` DESC limit ".$this_page_result. ','.$result_per_page;
     $res = mysqli_query($conn,$sql);
     session_start();
     if(!isset($_SESSION['user'])){
@@ -196,6 +196,8 @@
                           <div class="col-sm-12">
                             <div class="left col-md-7 col-sm-7">
                               <h2><?=$row['tenKH'] ?></h2>
+                              
+                              <p id="soluong" ><strong>Tên Chứng chỉ: </strong> <?=$row['tenDegree']?> </p>
                               <p id="noidung" ><strong>Số buổi: </strong> <?=$row['duration'] ?> </p>
                               <p id="soluong" ><strong>Học phí: </strong> <?=$row['price'] ?> </p>
                             </div>

@@ -6,7 +6,9 @@ if (isset($_POST['submit'])){
     $duration = $_POST['duration'];
     $price = $_POST['price'];
     $degree = $_POST['degree'];
-    $sql = "INSERT INTO `course`(`id`, `tenKH`, `duration`, `price`, `degree_id`) VALUES ('','$name','$duration','$price', '$degree')";
+    echo $_POST['degree'];  
+    $time = $_POST['time'];
+    $sql = "INSERT INTO `course`(`id`, `tenKH`, `duration`, `price`, `degree_id`, `time`) VALUES ('','$name','$duration','$price', '$degree', '$time')";
     $res = mysqli_query($conn, $sql);
    
     $sql_laster = "SELECT * FROM `latest_course` ";
@@ -202,6 +204,11 @@ if (isset($_POST['submit'])){
                                             </div>
                                         </div>
                                         <div class="field item form-group">
+                                            <label class="col-form-label col-md-3 col-sm-3  label-align">Số giờ dạy mỗi buổi<span class="required">*</span></label>
+                                            <div class="col-md-6 col-sm-6">
+                                                <input class="form-control" type="number" name="time" required='required' data-validate-length-range="1,2" /></div>
+                                        </div>
+                                        <div class="field item form-group">
                                             <label class="col-form-label col-md-3 col-sm-3  label-align">Giá<span class="required">*</span></label>
                                             <div class="col-md-6 col-sm-6">
                                                 <input class="form-control" placeholder="1000000" type="number" name="price" required='required' data-validate-length-range="1,15" /></div>
@@ -209,7 +216,7 @@ if (isset($_POST['submit'])){
                                         <div class="field item form-group">
                                             <label class="col-form-label col-md-3 col-sm-3  label-align">Chứng chỉ dạy<span class="required">*</span></label>
                                             <div class="col-md-6 col-sm-6">
-                                            <select name="position" class="form-control"  > 
+                                            <select name="degree" class="form-control"  > 
                                             <?php while ($row_degree = mysqli_fetch_array($res_degree)){?>
                                                 <option value="<?php echo $row_degree['id'] ?>"><?=$row_degree["tenDegree"] ?></option>
                                                 <?php }?>

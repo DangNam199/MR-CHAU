@@ -1,5 +1,5 @@
 <?php 
-    include 'connect.php';
+    include '../connect.php';
     if(isset($_POST['id_degree'])){
         $id_degree = $_POST['id_degree'];
         $return_arr = array();
@@ -11,10 +11,13 @@
             $name = $row['tenKH'];
             $duration = $row['duration'];
             $price = $row['price'];
+            $time = $row['time'];
             $return_arr[] = array("id" => $id,
                     "name" => $name,
                     "duration" => $duration,
-                    "price" => $price);
+                    "price" => $price,
+                    "time" => $time,
+                );
         }
         $json = json_encode($return_arr);
         echo $json;

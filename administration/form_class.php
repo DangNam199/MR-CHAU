@@ -1,27 +1,14 @@
 <?php 
-include '../php/connect.php';
-if (isset($_POST['submit'])){
-    $name = $_POST['name'];
-    
-    $duration = $_POST['duration'];
-    $price = $_POST['price'];
-    $degree = $_POST['degree'];
-    $sql = "INSERT INTO `course`(`id`, `tenKH`, `duration`, `price`, `degree_id`) VALUES ('','$name','$duration','$price', '$degree')";
-    $res = mysqli_query($conn, $sql);
-    if ($res){
-        header("location: all_class.php");
-    }
-    }
-    
+include '../php/connect.php';    
     session_start();
     if(!isset($_SESSION['user'])){
-    header('location: login.php');
+      header('location: login.php');
     }
-    else{
     $sql_user = "SELECT * FROM `nhanvien` WHERE email='". $_SESSION['user']. "' limit 1";
     $res_user = mysqli_query($conn,$sql_user);
     $row_user = mysqli_fetch_assoc($res_user);
-    }
+    $res_degree = mysqli_query($conn, "SELECT * from `degree`");
+    
 ?>
 
 
@@ -195,7 +182,7 @@ if (isset($_POST['submit'])){
                                             </select>
                                             </div>
                                         </div>
-                                        <div class="field item form-group">
+                                        <!-- <div class="field item form-group">
                                             <label class="col-form-label col-md-3 col-sm-3  label-align">Thời gian<span class="required">*</span></label>
                                                 <input class="form-control" type="date" name="date_from" required='required' style="width: 25%;"/>
                                                 <input class="form-control" type="date" name="date_to" required='required' style="width: 25%;" readonly/>
@@ -205,13 +192,14 @@ if (isset($_POST['submit'])){
                                             <label class="col-form-label col-md-3 col-sm-3  label-align">Giờ Học<span class="required">*</span></label>
                                                 <input class="form-control" type="time" name="time_from" required='required' style="width: 25%;"/>
                                                 <input class="form-control" type="time" name="time_to" required='required' style="width: 25%;"/>
-                                        </div>
+                                        </div> -->
                                         <table class="table table-striped jambo_table bulk_action bulk_action">
                                             <thead>
                                             <tr class="headings">
                                                 <th></th>
                                                 <th class="column-title">Tên Khoá Học</th>
                                                 <th class="column-title">Số Buổi Học</th>
+                                                <th class="column-title">Thời gian mỗi buổi</th>
                                                 <th class="column-title">Price</th>
                                                 </th>
                                             </tr>
@@ -260,9 +248,10 @@ if (isset($_POST['submit'])){
                                         </table>
                                         <div class="ln_solid">
                                             <div class="form-group">
-                                                <div class="col-md-6 offset-md-3">
-                                                    <button type='submit' name='submit' class="btn btn-primary">Tạo mới</button>
-                                                    <button type='reset' class="btn btn-success">Nhập lại</button>
+                                                <div class="col-md-6 offset-md-3" id='submit-button'>
+                                                  <input type="button"  class="btn btn-success" id="btnClick" value="Nhập Khoá Cho Lớp"/>
+                                                    <button type='submit' name='submit' class="btn btn-primary">Tạo mới</button> 
+                                                    <button type='reset' class="btn btn-secondary source">Nhập lại</button>
                                                 </div>  
                                             </div>
                                         </div>
@@ -284,36 +273,48 @@ if (isset($_POST['submit'])){
 
     <script> 
             $('#select-degree').change(function(){
+              $('#table-course').empty()
                 id_degree = ( $(this).find("option:selected").attr('value'));
-                console.log(id_degree);
                 $.ajax({
-                    url: '../php/all_course.php',
+                    url: '../php/ajax/all_course.php',
                     method: 'post',
                     data: {id_degree: id_degree},
                     success: function(data){
                         data = JSON.parse(data);
-                        console.log(data);
                         if (data.length == 0){
-                            alert("Chứng chỉ chưa có khoá dạy");
+                            alert("Chứng chỉ chưa có khoá dạy");    
                         }
                         else {
                             data.forEach(function(i){
                                $('#table-course').append(`
                                                 <tr class="even pointer">
                                                 <td class="a-center ">
-                                                 <input type="checkbox" class="flat" name="id[]" value="${i.id}">
+                                                 <input type="checkbox" class='checks' id="myCheckbox" value="${i.id}">
                                                 </td>                               
                                                
                                                     <td class=" ">${i.name}</td>
                                                     <td class=" ">${i.duration}</td>
-                                                    <td class=" ">${i.price }</td>
-                                                </tr>  `);
+                                                    <td class=" ">${i.time}</td>
+                                                    <td class=" ">${i.price}</td>
+                                                </tr>`);
                             });
                         }
                     }
                 });
             });
-    
+            $(function () {
+              $("#btnClick").click(function () {
+                  var selected = new Array();
+                  $("#table-course input[type=checkbox]:checked").each(function () {
+                      selected.push(this.value);
+                  });
+                  if (selected.length > 0) {
+                      alert("Selected values: " + selected.join(","));
+                      
+                  }
+              });
+              });
+                  
     </script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script src="../vendors/validator/multifield.js"></script>
@@ -354,6 +355,10 @@ if (isset($_POST['submit'])){
         // on form "reset" event
         document.forms[0].onreset = function(e) {
             validator.reset();
+            $('#table-course').empty();
+            $('submit-button').html(`<input type="button"  class="btn btn-success" id="btnClick" value="Nhập Khoá Cho Lớp"/>
+                                                    <!-- <button type='submit' name='submit' class="btn btn-primary">Tạo mới</button> -->
+                                                    <button type='reset' class="btn btn-secondary source">Nhập lại</button>`);
         };
         // stuff related ONLY for this demo page:
         $('.toggleValidationTooltips').change(function() {
