@@ -5,22 +5,17 @@ if (isset($_POST['submit'])){
     
     $seat = $_POST['seat'];
     $tinhtrang = $_POST['tinhtrang'];
-    $sql = "INSERT INTO `room`(`id`, `name`, `tinhtrang`, `seat`) VALUES ('','$name','$tinhtrang','$seat')";
+    $sql = "INSERT INTO `room`(`id`, `name`, `tinhtrang`, `seat`) VALUES (null,'$name','$tinhtrang','$seat')";
     $res = mysqli_query($conn, $sql);
     if ($res){
-        header("location: all_room.php");
+        header("location: x.php");
     }    
     
 }
-session_start();
-if(!isset($_SESSION['user'])){
-    header('location: login.php');
-    }
-    else{
-    $sql_user = "SELECT * FROM `nhanvien` WHERE email='". $_SESSION['user']. "' limit 1";
-    $res_user = mysqli_query($conn,$sql_user);
-    $row_user = mysqli_fetch_assoc($res_user);
-    }
+include '../php/session.php';
+if ($_SESSION['level'] != 5 and $_SESSION['level'] != 6){
+  header("location: index.php");
+}
 ?>
 
 
@@ -60,12 +55,12 @@ if(!isset($_SESSION['user'])){
             <div class="profile clearfix">
               <div class="profile_pic">
               <?php 
-                    echo '<img src="data:image/jpeg;base64,'.base64_encode($row_user['avatar'] ).'" class="img-circle profile_img" />';
+                    echo '<img src="data:image/jpeg;base64,'.base64_encode($_SESSION['avatar'] ).'" class="img-circle profile_img" />';
               ?>
               </div>
               <div class="profile_info">
                 <span>Welcome,</span>
-                <h2><?=$row_user['TenNV'] ?></h2>
+                <h2><?=$_SESSION['name'] ?></h2>
               </div>
             </div>
             <!-- /menu profile quick info -->
@@ -131,28 +126,6 @@ if(!isset($_SESSION['user'])){
         </div>
 
         <!-- top navigation -->
-        <div class="top_nav">
-          <div class="nav_menu">
-              <div class="nav toggle">
-                <a id="menu_toggle"><i class="fa fa-bars"></i></a>
-              </div>
-              <nav class="nav navbar-nav">
-              <ul class=" navbar-right">
-                <li class="nav-item dropdown open" style="padding-left: 15px;">
-                  <a href="javascript:;" class="user-profile dropdown-toggle" aria-haspopup="true" id="navbarDropdown" data-toggle="dropdown" aria-expanded="false">
-                  <?=$row_user['TenNV'] ?>
-                  </a>
-                  <div class="dropdown-menu dropdown-usermenu pull-right" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item"  href="profile.php  "> Profile</a>
-                    <a class="dropdown-item"  href="login.php"><i class="fa fa-sign-out pull-right"></i> Log Out</a>
-                  </div>
-                </li>
-
-                </li>
-              </ul>
-            </nav>
-          </div>
-        </div>
             <!-- /top navigation -->
 
             <!-- page content -->

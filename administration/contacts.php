@@ -1,8 +1,11 @@
 <?php 
     include '../php/connect.php';
-    session_start();
+    include '../php/session.php';
+    if ($_SESSION['level'] != 5 and $_SESSION['level'] != 6){
+      header("location: index.php");
+    }
     //issue: not in currnt id
-    $sql= "SELECT * FROM `nhanvien` ORDER BY id DESC";
+    $sql= "SELECT * FROM `staff` ORDER BY id DESC";
     $res = mysqli_query($conn,$sql);
     $number_row = mysqli_num_rows($res);
     $result_per_page = 9;
@@ -14,19 +17,11 @@
       $page = $_GET['page'];
     }
     $this_page_result = ($page-1) * $result_per_page;
-    $sql = "SELECT * FROM `nhanvien` ORDER BY id DESC limit ".$this_page_result. ','.$result_per_page;
+    $sql = "SELECT * FROM `staff` ORDER BY id DESC limit ".$this_page_result. ','.$result_per_page;
     $res = mysqli_query($conn,$sql);
 
  
-    if(!isset($_SESSION['user'])){
-      header('location: login.php');
-    }
-    else{
-    $sql_user = "SELECT * FROM `nhanvien` WHERE email='". $_SESSION['user']. "' limit 1";
-    $res_user = mysqli_query($conn,$sql_user);
-    $row_user = mysqli_fetch_assoc($res_user);
-          
-    }
+
     
 ?>
 
@@ -77,11 +72,11 @@
               <div class="profile clearfix">
                 <div class="profile_pic">
                   <?php
-                echo '<img src="data:image/jpeg;base64,'.base64_encode($row_user['avatar'] ).'" class="img-circle profile_img" />'; ?>
+                echo '<img src="data:image/jpeg;base64,'.base64_encode($_SESSION['avatar'] ).'" class="img-circle profile_img" />'; ?>
                 </div>
                 <div class="profile_info">
                   <span>Welcome,</span>
-                  <h2><?=$row_user['TenNV'] ?></h2>
+                  <h2><?=$_SESSION['name'] ?></h2>
                 </div>
               </div>
               <!-- /menu profile quick info -->
@@ -147,28 +142,6 @@
         </div>
 
         <!-- top navigation -->
-        <div class="top_nav">
-          <div class="nav_menu">
-              <div class="nav toggle">
-                <a id="menu_toggle"><i class="fa fa-bars"></i></a>
-              </div>
-              <nav class="nav navbar-nav">
-              <ul class=" navbar-right">
-                <li class="nav-item dropdown open" style="padding-left: 15px;">
-                  <a href="javascript:;" class="user-profile dropdown-toggle" aria-haspopup="true" id="navbarDropdown" data-toggle="dropdown" aria-expanded="false">
-                  <?=$row_user['TenNV'] ?>
-                  </a>
-                  <div class="dropdown-menu dropdown-usermenu pull-right" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item"  href="profile.php  "> Profile</a>
-                    <a class="dropdown-item"  href="login.php"><i class="fa fa-sign-out pull-right"></i> Log Out</a>
-                  </div>
-                </li>
-
-                </li>
-              </ul>
-            </nav>
-          </div>
-        </div>
         <!-- top navigation -->
 
         <!-- page content -->
@@ -176,7 +149,13 @@
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h3>Contacts Design</h3>
+                <h3>Tất cả nhân viên</h3>
+                <?php 
+                  if (isset($_SESSION['notification'])){
+                    echo '<p>'. $notification . '</p>';
+                    unset($_SESSION['notification']);
+                  }
+                ?>
               </div>
 
               <div class="title_right">
@@ -208,35 +187,32 @@
                         <div class="col-md-4 col-sm-4  profile_details" id="employee-<?php echo $row['id']?>">
                           <div class="well profile_view">
                             <div class="col-sm-12">
-                              <?php 
-                                switch ($row['level']) {
-                                  case "giangvien":
-                                    $level = 'Giảng Viên';
-                                    break;
-                                  case "trogiang":
-                                    $level = 'Trợ Giảng';
-                                    break;
-                                  case "tapvu":
-                                    $level = 'Tạp Vụ';
-                                    break;
-                                  case "IT":
-                                    $level = 'Nhân Viên Kỹ Thuật';
-                                      break;
-                                  case "quantrivien":
-                                    $level = 'Quản Trị Viên';
-                                        break;
-                                  default:
-                                  $level = 'Giảng Viên';
-                                }
-                                  echo "<h4 class='brief'><i>" . $level. "</i></h4>";
-                                ?>
+                                  <h4 class='brief'><?=$row['level_name']?></h4>
+                                  <p hidden id="level-id-<?=$row['id']?>"><?=$row['level_id']?></p>  
                               <div class="left col-md-7 col-sm-7">
-                                <h2><?=$row['TenNV'] ?></h2>
-                                
-                                <p><strong>Certificate: </strong> <?=$row['ChungChi'] ?> </p>
+                                <div class="row center" >
+                                  <span id="gender-<?=$row['id']?>">
+                                    <?php 
+                                      if($row['gender']== 'male'){
+                                        echo '<i class="fa fa-male fa-2x"></i>';
+                                      }
+                                      if($row['gender']== 'female'){
+                                        echo '<i class="fa fa-female fa-2x"></i>';
+                                      }
+                                      ?>
+                                      </span>
+                                <h2><span id="name-<?=$row['id']?>"><?=$row['TenNV']?></span></h2>
+                                </div>
+                                <p><strong>Certificate: </strong> <span id="certi-<?=$row['id']?>"><?=$row['ChungChi']?></span></p>
                                 <ul class="list-unstyled">
-                                <li><i class="fa fa-building"></i>Address: <?=$row['address'] ?> </li>
-                                  <li><i class="fa fa-phone"></i> Phone #: <?=$row['SoDT'] ?> </li>
+                                <li>Email: <span id="email-<?=$row['id']?>"><?=$row['email']?></span> </li>
+                                <li>
+                                  <i class="fa fa-building"></i> Address: <span id="address-<?=$row['id']?>"> <?=$row['address'] ?> </span>
+                                </li>
+                                <li>
+                                   Ngày Sinh:<span id="dob-<?=$row['id']?>"> <?=$row['NgaySinh'] ?> </span>
+                                </li>
+                                  <li><i class="fa fa-phone"></i>  Phone #: <span id="phone-<?=$row['id']?>"><?=$row['sdt']?></span> </li>
                                 </ul>
                               </div>
                               <div class="right col-md-5 col-sm-5 text-center">
@@ -245,25 +221,17 @@
                                 ?>
                               </div>
                             </div>
+                            <p hidden id="cmnd-<?=$row['id']?>"><?=$row['CMND']?></p> 
+                            <p hidden id="hsl-<?=$row['id']?>"><?=$row['HSL']?></p>  
                             <div class=" profile-bottom text-center">
                               <div class=" row-sm-6 emphasis">
-                                <!-- mẫu edit -->
-                              <a class="btn btn-app" data-toggle="modal" data-target="#myModal" href="#" data-id="<?php echo  $row['id'];?>" data-role='update' ><i  class="fa fa-plus"> </i> Edit </a>
-                                <!-- mẫu xoá -->
+                              <a class="btn btn-app" data-toggle="modal" onclick="open_modal(<?php echo $row['id']?>)" data-id="<?php echo  $row['id'];?>" data-role='update' ><i  class="fa fa-plus"> </i> Edit </a>
                                 <button type="button" class="btn btn-secondary" onclick="deleteAjax(<?php echo $row['id'];?>)">Delete</button>
-                                <button class="btn btn-secondary source" onclick="new PNotify({
-                                  title: 'Regular Success',
-                                  text: 'That thing that you were trying to do worked!',
-                                  type: 'success',
-                                  styling: 'bootstrap3'
-                              });">Success</button>
                               </div>
                             </div>
                           </div>
                         </div>
                       <?php } ?>
-
-                      
                   </div>
                 </div>
             </div>
@@ -286,58 +254,60 @@
         <div class="modal-body">
           <div class="field item form-group">
               <label class="col-form-label col-md-3 col-sm-3  label-align">Họ Và Tên<span class="required">*</span></label>
-              <input class="form-control" data-validate-length-range="6" data-validate-words="2" name="user_name" required="required" />
+              <input class="form-control" data-validate-length-range="6" data-validate-words="2" id="modal-name" required="required" />
           </div>
           <div class="field item form-group">
               <label class="col-form-label col-md-3 col-sm-3  label-align">Địa Chỉ<span class="required">*</span></label>
               
-                  <input class="form-control" class='optional' name="address" data-validate-length-range="5,15" type="text" />
+                  <input class="form-control" class='optional' id="modal-address" data-validate-length-range="5,15" type="text" />
           </div>
           <div class="field item form-group">
               <label class="col-form-label col-md-3 col-sm-3  label-align">Email<span class="required">*</span></label>
-                  <input class="form-control" type="email" class='email' name="email" data-validate-linked='email' required='required' />
+                  <input class="form-control" type="email" class='email'  id="modal-email" data-validate-linked='email' required='required' />
           </div>
           <div class="item form-group">
-              <label class="col-form-label col-md-3 col-sm-3 label-align">Gender</label>
-              <select name="gender" class="form-control" value="<?=$row['level']?>"  > 
+              <label class="col-form-label col-md-3 col-sm-3 label-align">Giới tính</label>
+              <select name="gender" class="form-control" id="modal-gender" > 
                   <option value="male">Nam</option>
                   <option value="female">Nữ</option>
               </select>
               </div>
           <div class="field item form-group">
-              <label class="col-form-label col-md-3 col-sm-3  label-align">Date<span class="required">*</span></label>
-                  <input class="form-control" class='date' type="date" name="dob" required='required'>
+              <label class="col-form-label col-md-3 col-sm-3  label-align">Ngày Sinh<span class="required">*</span></label>
+                  <input class="form-control" class='date' type="date"  id="modal-dob" required='required'>
           </div>
 
           <div class="field item form-group">
               <label class="col-form-label col-md-3 col-sm-3  label-align">Số điện thoại<span class="required">*</span></label>
-                  <input class="form-control" type="tel" class='tel' name="phone" required='required' data-validate-length-range="8,20" />
+                  <input class="form-control" type="tel" class='tel'  id="modal-phone" required='required' data-validate-length-range="8,20" />
                 </div>
           <div class="field item form-group">
               <label class="col-form-label col-md-3 col-sm-3  label-align">Chức Vụ<span class="required">*</span></label>
-              <select name="position" class="form-control"  > 
-                  <option value="giangvien">Giảng Viên</option>
-                  <option value="trogiang">Trợ Giảng</option>
-                  <option value="tapvu">Tạp Vụ</option>
-                  <option value="IT">IT</option>
-                  <option value="quantrivien">Quản Trị Viên</option>
+              <select name="position" class="form-control"  id="modal-level"> 
+                  <option value="1">Giảng Viên</option>
+                  <option value="2">Trợ Giảng</option>
+                  <option value="4">Tạp Vụ</option>
+                  <option value="3">IT</option>
+                  <option value="5">Quản Trị Viên</option>
               </select>
-          
           </div>
           <div class="field item form-group">
               <label class="col-form-label col-md-3 col-sm-3  label-align">Chứng Chỉ<span class="required">*</span></label>
-                  <input class="form-control" class='text' name="chungchi" required='required' data-validate-length-range="5,20" /></div>
+                  <input class="form-control" class='text'  id="modal-certi" required='required' data-validate-length-range="5,20" /></div>
           <div class="field item form-group">
               <label class="col-form-label col-md-3 col-sm-3  label-align">Số Chứng Minh Thư<span class="required">*</span></label>
             
-                  <input class="form-control" type="number" name="cmnd" required='required' data-validate-length-range="10,15" /></div>
+                  <input class="form-control" type="number"  id="modal-cmnd" required='required' data-validate-length-range="10,15" /></div>
           <div class="field item form-group">
               <label class="col-form-label col-md-3 col-sm-3  label-align">Hệ số lương<span class="required">*</span></label>
-                  <input class="form-control" type="number"  name="hsl" required='required' data-validate-length-range="0,10" /></div>
-         
-        </div>
+                  <input class="form-control" type="number"  id="modal-hsl" required='required' data-validate-length-range="0,10" /></div>
+          </div>
+          <div class="field item form-group">
+              <label class="col-form-label col-md-3 col-sm-3  label-align">Avatar<span class="required">*</span></label>
+                  <input class="form-control" type="file"  id="modal-image" style="width: 72%"/>
+          </div>
         <div class="modal-footer">
-        <a href="#" id='add-more' class="btn btn-primary pull-right" >Add</a>
+        <button  id='modal-edit' class="btn btn-primary pull-right" onclick='edit()'>Sửa</a>
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
         </div>
       </div>
@@ -357,17 +327,96 @@
                 table: 'nhanvien', //ten bang trong csdl
               },
               success: function(data){
-                $('#employee-'+id).hide();
+                  if(data=="success"){
+                    $('#employee-'+id).hide();
                 new PNotify({
-                                  title: 'Success',
-                                  text: 'Delete Employee Success',
+                                  title: 'Thành công',
+                                  text: 'Đã xoá',
                                   type: 'success',
                                   styling: 'bootstrap3'
                               });
+                  }
               }
             });
         }
       }
+
+      var temp_gender, name, certi, address, phone, gender, level_name, email, hsl, cmnd, id;
+      function open_modal(this_id){
+        id = this_id;
+         temp_gender ='';
+         name = $("#name-"+id).text().trim();
+         certi = $("#certi-"+id).text().trim();
+         address = $("#address-"+id).text().trim();
+         dob = $("#dob-"+id).text().trim();
+         phone = $("#phone-"+id).text().trim();
+         gender = $("#gender-"+id).html().trim();
+         level_id = $("#level-id-"+id).text().trim();
+         email = $("#email-"+id).text().trim();
+         hsl = $("#hsl-"+id).text().trim();
+         cmnd = $("#cmnd-"+id).text().trim();
+        $('#myModal').modal('show'); 
+        $('#myModal #modal-name').val(name);  
+        $('#myModal #modal-certi').val(certi);
+        $('#myModal #modal-address').val(address); 
+        $('#myModal #modal-phone').val(phone); 
+        if (gender =='<i class="fa fa-male fa-2x"></i>'){
+          temp_gender ='male';
+        }
+        else if (gender =='<i class="fa fa-female fa-2x"></i>')
+        {
+          temp_gender ='female';
+        }
+        $('#myModal #modal-gender').val(temp_gender);
+        $('#myModal #modal-email').val(email);
+        $('#myModal #modal-cmnd').val(hsl);
+        $('#myModal #modal-hsl').val(cmnd);
+        $('#myModal #modal-level').val(level_id);
+        $('#myModal #modal-dob').val(dob);
+      }
+      function  edit() {
+        var files = $('#modal-image')[0].files;
+        var formData = new FormData();
+        formData.append('name', $('#myModal #modal-name').val());
+        formData.append('certi', $('#myModal #modal-certi').val());
+        formData.append('address', $('#myModal #modal-address').val());
+        formData.append('gender', $('#myModal #modal-gender').val());
+        formData.append('dob', $('#myModal #modal-dob').val());
+        formData.append('level_id', $('#myModal #modal-level').val());
+        formData.append('phone', $('#myModal #modal-phone').val());
+        formData.append('email', $('#myModal #modal-email').val());
+        formData.append('hsl', $('#myModal #modal-hsl').val());
+        formData.append('cmnd', $('#myModal #modal-cmnd').val());
+        formData.append('id', id);
+        formData.append('avatar', files[0]);
+        $.ajax({
+              type:'post',
+              url: '../php/ajax/update/ajax_update_staff.php',
+              contentType: false,
+              processData: false,
+              data: formData,
+              success: function(data){
+                if (data == "success"){
+                  new PNotify({
+                                  title: 'Thành công',
+                                  text: 'Cập nhật thành công',
+                                  type: 'success',
+                                  styling: 'bootstrap3'
+                              });
+                              location.reload();
+                }
+                else if (data =="fail"){
+                  new PNotify({
+                                  title: 'Thất bại',
+                                  text: 'Cập nhật thất bại',
+                                  type: 'success',
+                                  styling: 'bootstrap3'
+                              });
+                }
+                $('#myModal').modal('toggle');
+              }
+              });
+            };
 
     </script>
     <!-- hết mẫu xoá -->

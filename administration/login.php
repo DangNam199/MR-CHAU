@@ -5,16 +5,35 @@
         $user = $_POST['user'];
         $password = $_POST['password'];
         $password = md5($password);
-        $sql = "SELECT email, password FROM `nhanvien` WHERE email='$user' and password='$password'";
+        $sql = "SELECT email, password, level_id FROM `nhanvien` WHERE email='$user' and password='$password'";
         $res = mysqli_query($conn, $sql);
+        echo $sql;
         if (mysqli_num_rows($res) == 1){
             header("location: ../administration/index.php");
             $_SESSION['user']=$user;
+            $_SESSION['level']=mysqli_fetch_assoc($res)['level'];
         }
+        else if (mysqli_num_rows($res) == 0){
+          $sql_student = "SELECT email, password FROM `hocvien` WHERE email='$user' and password='$password'";
+          $res_student = mysqli_query($conn, $sql_student);
+            if ($res_student){
+            if (mysqli_num_rows($res_student) == 1){
+                $row_student = mysqli_fetch_assoc($res_student);
+                $_SESSION['level'] = 'hocvien';
+                $_SESSION['user'] = $row_student['email'];
+                header("location: ../student/index.php");
+              }
+            }
+          
+          else {
+              echo $sql_student;  
+          }
+      }
         else {
             $_SESSION['message'] = 'Wrong email or password';   
         }
-    }
+      }
+    
 ?>
 
 

@@ -1,4 +1,5 @@
 <?php 
+
     function getListDays($number){
         $days = [];
         $bitmask = strrev(decbin($number));
@@ -13,38 +14,75 @@
     function switchNumberToDay ($day) {
         switch ($day) {
             case 1:
-                return "Sunday";
+                return "Chủ Nhật";
                 break;
             case 2:
-                return "Monday";
+                return "Thứ 2";
                 break;
             case 4:
-                return "Tuesday";
+                return "Thứ 3";
                 break;
             case 8:
-                return "Wednesday";
+                return "Thứ 4";
                 break;
             case 16:
-                return "Thursday";
+                return "Thứ 5";
                 break;
             case 32:
-                return "Friday";
+                return "Thứ 6";
                 break;
             case 64:
-                return "Saturday";
+                return "Thứ 7";
                 break;
             default:
                 return "Not Found WeekDay";
           }
     }
 
+    function getListWeekdayInFull($number_day){
+        $weekDay =[];
+        $listDay = getListDays($number_day); // [1,16,32]
+        foreach ($listDay as $list){
+            array_push($weekDay, switchNumberFullCalendar($list));   
+        }
+        return $weekDay;
+    }
+
     function getListWeekday($number_day){
         $weekDay =[];
         $listDay = getListDays($number_day); // [1,16,32]
         foreach ($listDay as $list){
-                array_push($weekDay, switchDay($list));   
+            array_push($weekDay, switchNumberToDay($list));   
         }
         return $weekDay;
+    }
+
+    function switchNumberFullCalendar ($day) {
+        switch ($day) {
+            case 1:
+                return 0;
+                break;
+            case 2:
+                return 1;
+                break;
+            case 4:
+                return 2;
+                break;
+            case 8:
+                return 3;
+                break;
+            case 16:
+                return 4;
+                break;
+            case 32:
+                return 5;
+                break;
+            case 64:
+                return 6;
+                break;
+            default:
+                return -1;
+          }
     }
 
     //convert listday to number

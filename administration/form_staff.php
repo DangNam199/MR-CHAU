@@ -1,5 +1,9 @@
 <?php 
 include '../php/connect.php';
+include '../php/session.php';
+if ($_SESSION['level'] != 5 and $_SESSION['level'] != 6){
+  header("location: index.php");
+}
 if (isset($_POST['submit']) && empty($_FILES['image']['tmp_name'])==false){
     $user_name = $_POST['user_name'];
     $address = $_POST['address'];
@@ -11,34 +15,29 @@ if (isset($_POST['submit']) && empty($_FILES['image']['tmp_name'])==false){
     $cmnd = $_POST['cmnd'];
     $gender = $_POST['gender'];
     $hsl = $_POST['hsl'];   
-    list($day,$month,$year,$hour,$min,$sec) = explode("/",date('d/m/Y/h/i/s'));
+    list($year,$month,$day) = explode("-",$date);
     $password =  $day.'/'.$month.'/'.$year;
     $password = md5($password);
     $file = addslashes(file_get_contents($_FILES['image']['tmp_name']));
-    $sql = "INSERT INTO `nhanvien`(`id`, `TenNV`, `NgaySinh`,`gender`, `SoDT`, `CMND`, `ChungChi`, `HSL`, `email`, `password`, `level`, `avatar`) 
-    VALUES ('','$user_name','$date','$gender','$phone',$cmnd,'$chungchi','$hsl','$email','$password','$chucvu','$file')";
+    $sql = "INSERT INTO `nhanvien`(`id`, `TenNV`, `NgaySinh`,`gender`, `sdt`, `address`,`CMND`, `ChungChi`, `HSL`, `email`, `password`, `level_id`, `avatar`) 
+    VALUES (null,'$user_name','$date','$gender',$phone, '$address', $cmnd,'$chungchi',$hsl,'$email','$password','$chucvu','$file')";
     $sql_select = "SELECT `email` `CMND` FROM `nhanvien` WHERE email='$email' and CMND='$email'";
     $res_select = mysqli_fetch_array(mysqli_query($conn, $sql_select));
     if(empty($res_select)){
         $res = mysqli_query($conn, $sql);
         if($res){
-            echo "<script>alert('Tạo mới người dùng thành công');</script>";
+            $_SESSION['notification']= 'Tạo Nhân Viên thành công';
+            header('location: contacts.php');
+        }
+        else {
+          $notification = 'Tạo nhân viên thất bại';
         }
     }
     else {
         echo "<script>alert('Email hoặc CMND đã có người dùng');</script>";
     }
 }
-    session_start();
-    if(!isset($_SESSION['user'])){
-      header('location: login.php');
-    }
-    else{
-    $sql_user = "SELECT * FROM `nhanvien` WHERE email='". $_SESSION['user']. "' limit 1";
-    $res_user = mysqli_query($conn,$sql_user);
-    $row_user = mysqli_fetch_assoc($res_user);
-    
-}
+
 ?>
 
 
@@ -78,12 +77,12 @@ if (isset($_POST['submit']) && empty($_FILES['image']['tmp_name'])==false){
             <div class="profile clearfix">
               <div class="profile_pic">
               <?php 
-                    echo '<img src="data:image/jpeg;base64,'.base64_encode($row_user['avatar'] ).'" class="img-circle profile_img" />';
+                    echo '<img src="data:image/jpeg;base64,'.base64_encode($_SESSION['avatar'] ).'" class="img-circle profile_img" />';
               ?>
               </div>
               <div class="profile_info">
                 <span>Welcome,</span>
-                <h2><?=$row_user['TenNV'] ?></h2>
+                <h2><?=$_SESSION['name'] ?></h2>
               </div>
             </div>
             <!-- /menu profile quick info -->
@@ -149,36 +148,20 @@ if (isset($_POST['submit']) && empty($_FILES['image']['tmp_name'])==false){
         </div>
 
         <!-- top navigation -->
-        <div class="top_nav">
-          <div class="nav_menu">
-              <div class="nav toggle">
-                <a id="menu_toggle"><i class="fa fa-bars"></i></a>
-              </div>
-              <nav class="nav navbar-nav">
-              <ul class=" navbar-right">
-                <li class="nav-item dropdown open" style="padding-left: 15px;">
-                  <a href="javascript:;" class="user-profile dropdown-toggle" aria-haspopup="true" id="navbarDropdown" data-toggle="dropdown" aria-expanded="false">
-                  <?=$row_user['TenNV'] ?>
-                  </a>
-                  <div class="dropdown-menu dropdown-usermenu pull-right" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item"  href="profile.php  "> Profile</a>
-                    <a class="dropdown-item"  href="login.php"><i class="fa fa-sign-out pull-right"></i> Log Out</a>
-                  </div>
-                </li>
-
-                </li>
-              </ul>
-            </nav>
-          </div>
-        </div>
             <!-- /top navigation -->
 
             <!-- page content -->
             <div class="right_col" role="main">
                 <div class="">
                     <div class="page-title">
-                        <div class="title_left">
+                        <div class="title_left" >
                             <h3>Thêm mới Nhân Viên</h3>
+                            <?php 
+                              if (isset($_SESSION['notification'])){
+                                echo '<p>'. $_SESSION['notification'] . '</p>';
+                                unset($_SESSION['notification']);
+                              }
+                            ?>
                         </div>
                     </div>
                     <div class="clearfix"></div>
@@ -232,11 +215,11 @@ if (isset($_POST['submit']) && empty($_FILES['image']['tmp_name'])==false){
                                             <label class="col-form-label col-md-3 col-sm-3  label-align">Chức Vụ<span class="required">*</span></label>
                                             <div class="col-md-6 col-sm-6">
                                             <select name="position" class="form-control"  > 
-                                                <option value="giangvien">Giảng Viên</option>
-                                                <option value="trogiang">Trợ Giảng</option>
-                                                <option value="tapvu">Tạp Vụ</option>
-                                                <option value="IT">IT</option>
-                                                <option value="quantrivien">Quản Trị Viên</option>
+                                                <option value="1">Giảng Viên</option>
+                                                <option value="2">Trợ Giảng</option>
+                                                <option value="4">Tạp Vụ</option>
+                                                <option value="3">IT</option>
+                                                <option value="5">Quản Trị Viên</option>
                                             </select>
                                         </div>
                                         </div>

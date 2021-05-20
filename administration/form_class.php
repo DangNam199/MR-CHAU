@@ -1,14 +1,18 @@
 <?php 
-include '../php/connect.php';    
-    session_start();
-    if(!isset($_SESSION['user'])){
-      header('location: login.php');
+    include '../php/connect.php';    
+    include '../php/session.php';
+    if ($_SESSION['level'] != 5 and $_SESSION['level'] != 6){
+      header("location: index.php");
     }
-    $sql_user = "SELECT * FROM `nhanvien` WHERE email='". $_SESSION['user']. "' limit 1";
-    $res_user = mysqli_query($conn,$sql_user);
-    $row_user = mysqli_fetch_assoc($res_user);
     $res_degree = mysqli_query($conn, "SELECT * from `degree`");
-    
+    $sql_teacher = "SELECT * FROM `nhanvien` WHERE level_id = 1";
+    $res_teacher = mysqli_query($conn,$sql_teacher);
+
+    $sql_trogiang = "SELECT * FROM `nhanvien` WHERE level_id = 2";
+    $res_trogiang = mysqli_query($conn,$sql_trogiang);
+
+    $sql_room = "SELECT * FROM `room`";
+    $res_room = mysqli_query($conn,$sql_room);
 ?>
 
 
@@ -32,10 +36,20 @@ include '../php/connect.php';
     <!-- NProgress -->
     <link href="../vendors/nprogress/nprogress.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link href="../build/css/custom.min.css" rel="stylesheet">
 
     <!-- Custom Theme Style -->
     <link href="../build/css/custom.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../dist/css/bootstrap-select.css">
+    <script src="../dist/js/bootstrap-select.js" defer></script>
+    <link href="../vendors/pnotify/dist/pnotify.css" rel="stylesheet">
+    <link href="../vendors/pnotify/dist/pnotify.buttons.css" rel="stylesheet">
+    <link href="../vendors/pnotify/dist/pnotify.nonblock.css" rel="stylesheet">
+
+    
 </head>
 
 <body class="nav-md">
@@ -50,12 +64,12 @@ include '../php/connect.php';
             <div class="profile clearfix">
               <div class="profile_pic">
               <?php 
-                    echo '<img src="data:image/jpeg;base64,'.base64_encode($row_user['avatar'] ).'" class="img-circle profile_img" />';
+                    echo '<img src="data:image/jpeg;base64,'.base64_encode($_SESSION['avatar'] ).'" class="img-circle profile_img" />';
               ?>
               </div>
               <div class="profile_info">
                 <span>Welcome,</span>
-                <h2><?=$row_user['TenNV'] ?></h2>
+                <h2><?=$_SESSION['name']?></h2>
               </div>
             </div>
             <!-- /menu profile quick info -->
@@ -121,28 +135,6 @@ include '../php/connect.php';
         </div>
 
         <!-- top navigation -->
-        <div class="top_nav">
-          <div class="nav_menu">
-              <div class="nav toggle">
-                <a id="menu_toggle"><i class="fa fa-bars"></i></a>
-              </div>
-              <nav class="nav navbar-nav">
-              <ul class=" navbar-right">
-                <li class="nav-item dropdown open" style="padding-left: 15px;">
-                  <a href="javascript:;" class="user-profile dropdown-toggle" aria-haspopup="true" id="navbarDropdown" data-toggle="dropdown" aria-expanded="false">
-                  <?=$row_user['TenNV'] ?>
-                  </a>
-                  <div class="dropdown-menu dropdown-usermenu pull-right" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item"  href="profile.php  "> Profile</a>
-                    <a class="dropdown-item"  href="login.php"><i class="fa fa-sign-out pull-right"></i> Log Out</a>
-                  </div>
-                </li>
-
-                </li>
-              </ul>
-            </nav>
-          </div>
-        </div>
             <!-- /top navigation -->
 
             <!-- page content -->
@@ -167,7 +159,7 @@ include '../php/connect.php';
                                         <div class="field item form-group">
                                             <label class="col-form-label col-md-3 col-sm-3  label-align">Tên Lớp<span class="required">*</span></label>
                                             <div class="col-md-6 col-sm-6">
-                                                <input class="form-control" data-validate-length-range="6" data-validate-words="2" name="name" required="required" />
+                                                <input class="form-control" data-validate-length-range="6" data-validate-words="2" id="name_class" required="required" />
                                             </div>
                                         </div>
                                         <div class="field item form-group">
@@ -182,17 +174,63 @@ include '../php/connect.php';
                                             </select>
                                             </div>
                                         </div>
-                                        <!-- <div class="field item form-group">
+                                        
+                                        <div class="field item form-group">
                                             <label class="col-form-label col-md-3 col-sm-3  label-align">Thời gian<span class="required">*</span></label>
-                                                <input class="form-control" type="date" name="date_from" required='required' style="width: 25%;"/>
-                                                <input class="form-control" type="date" name="date_to" required='required' style="width: 25%;" readonly/>
+                                                <input class="form-control" type="date"  required='required' id="date_from" style="width: 25%;"/>
+                                                <input class="form-control" type="date" required='required' id="date_to" style="width: 25%;" readonly/>
 
                                         </div>
+                                        
                                         <div class="field item form-group">
                                             <label class="col-form-label col-md-3 col-sm-3  label-align">Giờ Học<span class="required">*</span></label>
-                                                <input class="form-control" type="time" name="time_from" required='required' style="width: 25%;"/>
-                                                <input class="form-control" type="time" name="time_to" required='required' style="width: 25%;"/>
-                                        </div> -->
+                                                <input class="form-control" type="time" name="time_from" id="time_from" required='required' style="width: 25%;"/>
+                                                <input class="form-control" type="time" name="time_to" id="time_to" required='required' style="width: 25%;" readonly/>
+                                        </div>
+                                        <table class="table table-striped jambo_table bulk_action bulk_action">
+                                            <thead>
+                                            <tr class="headings">
+                                                <th class="column-title" id >Thứ 2</th>
+                                                <th class="column-title">Thứ 3</th>
+                                                <th class="column-title">Thứ 4</th>
+                                                <th class="column-title">Thứ 5</th>
+                                                <th class="column-title">Thứ 6</th>
+                                                <th class="column-title">Thứ 7</th>
+                                                <th class="column-title">Chủ Nhật</th>
+                                                </th>
+                                            </tr>
+                                            </thead>
+                                            <tbody  id='weekday'>
+                                            <tr class="even pointer">
+                                                <td class="a-center">
+                                                <input type="checkbox" class="flat" value="2">
+                                                </td>
+                                                <td class="a-center">
+                                                <input type="checkbox" class="flat" value="4" >
+                                                </td>
+                                                <td class="a-center">
+                                                <input type="checkbox" class="flat" value="8">
+                                                </td>
+                                                <td class="a-center">
+                                                <input type="checkbox" class="flat" value="16">
+                                                </td>
+                                                <td class="a-center">
+                                                <input type="checkbox" class="flat" value="32">
+                                                </td>
+                                                <td class="a-center">
+                                                <input type="checkbox" class="flat" value="64">
+                                                </td>
+                                                <td class="a-center">
+                                                <input type="checkbox" class="flat" value="1">
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                        <div class="field item form-group" >
+                                          <label class="col-form-label col-md-3 col-sm-3  label-align">Khoá Học<span class="required">*</span></label>
+                                            <select id="select-course" class="form-control selectpicker" data-live-search="true">
+                                            </select> 
+                                        </div>
                                         <table class="table table-striped jambo_table bulk_action bulk_action">
                                             <thead>
                                             <tr class="headings">
@@ -207,51 +245,35 @@ include '../php/connect.php';
                                             <tbody id='table-course'>                                                                                                        
                                             </tbody>
                                         </table>
-                                        <table class="table table-striped jambo_table bulk_action bulk_action">
-                                            <thead>
-                                            <tr class="headings">
-                                                <th class="column-title">Thứ 2</th>
-                                                <th class="column-title">Thứ 3</th>
-                                                <th class="column-title">Thứ 4</th>
-                                                <th class="column-title">Thứ 5</th>
-                                                <th class="column-title">Thứ 6</th>
-                                                <th class="column-title">Thứ 7</th>
-                                                <th class="column-title">Chủ Nhật</th>
-                                                </th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr class="even pointer">
-                                                <td class="a-center">
-                                                <input type="checkbox" class="flat" value="2" name="weekday">
-                                                </td>
-                                                <td class="a-center">
-                                                <input type="checkbox" class="flat" value="4" value="weekday">
-                                                </td>
-                                                <td class="a-center">
-                                                <input type="checkbox" class="flat" value="8" value="weekday">
-                                                </td>
-                                                <td class="a-center">
-                                                <input type="checkbox" class="flat" value="16" value="weekday">
-                                                </td>
-                                                <td class="a-center">
-                                                <input type="checkbox" class="flat" value="32" value="weekday">
-                                                </td>
-                                                <td class="a-center">
-                                                <input type="checkbox" class="flat" value="64" value="weekday">
-                                                </td>
-                                                <td class="a-center">
-                                                <input type="checkbox" class="flat" value="1" value="weekday">
-                                                </td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
+                                        <div class="field item form-group" >
+                                          <label class="col-form-label col-md-3 col-sm-3  label-align">Phòng Học<span class="required">*</span></label>
+                                            <select id="select-room" class="form-control selectpicker" data-live-search="true"> 
+                                              <?php while ($row_room = mysqli_fetch_array($res_room)){?>
+                                                <option value="<?php echo $row_room['id'] ?>"><?php echo $row_room['id'] .' - '. $row_room["name"] ?></option>
+                                                <?php }?>
+                                            </select> 
+                                        </div>
+                                        <div class="field item form-group" >
+                                          <label class="col-form-label col-md-3 col-sm-3  label-align">Giảng Viên<span class="required">*</span></label>
+                                            <select id="select-teacher" class="form-control selectpicker" data-live-search="true"> 
+                                              <?php while ($row_teacher = mysqli_fetch_array($res_teacher)){?>
+                                                <option value="<?php echo $row_teacher['id'] ?>"><?php echo $row_teacher['id'] .' - '. $row_teacher["TenNV"] ?></option>
+                                                <?php }?>
+                                            </select> 
+                                        </div>
+                                        <div class="field item form-group" >
+                                          <label class="col-form-label col-md-3 col-sm-3  label-align">Trợ Giảng<span class="required">*</span></label>
+                                            <select id="select-tutors" class="form-control selectpicker" data-live-search="true" multiple> 
+                                              <?php while ($row_trogiang = mysqli_fetch_array($res_trogiang)){?>
+                                                <option value="<?php echo $row_trogiang['id'] ?>"><?php echo $row_trogiang['id'] .' - '. $row_trogiang["TenNV"] ?></option>
+                                                <?php }?>
+                                            </select> 
+                                        </div>
                                         <div class="ln_solid">
                                             <div class="form-group">
                                                 <div class="col-md-6 offset-md-3" id='submit-button'>
-                                                  <input type="button"  class="btn btn-success" id="btnClick" value="Nhập Khoá Cho Lớp"/>
-                                                    <button type='submit' name='submit' class="btn btn-primary">Tạo mới</button> 
-                                                    <button type='reset' class="btn btn-secondary source">Nhập lại</button>
+                                                  <input type="button"  class="btn btn-success" id="btnClick" value="Nhập khoá cho lớp"/>
+                                                  <input type="button"  class="btn btn-success" id="btnClick1" value="Tạo lớp"/>
                                                 </div>  
                                             </div>
                                         </div>
@@ -262,18 +284,20 @@ include '../php/connect.php';
                     </div>
                 </div>
             </div>
-            <!-- /page content -->
 
-            <!-- footer content -->
-            <footer>
-            </footer>
-            <!-- /footer content -->
         </div>
     </div>
 
-    <script> 
+    <script>
+             var id_course, techer , tutors, time_from,time_to, date_from, date_to, weekDay = [];
+             var price, time, duration;
+            $("#select-course").change(function(){
+                id_course = $('#select-course option:selected').val();
+                ajax_course(id_course);
+            });
             $('#select-degree').change(function(){
-              $('#table-course').empty()
+              $("#select-course").empty();
+              $("#select-course").selectpicker('refresh');
                 id_degree = ( $(this).find("option:selected").attr('value'));
                 $.ajax({
                     url: '../php/ajax/all_course.php',
@@ -285,36 +309,174 @@ include '../php/connect.php';
                             alert("Chứng chỉ chưa có khoá dạy");    
                         }
                         else {
+                          $('#select-course').append(`<option></option>`);
                             data.forEach(function(i){
-                               $('#table-course').append(`
-                                                <tr class="even pointer">
-                                                <td class="a-center ">
-                                                 <input type="checkbox" class='checks' id="myCheckbox" value="${i.id}">
-                                                </td>                               
-                                               
-                                                    <td class=" ">${i.name}</td>
-                                                    <td class=" ">${i.duration}</td>
-                                                    <td class=" ">${i.time}</td>
-                                                    <td class=" ">${i.price}</td>
-                                                </tr>`);
+                               $('#select-course').append(`
+                                  <option value="${i.id}">${i.id} - ${i.name}</option>`);
                             });
+                            $("#select-course").selectpicker('refresh');
                         }
                     }
                 });
             });
-            $(function () {
-              $("#btnClick").click(function () {
-                  var selected = new Array();
-                  $("#table-course input[type=checkbox]:checked").each(function () {
-                      selected.push(this.value);
+            Date.prototype.addDays = function(days) {
+              this.setDate(this.getDate() + parseInt(days));
+              return this;
+                };
+            
+            function ajax_course(id_course) {
+              $.ajax({
+                    type: "post",
+                    url: "../php/ajax/all_course.php",
+                    data: {id_course : id_course},
+                    dataType: "json",
+                    success: function (data) {
+                      price = data.price;
+                      duration = data.duration;
+                      time = data.time;
+                      $("#table-course").html(`<td></td><td>${data.tenKH}</td><td>${data.duration}</td><td>${data.time}</td><td>${data.price}</td>`);
+                    }
+                  }); 
+                }
+            
+            
+            function addTime(time, time_need){
+              time = time.split(':');
+              hours = parseInt(time[0]) + Math.floor(time_need/1);
+              min = parseInt(time[1]) + time_need%1;
+              min = min *60;
+              if (min%1==0){
+                time = hours + ':' + min +'0';
+              }
+              else{
+                time = hours + ':' + min;
+              }
+              return time;
+            }
+
+            $("#btnClick").mousedown(function () {
+              weekDay = [];
+              var is_full = 1
+                  $('#weekday input[type=checkbox]:checked').each(function() {
+                    weekDay.push($(this).val());
                   });
-                  if (selected.length > 0) {
-                      alert("Selected values: " + selected.join(","));
-                      
+                  if (weekDay.length == 0) {
+                    is_full = 0;
+                    new PNotify({
+                                  title: 'Missing',
+                                  text: 'Chọn ngày học trong tuần.',
+                                  type: 'error',
+                                  hide: false,
+                                  styling: 'bootstrap3'
+                              });
                   }
-              });
-              });
-                  
+                time_from = $('#time_from').val();
+                date_from = $('#date_from').val();
+                
+                if(!time_from | !date_from){
+                  is_full = 0;
+                  new PNotify({
+                                  title: 'Missing',
+                                  text: 'Chọn thời gian học.',
+                                  type: 'error',
+                                  hide: false,
+                                  styling: 'bootstrap3'
+                              });
+                }
+                if(!duration & !time & !price ){
+                  is_full = 0;
+                  new PNotify({
+                                  title: 'Missing',
+                                  text: 'Chọn chứng chỉ.',
+                                  type: 'error',
+                                  styling: 'bootstrap3'
+                              });
+                }
+
+                if (is_full == 1){
+                var date_temp = new Date(date_from);
+                var day_need = 0;
+                day_need = (duration / weekDay.length) * 7
+                console.log("date need" + day_need);
+                console.log("date weekDay" + weekDay);
+                date_temp.addDays(day_need);
+                var month = date_temp.getUTCMonth() + 1; //months from 1-12
+                var day = date_temp.getUTCDate();
+                var year = date_temp.getUTCFullYear();
+                date_to = year + "-" + month + "-" + day;
+                var today = new Date(date_to).toISOString().split('T')[0];
+                time_to = addTime(time_from, time);
+                $("#date_to").val(today);
+                $("#time_to").val(time_to);
+                }
+     
+            });
+            $("#btnClick1").mousedown(function () {
+                name_class = $('#name_class').val();
+                room_id = $('#select-room').val();
+                teacher = $("#select-teacher").val();
+                tutors= $("#select-tutors").val();
+                console.log(teacher);
+                if (!teacher){
+                  new PNotify({
+                                  title: 'Missing',
+                                  text: 'Chọn Giảng Viên.',
+                                  type: 'error',
+                                  styling: 'bootstrap3'
+                              });
+                }
+                if (!tutors){
+                  new PNotify({
+                                  title: 'Missing',
+                                  text: 'Chọn Trợ Giảng.',
+                                  type: 'error',
+                                  styling: 'bootstrap3'
+                              });
+                }
+                if (teacher && tutors){
+                  $.ajax({
+                    type: "post",
+                    url: "../php/ajax/add_class.php",
+                    data: {
+                      name_class: name_class,
+                      teacher: teacher,
+                      tutors: tutors,
+                      date_from: date_from,
+                      date_to: date_to,
+                      time_from: time_from,
+                      weekDay: sum_arr(weekDay),
+                      time_to: time_to,
+                      id_course: id_course,
+                      id_room: room_id,
+                    },
+                    success: function (data) {
+                      if(data=="success"){
+                        new PNotify({
+                                  title: 'Success',
+                                  text: 'Thêm lớp thành công.',
+                                  type: 'success',
+                                  styling: 'bootstrap3'
+                              });
+                        window.location.replace("all_class.php");
+                      }
+                    }
+                  }); 
+                }
+
+            });
+            function sum_arr(arr){
+              var sum =0;
+              for (var i=0; i<arr.length; i++){
+                sum += parseInt(arr[i]);
+              }
+              return sum;
+            }
+            
+
+                // function convertTime(data){
+                //   data = data.split(':');
+                //   return (parseInt(data[0]*60) + parseInt(data[1]))/60;
+                // }   
     </script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script src="../vendors/validator/multifield.js"></script>
@@ -356,9 +518,6 @@ include '../php/connect.php';
         document.forms[0].onreset = function(e) {
             validator.reset();
             $('#table-course').empty();
-            $('submit-button').html(`<input type="button"  class="btn btn-success" id="btnClick" value="Nhập Khoá Cho Lớp"/>
-                                                    <!-- <button type='submit' name='submit' class="btn btn-primary">Tạo mới</button> -->
-                                                    <button type='reset' class="btn btn-secondary source">Nhập lại</button>`);
         };
         // stuff related ONLY for this demo page:
         $('.toggleValidationTooltips').change(function() {
@@ -372,6 +531,10 @@ include '../php/connect.php';
     <script src="../vendors/fastclick/lib/fastclick.js"></script>
     <script src="../vendors/nprogress/nprogress.js"></script>
     <script src="../build/js/custom.min.js"></script>
+        
+    <script src="../vendors/pnotify/dist/pnotify.js"></script>
+    <script src="../vendors/pnotify/dist/pnotify.buttons.js"></script>
+    <script src="../vendors/pnotify/dist/pnotify.nonblock.js"></script>
 
 </body>
 
