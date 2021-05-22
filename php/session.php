@@ -12,5 +12,6 @@
         $_SESSION['level'] = $row['level_id'];
         $_SESSION['name'] = $row['TenNV'];
         $_SESSION['avatar'] = $row['avatar'];
+        $_SESSION['staff_id'] = $row['id'];
     }
 ?>

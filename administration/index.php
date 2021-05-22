@@ -119,9 +119,9 @@
                  <?php }
                  else {
                  ?>
-                 <li><a href="form_news.php">Lớp của tôi</a>
+                 <li><a href="my_class.php">Lớp của tôi</a>
                   </li>
-                  <li><a> Lịch <span class="fa fa-chevron-down"></span></a>
+                  <li><a href="schedule.php"> Lịch  </a>
                   </li>
                   <?php }?>
                 </ul>

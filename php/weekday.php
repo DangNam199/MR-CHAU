@@ -47,6 +47,14 @@
         }
         return $weekDay;
     }
+    function getListWeekdayInFullRepeat($number_day){
+        $weekDay =[];
+        $listDay = getListDays($number_day); // [1,16,32]
+        foreach ($listDay as $list){
+            array_push($weekDay, switchNumberFullCalenda1r($list));   
+        }
+        return $weekDay;
+    }
 
     function getListWeekday($number_day){
         $weekDay =[];
@@ -56,8 +64,7 @@
         }
         return $weekDay;
     }
-
-    function switchNumberFullCalendar ($day) {
+    function switchNumberFullCalenda1r ($day) {
         switch ($day) {
             case 1:
                 return 0;
@@ -81,7 +88,35 @@
                 return 6;
                 break;
             default:
-                return -1;
+                return 'Not Found';
+          }
+    }
+
+    function switchNumberFullCalendar ($day) {
+        switch ($day) {
+            case 1:
+                return 'Sunday';
+                break;
+            case 2:
+                return 'Monday';
+                break;
+            case 4:
+                return 'Tuesday';
+                break;
+            case 8:
+                return 'Wednesday';
+                break;
+            case 16:
+                return 'Thursday';
+                break;
+            case 32:
+                return 'Friday';
+                break;
+            case 64:
+                return 'Saturday';
+                break;
+            default:
+                return 'Not Found';
           }
     }
 

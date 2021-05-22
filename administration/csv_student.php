@@ -201,30 +201,7 @@
             </div>
         </div>
 
-        <!-- top navigation -->
-        <div class="top_nav">
-          <div class="nav_menu">
-              <div class="nav toggle">
-                <a id="menu_toggle"><i class="fa fa-bars"></i></a>
-              </div>
-              <nav class="nav navbar-nav">
-              <ul class=" navbar-right">
-                <li class="nav-item dropdown open" style="padding-left: 15px;">
-                  <a href="javascript:;" class="user-profile dropdown-toggle" aria-haspopup="true" id="navbarDropdown" data-toggle="dropdown" aria-expanded="false">
-                  <?=$row_user['TenNV'] ?>
-                  </a>
-                  <div class="dropdown-menu dropdown-usermenu pull-right" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item"  href="profile.php  "> Profile</a>
-                    <a class="dropdown-item"  href="login.php"><i class="fa fa-sign-out pull-right"></i> Log Out</a>
-                  </div>
-                </li>
 
-                </li>
-              </ul>
-            </nav>
-          </div>
-        </div>
-        <!-- top navigation -->
 
         <!-- page content -->
         <div class="right_col" role="main">
@@ -259,34 +236,6 @@
     </div>
 
 
-    <!-- mẫu xoá -->
-    <script type='text/javascript'>
-    // delete có thể dùng chung bằng cách truyền id, talbe vào và gọi đến delete.php
-      function deleteAjax(id){
-        if (confirm('Bạn có chắc xoá học viên này')){
-            $.ajax({
-              type:'post',
-              url: '../php/delete.php',
-              data: {
-                id: id,
-                table: 'hocvien', //ten bang trong csdl
-              },
-              success: function(data){
-                  if(data=="success"){
-                    $('#student-'+id).hide();
-                new PNotify({
-                                  title: 'Thành công',
-                                  text: 'Xoá Học Viên thành công',
-                                  type: 'success',
-                                  styling: 'bootstrap3'
-                              });
-                  }
-              }
-            });
-        }
-      }
-
-    </script>
     <!-- hết mẫu xoá -->
     <!-- jQuery -->
     

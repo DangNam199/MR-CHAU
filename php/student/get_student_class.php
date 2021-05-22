@@ -1,9 +1,8 @@
 <?php 
-    session_start();
     include '../connect.php';
     include '../weekday.php';
-    $user = $_SESSION['user'];
-    $sql_user = "SELECT * FROM hocvien where email = '" . $user . "' limit 1";
+    include '../session.php';
+    $sql_user = "SELECT * FROM hocvien where id = '" . $_SESSION['id'] . "'";
     $row = mysqli_fetch_assoc(mysqli_query($conn,$sql_user));
     $sql = "SELECT * FROM class_have where class_id = ". $row['class_id'];
     $res = mysqli_query($conn, $sql);
@@ -23,7 +22,7 @@
             $endTime = $row['time_to'];
             $startRecur = $row['date_from'];
             $endRecur = $row['date_to'];
-            $daysOfWeek = getListWeekdayInFull($row['weekdays']);
+            $daysOfWeek = getListWeekdayInFullRepeat($row['weekdays']);
             $return_arr[] = array("id" => $id,
                     "id" => $id,
                     "title" => $title,

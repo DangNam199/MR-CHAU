@@ -1,17 +1,6 @@
 <?php 
   include '../php/connect.php';
-  session_start();
-  if (isset($_SESSION['user']) && isset($_SESSION['level'])){
-    if($_SESSION['level'] =='hocvien')
-    {
-      $user = $_SESSION['user'];
-      $sql_user = "SELECT * FROM hocvien where email ='". $user. "' limit 1";
-      $row_user = mysqli_fetch_assoc(mysqli_query($conn,$sql_user));
-    }
-  }
-  else {
-    header("location ../administration/login.php");
-  }
+  include '../php/session.php';
 ?>
 
 <!DOCTYPE html>
@@ -56,19 +45,12 @@
             <div class="profile clearfix">
               <div class="profile_pic">
               <?php 
-              include('../php/connect.php');
-              if(!isset($_SESSION['user'])){
-                header('location: ../administration/login.php');
-              }
-              $sql = "SELECT * FROM `hocvien` WHERE email='". $_SESSION['user']. "' limit 1";
-              $res = mysqli_query($conn,$sql);
-              $row = mysqli_fetch_assoc($res);
-                    echo '<img src="data:image/jpeg;base64,'.base64_encode($row['avatar'] ).'" class="img-circle profile_img" />';
-              //}?>
+                    echo '<img src="data:image/jpeg;base64,'.base64_encode($_SESSION['avatar'] ).'" class="img-circle profile_img" />';
+              ?>
               </div>
               <div class="profile_info">
                 <span>Welcome,</span>
-                <h2><?=$row['name'] ?></h2>
+                <h2><?=$_SESSION['name'] ?></h2>
               </div>
             </div>
             <!-- /menu profile quick info -->

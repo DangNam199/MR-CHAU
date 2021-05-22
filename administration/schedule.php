@@ -1,6 +1,5 @@
 <?php 
   include '../php/connect.php';
-  include '../php/session.php';
 ?>
 
 <!DOCTYPE html>
@@ -46,18 +45,16 @@
               <div class="profile_pic">
               <?php 
               include('../php/connect.php');
-              if(!isset($_SESSION['user'])){
-                header('location: ../administration/login.php');
+              include '../php/session.php';
+              if ($_SESSION['level'] != 1 && $_SESSION['level'] != 2 ){
+                header("location: index.php");
               }
-              $sql = "SELECT * FROM `hocvien` WHERE email='". $_SESSION['user']. "' limit 1";
-              $res = mysqli_query($conn,$sql);
-              $row = mysqli_fetch_assoc($res);
-                    echo '<img src="data:image/jpeg;base64,'.base64_encode($row['avatar'] ).'" class="img-circle profile_img" />';
+                    echo '<img src="data:image/jpeg;base64,'.base64_encode($_SESSION['avatar'] ).'" class="img-circle profile_img" />';
               //}?>
               </div>
               <div class="profile_info">
                 <span>Welcome,</span>
-                <h2><?=$row['name'] ?></h2>
+                <h2><?=$_SESSION['name'] ?></h2>
               </div>
             </div>
             <!-- /menu profile quick info -->
@@ -85,6 +82,7 @@
                 <div class="x_panel">
                   <div class="x_title">
                     <h2>Lịch học </h2>
+                    
                     <ul class="nav navbar-right panel_toolbox">
                       <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                       </li>
@@ -96,8 +94,10 @@
                     </ul>
                     <div class="clearfix"></div>
                   </div>
-                  <div class="x_content">
+                  
 
+                  <div class="x_content">
+                 
                     <div id='cld'></div>
 
                   </div>
@@ -194,8 +194,16 @@
 
     var calendar = new FullCalendar.Calendar(calendarEl, {
       eventColor: 'green',
+      customButtons: {
+          myCustomButton: {
+            text: 'Chấm công',
+            click: function() {
+              alert('!');
+            }
+          }
+      },
       headerToolbar: {
-        left: 'prevYear,prev,next,nextYear today',
+        left: 'prevYear,prev,next,nextYear today myCustomButton',
         center: 'title',
         right: 'dayGridMonth,dayGridWeek,dayGridDay'
       },
@@ -203,19 +211,14 @@
       editable: true,
       selectable:true,
       displayEventTime: true,
-      events: '../php/nhanvien/get_my_class.php',    
+      events: '../php/nhanvien/test_schedule.php',  
     });
+    
     calendar.render();
   });
 
 </script>
 <style>
-
-
-   .fc-event {
-    background-color: #ccffff;
-  
-  }
 
 </style>
 

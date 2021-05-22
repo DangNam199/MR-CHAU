@@ -1,6 +1,9 @@
 <?php 
 include '../php/connect.php';
-session_start();
+include '../php/session.php';
+if ($_SESSION['level'] != 5 and $_SESSION['level'] != 6){
+  header("location: index.php");
+}
 if (isset($_POST['submit']) && empty($_FILES['image']['tmp_name'])==false){
     $user_name = $_POST['user_name'];
     $address = $_POST['address'];
@@ -23,14 +26,7 @@ if (isset($_POST['submit']) && empty($_FILES['image']['tmp_name'])==false){
           $notification = 'Không thể tạo Học Viên';
         }
 }
-if(!isset($_SESSION['user'])){
-  header('location: login.php');
-}
-else{
-$sql_user = "SELECT * FROM `nhanvien` WHERE email='". $_SESSION['user']. "' limit 1";
-$res_user = mysqli_query($conn,$sql_user);
-$row_user = mysqli_fetch_assoc($res_user);   
-}
+
 ?>
 
 

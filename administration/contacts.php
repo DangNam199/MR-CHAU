@@ -403,7 +403,9 @@
                                   type: 'success',
                                   styling: 'bootstrap3'
                               });
-                              location.reload();
+                              setTimeout(function() {
+              window.location.replace("contacts.php");
+              }, 3000);
                 }
                 else if (data =="fail"){
                   new PNotify({
