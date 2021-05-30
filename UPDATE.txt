@@ -1,0 +1,7 @@
+Update
+ Bảng nhân viên:
+ - Bỏ unique cmnd, email đã bắt lỗi trong code
+ Thay đổi các form thêm:
+ 	Thay đổi việc up file ảnh
+ 	- Khi up ảnh, ảnh được lưu vào thư mục images
+ 
