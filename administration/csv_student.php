@@ -20,7 +20,7 @@
         {
           $handle = fopen($_FILES['product_file']['tmp_name'], "r");
           $count = 0;
-          $sql = "INSERT INTO `hocvien`(`id`, `name`, `dob`, `address`, `class_id`, `sdt`, `email`, `password`, `gender`, `avatar`, `ngaynhaphoc`) VALUES";
+          $sql = "INSERT INTO `hocvien`(`id`, `name`, `dob`, `address`, `class_id`, `sdt`, `email`, `password`, `gender`, `avatar`, `ngaynhaphoc`, `state`) VALUES";
           while($column  = fgetcsv($handle,  10000, ",")){
             $num = count($column);
             $name = "";
@@ -52,7 +52,7 @@
               $password = md5($dob);
               list($day,$month,$year) = explode("/",$dob);
               $date = $year.'-'.$month.'-'.$day;
-              $sql .= "(null,'$name','$date','$address',null,'$sdt','$email','$password','$gender','', now())";
+              $sql .= "(null,'$name','$date','$address',null,'$sdt','$email','$password','$gender','', now(), 'studing')";
               if($count < $num){
                 $sql .= ',';
               }

@@ -5,12 +5,13 @@
         $user = $_POST['user'];
         $password = $_POST['password'];
         $password = md5($password);
-        $sql = "SELECT email, password, level_id FROM `nhanvien` WHERE email='$user' and password='$password'";
+        $sql = "SELECT email, password, level_id, id FROM `nhanvien` WHERE email='$user' and password='$password'";
         $res = mysqli_query($conn, $sql);
         if (mysqli_num_rows($res) == 1){
-            header("location: ../administration/index.php");
+             $_SESSION['id']=mysqli_fetch_assoc($res)['id'];
             $_SESSION['user']=$user;
             $_SESSION['level']=mysqli_fetch_assoc($res)['level'];
+            header("location: ../administration/index.php");
         }
         else if (mysqli_num_rows($res) == 0){
           $sql_student = "SELECT email, password,id, name FROM `hocvien` WHERE email='$user' and password='$password'";

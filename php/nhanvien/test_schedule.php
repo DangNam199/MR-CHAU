@@ -36,6 +36,7 @@
                     "start" => $start,
                     "end" => $end,
                     'color'=> $color,
+                    'is_today'=> true,
                     'url'=> 'attendance.php?lession='. $lession.'&class_id='.$row['class_id']
                     );
                     $lession++;

@@ -5,7 +5,7 @@
       header("location: index.php");
     }
     //issue: not in currnt id
-    $sql= "SELECT * FROM `hocvien` WHERE state = 'studing' ORDER BY id DESC";
+    $sql= "SELECT * FROM `hocvien` ORDER BY id DESC";
     $res = mysqli_query($conn,$sql);
     $number_row = mysqli_num_rows($res);
     $result_per_page = 9;
@@ -17,7 +17,7 @@
       $page = $_GET['page'];
     }
     $this_page_result = ($page-1) * $result_per_page;
-    $sql = "SELECT * FROM `hocvien` WHERE state = 'studing' ORDER BY id DESC limit ".$this_page_result. ','.$result_per_page;
+    $sql = "SELECT * FROM `hocvien` ORDER BY id DESC limit ".$this_page_result. ','.$result_per_page;
     $res = mysqli_query($conn,$sql);
 
     

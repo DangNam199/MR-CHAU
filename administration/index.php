@@ -1,5 +1,6 @@
 <?php   
       include '../php/session.php'; 
+      include '../php/auto_admin.php';
 ?>
 
 <!DOCTYPE html>
@@ -65,6 +66,8 @@
                     <ul class="nav child_menu">
                       <li><a href="form_staff.php">Tạo Nhân Viên</a></li>
                       <li><a href="contacts.php">Tất Cả Nhân Viên</a></li>
+                      <li><a href="salary.php">Duyệt lương nhân viên</a></li>
+                      <li><a href="end_contacts.php">Tất Cả Nhân Viên Đã Lưu Trữ</a></li>
                     </ul>
                   </li>
                   <li><a> Học Viên <span class="fa fa-chevron-down"></span></a>
@@ -72,6 +75,7 @@
                       <li><a href="form_student.php">Tạo Học Viên</a></li>
                       <li><a href="csv_student.php">Nhập Học Viên bằng file csv</a></li>
                       <li><a href="all_student.php">Tất Cả Học Viên</a></li>
+                      
                     </ul>
                   </li>
                   <li><a> Học phí <span class="fa fa-chevron-down"></span></a>
@@ -148,14 +152,19 @@
           <div class="">
             <div class="row" style="display: inline-block;">
             <div class="top_tiles">
+            <?php 
+              $arr = get_end_contract($conn);
+              print_r ($arr);
+              if (count($arr) > 0 ){
+            ?>
               <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 ">
                 <div class="tile-stats">
-                  <div class="icon"><i class="fa fa-caret-square-o-right"></i></div>
-                  <div class="count">179</div>
-                  <h3>New Sign ups</h3>
-                  <p>Lorem ipsum psdea itgum rixt.</p>
+                  <div class="count"><?=count($arr)?></div>
+                  <h4>Hợp đồng hết hạn ngày hôm nay cần có hành động</h4>
+                  <a href="contacts.php?end_contract=true" >Xem hợp đồng hết hạn</a>
                 </div>
               </div>
+              <?php } ?>
               <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 ">
                 <div class="tile-stats">
                   <div class="icon"><i class="fa fa-comments-o"></i></div>

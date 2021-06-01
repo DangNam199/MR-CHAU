@@ -5,24 +5,9 @@
     if ( $_SESSION['level'] != 6){
       header("location: index.php");
     }
-    if (isset($_GET['end_contract'])){
-      if($_GET['end_contract'] == 'true'){
-        $end_contract = get_end_contract($conn);
-        $a = '(';
-        for ( $i=0;$i<count($end_contract); $i++){
-            if ($i == count($end_contract) -1 ){
-              $a .= $end_contract[$i]['staff_id'] . ')';
-            }
-            else {
-              $a .= $end_contract[$i]['staff_id'] . ',';
-            }
-        }
-        $sql= "SELECT * FROM `staff` WHERE id in $a  ORDER BY id DESC";
-      }
-    }
-    else {
-      $sql= "SELECT * FROM `staff` where state = 'working' ORDER BY id DESC";
-    }
+    
+      $sql= "SELECT * FROM `staff` where state = 'done' ORDER BY id DESC";
+
     //issue: not in currnt id
     $res = mysqli_query($conn,$sql);
     $number_row = mysqli_num_rows($res);
@@ -35,14 +20,9 @@
       $page = $_GET['page'];
     }
     $this_page_result = ($page-1) * $result_per_page;
-    if (isset($_GET['end_contract'])){
-      if($_GET['end_contract'] == 'true'){
-        $sql= "SELECT * FROM `staff` WHERE id in $a  ORDER BY id DESC";
-      }
-    }
-    else {
-      $sql = "SELECT * FROM `staff` where state = 'working' ORDER BY id   DESC limit ".$this_page_result. ','.$result_per_page;
-    }
+
+    $sql = "SELECT * FROM `staff` where state = 'done' ORDER BY id   DESC limit ".$this_page_result. ','.$result_per_page;
+    
     $res = mysqli_query($conn,$sql);
 ?>
 
@@ -253,12 +233,7 @@
                               <div class=" row-sm-6 emphasis">
                               <a class="btn btn-app" data-toggle="modal" onclick="open_modal(<?php echo $row['id']?>)" data-id="<?php echo  $row['id'];?>" data-role='update' ><i  class="fa fa-plus"> </i> Edit </a>
                                 <button type="button" class="btn btn-secondary" onclick="deleteAjax(<?php echo $row['id'];?>)">Delete</button>
-                                <button type="button" class="btn btn-secondary" onclick="end_contract(<?php echo $row['id'];?>)">Chấm dứt hợp đồng và lưu trữ nhân viên</button>
-                                      <?php 
-                                if(isset($_GET['end_contract'])){ ?>
-                                   <button type="button" class="btn btn-secondary" onclick="contract(<?php echo $row['id'];?>)">Gia hạn hợp đồng</button>
-                               <?php }
-                              ?>
+                                <button type="button" class="btn btn-secondary" onclick="again_contract(<?php echo $row['id'];?>)">Phục hồi</button>
                               </div>
                             </div>
                           </div>
@@ -381,11 +356,11 @@
 
     <!-- mẫu xoá -->
     <script type='text/javascript'>
-    function end_contract(id) { 
-      if (confirm("Kết thức hợp đồng với nhân viên!")){
+    function again_contract(id) { 
+      if (confirm("Phục hồi nhân viên!")){
       $.ajax({
         type: "post",
-        url: "../php/nhanvien/end.php",
+        url: "../php/nhanvien/again.php",
         data: {
           id: id,
         },

@@ -1,5 +1,6 @@
 <?php 
   include '../php/connect.php';
+  
 ?>
 
 <!DOCTYPE html>
@@ -28,6 +29,10 @@
 
     <!-- Custom styling plus plugins -->
     <link href="../build/css/custom.min.css" rel="stylesheet">
+
+    <link href="../vendors/pnotify/dist/pnotify.css" rel="stylesheet">
+    <link href="../vendors/pnotify/dist/pnotify.buttons.css" rel="stylesheet">
+    <link href="../vendors/pnotify/dist/pnotify.nonblock.css" rel="stylesheet">
 
   <body class="nav-md">
     <div class="container body">
@@ -84,7 +89,10 @@
                     <h2>Lịch học </h2>
                     
                     <ul class="nav navbar-right panel_toolbox">
+                    <button class="btn btn-primary" onclick="check_in()">Check In</button>
+                    <button class="btn btn-primary" onclick="check_out()">Check Out</button>
                       <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                      
                       </li>
                       <li class="dropdown">
                       
@@ -97,7 +105,7 @@
                   
 
                   <div class="x_content">
-                 
+                    <p id ='staff_id' hidden = 'true'><?=$_SESSION['id']?></p>
                     <div id='cld'></div>
 
                   </div>
@@ -114,96 +122,17 @@
     </div>
 
     <!-- calendar modal -->
-    <div id="CalenderModalNew" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
 
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            <h4 class="modal-title" id="myModalLabel">New Calendar Entry</h4>
-          </div>
-          <div class="modal-body">
-            <div id="testmodal" style="padding: 5px 20px;">
-              <form id="antoform" class="form-horizontal calender" role="form">
-                <div class="form-group">
-                  <label class="col-sm-3 control-label">Title</label>
-                  <div class="col-sm-9">
-                    <input type="text" class="form-control" id="title" name="title">
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-sm-3 control-label">Description</label>
-                  <div class="col-sm-9">
-                    <textarea class="form-control" style="height:55px;" id="descr" name="descr"></textarea>
-                  </div>
-                </div>
-              </form>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default antoclose" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary antosubmit">Save changes</button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div id="CalenderModalEdit" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            <h4 class="modal-title" id="myModalLabel2">Edit Calendar Entry</h4>
-          </div>
-          <div class="modal-body">
-
-            <div id="testmodal2" style="padding: 5px 20px;">
-              <form id="antoform2" class="form-horizontal calender" role="form">
-                <div class="form-group">
-                  <label class="col-sm-3 control-label">Title</label>
-                  <div class="col-sm-9">
-                    <input type="text" class="form-control" id="title2" name="title2">
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label class="col-sm-3 control-label">Description</label>
-                  <div class="col-sm-9">
-                    <textarea class="form-control" style="height:55px;" id="descr2" name="descr"></textarea>
-                  </div>
-                </div>
-
-              </form>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default antoclose2" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary antosubmit2">Save changes</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div id="fc_create" data-toggle="modal" data-target="#CalenderModalNew"></div>
-    <div id="fc_edit" data-toggle="modal" data-target="#CalenderModalEdit"></div>
     <!-- /calendar modal -->
         
     <script>
 
-  document.addEventListener('DOMContentLoaded', function() {
     var calendarEl = document.getElementById('cld');
 
     var calendar = new FullCalendar.Calendar(calendarEl, {
       eventColor: 'green',
-      customButtons: {
-          myCustomButton: {
-            text: 'Chấm công',
-            click: function() {
-              alert('!');
-            }
-          }
-      },
       headerToolbar: {
-        left: 'prevYear,prev,next,nextYear today myCustomButton',
+        left: 'prevYear,prev,next,nextYear today',
         center: 'title',
         right: 'dayGridMonth,dayGridWeek,dayGridDay'
       },
@@ -215,7 +144,85 @@
     });
     
     calendar.render();
-  });
+
+    function check_out() {
+        var check_out = new Date().toLocaleTimeString();
+        $.ajax({
+          type: "post",
+          url: "../php/nhanvien/chamcong.php",
+          data: {
+            check_out: 'true',
+            staff_id: $("#staff_id").text(),
+            date: new Date().toLocaleDateString('en-US'),
+          },
+          success: function (data) {
+            if (data == 'success'){
+                    new PNotify({
+                      title: 'Check out',
+                      text: 'Check out thành công.',
+                      type: 'success',
+                      hide: false,
+                      styling: 'bootstrap3'
+                  });
+                } else if (data == 'no check_in') {
+                  new PNotify({
+                      title: 'Check in đầu tiên',
+                      text: 'Check out thất bại.',
+                      type: 'error',
+                      hide: false,
+                      styling: 'bootstrap3'
+                  });
+                }
+          }
+        });
+      }
+
+    function check_in() {  
+      //SimpleDateFormat localDateFormat = new SimpleDateFormat("HH");
+      event = calendar.getEvents();
+      time_to = [];
+      time_end = [];
+      event.forEach(function(entry) { 
+          if (entry.start.toLocaleDateString('en-US') == new Date().toLocaleDateString('en-US')){
+            // time_to.push((entry.start.getTime().toLocaleTimeString());
+            time_to.push(entry.start);
+            time_end.push(entry.end);
+          }
+        });
+        //var today = new Date(date_to).toISOString().split('T')[0];
+        all_time = [time_to[0], time_end[time_end.length-1]];
+        check_in = new Date().toLocaleTimeString();
+        all_time = [all_time[0].toLocaleDateString('en-US')+ ' ' + all_time[0].toLocaleTimeString(), all_time[1].toLocaleDateString('en-US' )+ ' ' + all_time[1].toLocaleTimeString()]
+        console.log(all_time);
+        $.ajax({
+          type: "post",
+          url: "../php/nhanvien/chamcong.php",
+          data: {
+            all_time: all_time,
+            check_in: check_in,
+            staff_id: $("#staff_id").text(),
+          },
+          success: function (data) {
+            if (data == 'success'){
+                    new PNotify({
+                      title: 'Check in',
+                      text: 'Check in thành công.',
+                      type: 'success',
+                      hide: false,
+                      styling: 'bootstrap3'
+                  });
+                } else if (data == 'fail') {
+                  new PNotify({
+                      title: 'Check in',
+                      text: 'Check in thất bại.',
+                      type: 'error',
+                      hide: false,
+                      styling: 'bootstrap3'
+                  });
+                }
+          }
+        });
+    }
 
 </script>
 <style>
@@ -236,6 +243,10 @@
 
     <!-- Custom Theme Scripts -->
     <script src="../build/js/custom.min.js"></script>
+
+    <script src="../vendors/pnotify/dist/pnotify.js"></script>
+    <script src="../vendors/pnotify/dist/pnotify.buttons.js"></script>
+    <script src="../vendors/pnotify/dist/pnotify.nonblock.js"></script>
 
   </body>
 </html>

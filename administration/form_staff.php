@@ -27,7 +27,16 @@ if (isset($_POST['submit']) && empty($_FILES['image']['tmp_name'])==false){
         $res = mysqli_query($conn, $sql);
         if($res){
             $_SESSION['notification']= 'Tạo Nhân Viên thành công';
-            header('location: contacts.php');
+            $new_id = mysqli_insert_id($conn);
+            $sql_contract = "INSERT INTO `contract`(`id`, `name`, `staff_id`, `date_from`, `date_to`, `type`, `state`) 
+            VALUES (null,'Hợp đồng thử việc với $user_name','$new_id',now(),DATE_ADD(NOW(), INTERVAL 1 MONTH),'probation','effected')";
+            if (mysqli_query($conn, $sql_contract)){
+              header('location: contacts.php');
+            }
+            else {
+              echo $sql_contract;
+            }
+            
         }
         else {
           $notification = 'Tạo nhân viên thất bại';
