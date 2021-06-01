@@ -120,6 +120,20 @@
                       <li><a href="all_news.php">Tất Cả Tin Tức</a></li>
                     </ul>
                   </li>
+                  <li><a> Chi <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="form_spending.php">Chi</a></li>
+                      <li><a href="all_spending.php">Tất cả chi</a></li>
+                    </ul>
+                  </li>
+                  <li><a> Báo Cáo <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="report_in.php">Báo cáo thu</a></li>
+                      <li><a href="report_out.php">Báo cáo chi</a></li>
+                      <li><a href="report_salary.php">Báo lương nhân viên</a></li>
+                      <li><a href="report_all.php">Báo Tổng </a></li>
+                    </ul>
+                  </li>
                  <?php }
                  else {
                  ?>
@@ -154,7 +168,6 @@
             <div class="top_tiles">
             <?php 
               $arr = get_end_contract($conn);
-              print_r ($arr);
               if (count($arr) > 0 ){
             ?>
               <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 ">

@@ -50,6 +50,12 @@
         }
     }
     
+    $sql_class_end = "SELECT * FROM class where state = 'studing' and date_to < now()";
+    $res_class_end = mysqli_query($conn, $sql_class_end);
+    while ($row_class = mysqli_fetch_assoc($res_class_end)){
+        $sql_update_class = "UPDATE `class` SET `state`='done' WHERE id = ". $row_class['id'];
+        mysqli_query($conn, $sql_update_class);
+    }
     
 
 ?>

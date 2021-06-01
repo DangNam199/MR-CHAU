@@ -174,12 +174,13 @@
                         ?>
                       </ul>
                       </div>
-
+                      <h1>132213</h1>
                       <div class="clearfix"></div>
                       <?php while ($row = mysqli_fetch_array($res)){?>
                       <div class="col-md-4 col-sm-4  profile_details">
                         <div class="well profile_view">
                           <div class="col-sm-12"> 
+                            
                               <h2><?=$row['class_name'] ?></h2>
                               <p id="course" ><strong>Khoá: </strong> <?=$row['course_name'] ?> </p>
                               <p id="room" ><strong>Phòng: </strong> <?=$row['room_name'] ?> </p>

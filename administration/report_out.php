@@ -1,22 +1,18 @@
 <?php 
 include '../php/connect.php';
-include '../php/session.php';
-if ($_SESSION['level'] != 5 and $_SESSION['level'] != 6){
-  header("location: index.php");
-}
-if (isset($_POST['submit'])){
-    $name = $_POST['name'];
+    if (isset($_POST['submit'])){
+        $all = $_POST['datepicker'];
+        $all = explode('-', $all);
+        $date = $all[0];
+        $year = $all[1];
+        $sql_in = "SELECT *  FROM spending WHERE month(spending.date) = $date  and YEAR(spending.date) = $year";
+        $res_in = mysqli_query($conn,$sql_in);
+    }
     
-    $seat = $_POST['seat'];
-    $tinhtrang = $_POST['tinhtrang'];
-    $sql = "INSERT INTO `room`(`id`, `name`, `tinhtrang`, `seat`) VALUES (null,'$name','$tinhtrang','$seat')";
-    $res = mysqli_query($conn, $sql);
-    if ($res){
-        header("location: x.php");
-    }    
-    
-}
-
+    include '../php/session.php';
+    if ($_SESSION['level'] != 5 and $_SESSION['level'] != 6){
+      header("location: index.php");
+    }
 ?>
 
 
@@ -126,7 +122,7 @@ if (isset($_POST['submit'])){
           </div>
         </div>
 
-        <!-- top navigation -->
+        <!-- top navigation --> 
             <!-- /top navigation -->
 
             <!-- page content -->
@@ -134,7 +130,7 @@ if (isset($_POST['submit'])){
                 <div class="">
                     <div class="page-title">
                         <div class="title_left">
-                            <h3>Thêm mới khoá học</h3>
+                            <h3>Báo cáo doanh thu</h3>
                         </div>
                     </div>
                     <div class="clearfix"></div>
@@ -142,38 +138,54 @@ if (isset($_POST['submit'])){
                     <div class="row">
                         <div class="col-md-12 col-sm-12">
                             <div class="x_panel">
-                                <div class="x_title">
-                                    <h2>Thông tin khoá học</h2>
-                                    <div class="clearfix"></div>
-                                </div>
-                                <div class="x_content">
-                                    <form  method="post">
-                                        <div class="field item form-group">
-                                            <label class="col-form-label col-md-3 col-sm-3  label-align">Tên Phòng<span class="required">*</span></label>
-                                            <div class="col-md-6 col-sm-6">
-                                                <input class="form-control" data-validate-length-range="6" data-validate-words="2" name="name" required="required" />
-                                            </div>
-                                        </div>
-                                        <div class="field item form-group">
-                                            <label class="col-form-label col-md-3 col-sm-3  label-align">Số ghế<span class="required">*</span></label>
-                                            <div class="col-md-6 col-sm-6">
-                                                <input class="form-control" type="number" name="seat" required='required' data-validate-length-range="1,15" /></div>
-                                        </div>
-                                        <div class="field item form-group">
-                                            <label class="col-form-label col-md-3 col-sm-3  label-align">Tình trạng<span class="required">*</span></label>
-                                            <div class="col-md-6 col-sm-6">
-                                                <input class="form-control" data-validate-length-range="6" data-validate-words="2" name="tinhtrang" required="required" />
-                                            </div>
-                                        </div>
-                                        <div class="ln_solid">
-                                            <div class="form-group">
-                                                <div class="col-md-6 offset-md-3">
-                                                    <button type='submit' name='submit' class="btn btn-primary">Tạo mới</button>
-                                                    <button type='reset' class="btn btn-success">Nhập lại</button>
-                                                </div>  
-                                            </div>
-                                        </div>
-                                    </form>
+                            <div class="table-responsive">
+                                <p>Chọn tháng báo cáo</p>
+                                <form method = "post">
+                            <input type="text" class="form-control" name="datepicker" id="datepicker" />
+                            <input type="submit" class="form-control" name="submit"/>
+                            </form>
+
+                      <table class="table table-striped jambo_table bulk_action bulk_action">
+                        <thead>
+                          <tr class="headings">
+                            <th class="column-title">Mã Hoá Đơn </th>
+                            <th class="column-title">Tên </th>
+                            <th class="column-title">Mô tả </th>
+                            <th class="column-title">Ngày xuất </th>
+                            <th class="column-title">Loại </th>
+                            <th class="column-title">Số tiền </th>
+                            
+                          </tr>
+                        </thead>
+                        <tbody>
+                            <?php 
+                                if(isset($_POST['submit'])){
+                                while($row = mysqli_fetch_assoc($res_in)) {
+                            ?>
+                        <tr>
+                            <td><?=$row['id']?></td>
+                            <td><?=$row['name']?></td>
+                            <td><?=$row['description']?></td>
+                            <td><?=$row['date']?></td>
+                            <td><?=$row['type']?></td>
+                            <td><?=$row['price']?></td>
+                            <?php }}?>
+                        </tr>
+                        <tr>
+                            <td>Tổng</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <?php 
+                               $sql_sum = "SELECT sum(price) as 'sum_price' FROM spending WHERE month(spending.date) = $date  and YEAR(spending.date) = $year";
+                                $rom_sum = mysqli_fetch_assoc(mysqli_query($conn, $sql_sum));
+                            ?>
+                            <td></td>
+                            <td><?=$rom_sum['sum_price']?></td>
+                        </tr>
+                        </tbody>
+                      </table>
+                    </div>       
                                 </div>
                             </div>
                         </div>
@@ -215,30 +227,14 @@ if (isset($_POST['submit'])){
 		}
 	</script>
 
-    <script>
-        // initialize a validator instance from the "FormValidator" constructor.
-        // A "<form>" element is optionally passed as an argument, but is not a must
-        var validator = new FormValidator({
-            "events": ['blur', 'input', 'change']
-        }, document.forms[0]);
-        // on form "submit" event
-        document.forms[0].onsubmit = function(e) {
-            var submit = true,
-                validatorResult = validator.checkAll(this);
-            console.log(validatorResult);
-            return !!validatorResult.valid;
-        };
-        // on form "reset" event
-        document.forms[0].onreset = function(e) {
-            validator.reset();
-        };
-        // stuff related ONLY for this demo page:
-        $('.toggleValidationTooltips').change(function() {
-            validator.settings.alerts = !this.checked;
-            if (this.checked)
-                $('form .alert').remove();
-        }).prop('checked', false);
-
+    <script type="text/javascript">
+    $(function () {  
+    $("#datepicker").datepicker({         
+        format: "mm-yyyy",
+        startView: "months", 
+        minViewMode: "months"
+    });
+    });
     </script>
 
     <script src="../vendors/jquery/dist/jquery.min.js"></script>
@@ -246,6 +242,8 @@ if (isset($_POST['submit'])){
     <script src="../vendors/fastclick/lib/fastclick.js"></script>
     <script src="../vendors/nprogress/nprogress.js"></script>
     <script src="../build/js/custom.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/css/datepicker.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/js/bootstrap-datepicker.min.js"></script>
 
 </body>
 

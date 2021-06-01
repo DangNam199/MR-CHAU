@@ -1,13 +1,14 @@
 <?php 
 	include '../php/connect.php';
-	session_start();
-	$student_id = $_GET['student_id'];
-	$invoice_id = $_GET['invoice_id'];
-	$course_id = $_GET['course_id'];
+	include '../php/session.php';
+	$name = $_GET['name'];
+	$id = $_GET['id'];
+	$description = $_GET['description'];
+	$price = $_GET['price'];
+	$type = $_GET['type'];
 	$sql_user = "SELECT * FROM nhanvien where email ='". $_SESSION['user']. "' limit 1";
 	$res = mysqli_query($conn, $sql_user);
 	$row_user = mysqli_fetch_assoc($res);
-	$price = $_GET['price'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -136,7 +137,7 @@
 								</td>
 
 								<td>
-									Hoá đơn thu :<?=$invoice_id?> <br />
+									Hoá đơn chi :<?=$id?> <br />
 									Created: <?php echo date("d/m/Y")?><br />
 
 								</td>
@@ -165,53 +166,18 @@
 					</td>
 				</tr>
 
-				<tr class="heading">
-					<td>Khoá Học</td>
-					<td>Price</td>
-				</tr>	
-				<?php 
-					$sql_course = "SELECT * FROM course WHERE id = ". $course_id;
-					$res = mysqli_query($conn,$sql_course);
-					while ($row = mysqli_fetch_assoc($res)){
-						echo '<tr>';
-						echo '<td>'.$row['tenKH'].'</td>';
-						echo '<td>'.$row['price'].'</td>';
-						echo '</tr>';
-						
-					}
-				?>
-                <tr class="heading">
-					<td>Tài liệu</td>
-					<td>Price</td>
+                <tr>
+					<td>Tên</td>
+					<td><?=$price?></td>
 				</tr>
-				<?php 
-					$sql_doc = "SELECT tailieu.tenTL, tailieu.price from course_tailieu_rel INNER JOIN tailieu on course_tailieu_rel.id_tailieu = tailieu.id WHERE course_tailieu_rel.id_khoahoc = ". $course_id;
-					$res_doc = mysqli_query($conn, $sql_doc);
-					while ($row = mysqli_fetch_assoc($res_doc)){
-						echo '<tr>';
-						echo '<td>'.$row['tenTL'].'</td>';
-						echo '<td>'.$row['price'].'</td>';
-						echo '</tr>';
-					}
-				?>
+				<tr>
+					<td><?=$type?></td>
+					<td><?=$description?></td>
+				</tr>
 				<hr>
-				<?php 
-					$sql_doc = "SELECT sum(tailieu.price) as 'sum_price_doc' from course_tailieu_rel INNER JOIN tailieu on course_tailieu_rel.id_tailieu = tailieu.id WHERE course_tailieu_rel.id_khoahoc = ". $course_id;
-					$res_doc = mysqli_query($conn, $sql_doc);
-					while ($row = mysqli_fetch_assoc($res_doc)){
-						echo '<tr class="total">';
-						echo '<td><strong>Tổng tài liệu</strong></td>';
-						echo '<td>'.$row['sum_price_doc'].'</td>';
-						echo '</tr>';
-					}
-				?>
 
 				<tr class="heading" >
 					<td >Tổng</td>
-					<td><?php echo number_format($price, 0, ',', '.') . "đ";?></td>
-				</tr>
-				<tr >
-					<td>Đã thanh toán</td>
 					<td><?php echo number_format($price, 0, ',', '.') . "đ";?></td>
 				</tr>
 			</table>

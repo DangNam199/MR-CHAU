@@ -154,17 +154,6 @@
         <div class="right_col" role="main">
           <div class="">
             <div class="page-title">
-
-              <div class="title_right">
-                <div class="col-md-5 col-sm-5  form-group pull-right top_search">
-                  <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search for...">
-                    <span class="input-group-btn">
-                      <button class="btn btn-default" type="button">Go!</button>
-                    </span>
-                  </div>
-                </div>
-              </div>
             </div>
 
             <div class="clearfix"></div>
@@ -194,7 +183,7 @@
 
                         <tbody>
                           <?php 
-                            $sql_fee = "SELECT * from fee_to_pay";
+                            $sql_fee = "SELECT student_not_pay.id as 'student_id', student_not_pay.name as 'student_name', student_not_pay.tinhtranghocphi, student_not_pay.ngaynhaphoc, student_not_pay.sdt, course.tenKH as 'course_name', course.id as 'course_id', course.price as 'course_price', class.name 'class_name', class.id as 'class_id' FROM student_not_pay INNER JOIN class on student_not_pay.class_id = class.id INNER JOIN course on class.course_id = course.id";
                             $res_fee = mysqli_query($conn,$sql_fee);
                             while ($row_fee = mysqli_fetch_assoc($res_fee)){
                           ?>
@@ -284,6 +273,7 @@
               invoice_id = parseInt(data);
               console.log("data" + parseInt(data));
               $("#print").show();
+              $("#add-more").hide();
             }
           }
         }); 

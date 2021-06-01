@@ -1,5 +1,9 @@
 <?php 
     include '../php/connect.php';
+    include '../php/session.php';
+    if ($_SESSION['level'] != 5 and $_SESSION['level'] != 6){
+      header("location: index.php");
+    }
     $sql= "SELECT * from `course` INNER JOIN `degree` on course.degree_id = degree.id ORDER BY `course`.`id` DESC";
     $res = mysqli_query($conn,$sql);
     $number_row = mysqli_num_rows($res);
@@ -13,11 +17,9 @@
     }
     $this_page_result = ($page-1)*$result_per_page;
     $sql = "SELECT * from `course` INNER JOIN `degree` on course.degree_id = degree.id ORDER BY `course`.`id` DESC limit ".$this_page_result. ','.$result_per_page;
+    echo $sql;
     $res = mysqli_query($conn,$sql);
-    include '../php/session.php';
-    if ($_SESSION['level'] != 5 and $_SESSION['level'] != 6){
-      header("location: index.php");
-    }
+
 ?>
 
 
@@ -149,13 +151,12 @@
             </div>
 
             <div class="clearfix"></div>
-
             <div class="row">
                 <div class="x_panel">
                   <div class="x_content">
                       <div class="col-md-12 col-sm-12  text-center">
                       <ul class="pagination pagination-split">
-                        <?php for($page =1; $page<=$number_page;$page++){ 
+                        <?php for($page =1; $page<=$number_page;$page++){
                            echo '<li><a href="?page='.$page.'">'.$page. '</a></li>';
                         }
                         ?>
@@ -164,30 +165,36 @@
 
                       <div class="clearfix"></div>
                       <?php while ($row = mysqli_fetch_array($res)){?>
-                      <div class="col-md-4 col-sm-4  profile_details">
+                      <div class="col-md-4 col-sm-4  profile_details" id="course-<?=$row['id']?>">
                         <div class="well profile_view">
                           <div class="col-sm-12">
                             <div class="left col-md-7 col-sm-7">
                               <h2><?=$row['tenKH'] ?></h2>
-                              
+
                               <p id="soluong" ><strong>Tên Chứng chỉ: </strong> <?=$row['tenDegree']?> </p>
                               <p id="noidung" ><strong>Số buổi: </strong> <?=$row['duration'] ?> </p>
                               <p id="soluong" ><strong>Học phí: </strong> <?=$row['price'] ?> </p>
                             </div>
-                            
+
                           </div>
-                          <div class=" profile-bottom text-center">
-                            <div class=" row-sm-6 emphasis">
-                              <a class="btn btn-app" href="./edit_news.php?id=<?php echo  $row['id'];?>"><i class="fa fa-edit"> </i> View News</a>
-                               <a class="btn btn-app" href="../php/delete_news.php?id=<?php echo  $row['id'];?>" ><i  class="fa fa-close"> </i> Delete Document</a>
-                               <a class="btn btn-app" data-toggle="modal" data-target="#myModal" href="#" data-id="<?php echo  $row['id'];?>" data-role='update' ><i  class="fa fa-plus"> </i> Add  </a>
+                            <div class=" profile-bottom text-center">
+                                <div class=" row-sm-6 emphasis">
+                                    <a class="btn btn-app"
+                                       href="../php/course/edit_course.php?id=<?php echo $row['id']; ?>"><i
+                                                class="fa fa-edit"> </i> Sửa </a>
+                                    <button type="button" class="btn btn-secondary" onclick="deleteAjax(<?php echo $row['id'];?>)">Xóa</button>
+                                    <button class="btn btn-secondary source" onclick="new PNotify({
+                                  title: 'Regular Success',
+                                  text: 'That thing that you were trying to do worked!',
+                                  type: 'success',
+                                  styling: 'bootstrap3'
+                              });">Success
+                                    </button>
+                                </div>
                             </div>
-                          </div>
                         </div>
                       </div>
                       <?php } ?>
-
-                      
                   </div>
                 </div>
             </div>
@@ -196,32 +203,6 @@
       </div>
     </div>
 
-    <div class="modal fade" id="myModal" role="dialog">
-    <div class="modal-dialog">
-    
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-        </div>
-        <div class="modal-body">
-          <div class='form-group'>
-              <label>Số lượng </label>
-              <input type='number' id='addnumber' class='form-control'/>
-          </div>
-          <div class='form-group'>
-              <label>Chi phí trên mỗi quyển</label>
-              <input type='number' id='priceper' class='form-control'/>
-          </div>
-        </div>
-        <div class="modal-footer">
-        <a href="#" id='add-more' class="btn btn-primary pull-right" >Add</a>
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        </div>
-      </div>
-      
-    </div>
-  </div>
     <!-- jQuery -->
     <script src="../vendors/jquery/dist/jquery.min.js"></script>
     <!-- Bootstrap -->

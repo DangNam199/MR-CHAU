@@ -1,5 +1,9 @@
 <?php 
     include '../php/connect.php';
+    include '../php/session.php';
+    if ($_SESSION['level'] != 5 and $_SESSION['level'] != 6){
+      header("location: index.php");
+    }
     $sql= "SELECT * FROM `tintuc` ORDER BY id DESC";
     $res = mysqli_query($conn,$sql);
     $number_row = mysqli_num_rows($res);
@@ -14,10 +18,7 @@
     $this_page_result = ($page-1)*$result_per_page;
     $sql = "SELECT * FROM `tintuc` ORDER BY id DESC limit ".$this_page_result. ','.$result_per_page;
     $res = mysqli_query($conn,$sql);
-    include '../php/session.php';
-    if ($_SESSION['level'] != 5 and $_SESSION['level'] != 6){
-      header("location: index.php");
-    }
+
 ?>
 
 
@@ -159,18 +160,6 @@
                         }
                         ?>
                       </ul>
-                        <ul class="pagination pagination-split">
-                          <li><a href="#">A</a></li>
-                          <li><a href="#">B</a></li>
-                          <li><a href="#">C</a></li>
-                          <li><a href="#">D</a></li>
-                          <li><a href="#">E</a></li>
-                          <li>...</li>
-                          <li><a href="#">W</a></li>
-                          <li><a href="#">X</a></li>
-                          <li><a href="#">Y</a></li>
-                          <li><a href="#">Z</a></li>
-                        </ul>
                       </div>
 
                       <div class="clearfix"></div>

@@ -1,5 +1,9 @@
 <?php 
     include '../php/connect.php';
+    include '../php/session.php';
+    if ($_SESSION['level'] != 5 and $_SESSION['level'] != 6){
+      header("location: index.php");
+    }
     $sql= "SELECT * FROM `tailieu` ORDER BY id DESC";
     $res = mysqli_query($conn,$sql);
     $number_row = mysqli_num_rows($res);
@@ -14,10 +18,7 @@
     $this_page_result = ($page-1)*$result_per_page;
     $sql = "SELECT * FROM `tailieu` ORDER BY id DESC limit ".$this_page_result. ','.$result_per_page;
     $res = mysqli_query($conn,$sql);
-    include '../php/session.php';
-    if ($_SESSION['level'] != 5 and $_SESSION['level'] != 6){
-      header("location: index.php");
-    }
+
 ?>
 
 
@@ -171,7 +172,7 @@
                             <div class="left col-md-7 col-sm-7">
                               <h2><?=$row['tenTL'] ?></h2>
                               <p id="noidung" ><strong>Nội Dung: </strong> <?=$row['noidung'] ?> </p>
-                              <p id="soluong" ><strong>Số Lượng: </strong> <?=$row['soluong'] ?> </p>
+                              <p><strong>Số Lượng:</strong><span  id="soluong-<?php echo $row['id']?>"><?=$row['soluong'] ?> </span> </p>
                               <p><strong>Giá: </strong> <?=$row['price'] ?> </p>
                             </div>
                             
@@ -214,10 +215,6 @@
               <label>Số lượng </label>
               <input type='number' id='addnumber' class='form-control'/>
           </div>
-          <div class='form-group'>
-              <label>Chi phí trên mỗi quyển</label>
-              <input type='number' id='priceper' class='form-control'/>
-          </div>
         </div>
         <div class="modal-footer">
         <a href="#" id='add-more' class="btn btn-primary pull-right" >Add</a>
@@ -242,10 +239,10 @@
   <script>
     $(document).ready(function(){
       var id;
-      var noidung = $("#noidung").text();
-      var soluong = $("#soluong").text();
       $(document).on("click", "a", function () {
         id = $(this).data('id');  
+        var soluong = $("#soluong-"+id).text();
+        console.log(soluong);
       });
       $('#add-more').click(function(){
         var number = $('#addnumber').val();
@@ -257,7 +254,7 @@
           method: 'POST',
           data: {id: id, number: number},
           success: function(data){
-            $('#soluong').html("<strong>Số Lượng: </strong>"+data+ "</p>");
+            $('#soluong-'+id).html("<strong>Số Lượng: </strong>"+data+ "</p>");
             $('#myModal').modal('toggle');
           }
         });

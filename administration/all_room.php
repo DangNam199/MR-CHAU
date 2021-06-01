@@ -130,62 +130,80 @@
         <!-- top navigation -->
         <!-- page content -->
         <div class="right_col" role="main">
-          <div class="">
-            <div class="page-title">
-              <div class="title_left">
-                <h3>Contacts Design</h3>
-              </div>
+            <div class="">
+                <div class="page-title">
+                    <div class="title_left">
+                        <h3>Contacts Design</h3>
+                    </div>
 
-              <div class="title_right">
-                <div class="col-md-5 col-sm-5  form-group pull-right top_search">
-                  <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search for...">
-                    <span class="input-group-btn">
-                      <button class="btn btn-default" type="button">Go!</button>
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
+                    <div class="title_right">
+                        <div class="col-md-5 col-sm-5  form-group pull-right top_search">\
+                            <form method="post" action="../php/room/search_room.php">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" name="search" placeholder="Search for...">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-default" type="submit">Go!</button>
+                                    </span>
+                                </div>
+                            </form>
 
-            <div class="clearfix"></div>
-
-            <div class="row">
-                <div class="x_panel">
-                  <div class="x_content">
-                      <div class="col-md-12 col-sm-12  text-center">
-                      <ul class="pagination pagination-split">
-                        <?php for($page =1; $page<=$number_page;$page++){ 
-                           echo '<li><a href="?page='.$page.'">'.$page. '</a></li>';
-                        }
-                        ?>
-                      </ul>
-                      </div>
-
-                      <div class="clearfix"></div>
-                      <?php while ($row = mysqli_fetch_array($res)){?>
-                      <div class="col-md-4 col-sm-4  profile_details">
-                        <div class="well profile_view">
-                          <div class="col-sm-12">
-                            <div class="left col-md-7 col-sm-7">
-                              <h2><?=$row['name'] ?></h2>
-                              <p id="noidung" ><strong>Số ghế: </strong> <?=$row['seat'] ?> </p>
-                              <p id="soluong" ><strong>Tình trạng: </strong> <?=$row['tinhtrang'] ?> </p>
-                            </div>
-                          </div>
-                          <div class=" profile-bottom text-center">
-                            <div class=" row-sm-6 emphasis">
-                              <a class="btn btn-app" href="./edit_news.php?id=<?php echo  $row['id'];?>"><i class="fa fa-edit"> </i> View News</a>
-                               <a class="btn btn-app" href="../php/delete_news.php?id=<?php echo  $row['id'];?>" ><i  class="fa fa-close"> </i> Delete Document</a>
-                            </div>
-                          </div>
                         </div>
-                      </div>
-                      <?php } ?>
-                  </div>
+                    </div>
+                </div>
+
+                <div class="clearfix"></div>
+
+                <div class="row">
+                    <div class="x_panel">
+                        <div class="x_content">
+                            <div class="col-md-12 col-sm-12  text-center">
+                                <ul class="pagination pagination-split">
+                                    <?php for ($page = 1; $page <= $number_page; $page++) {
+                                        echo '<li><a href="?page=' . $page . '">' . $page . '</a></li>';
+                                    }
+                                    ?>
+                                </ul>
+                            </div>
+
+                            <div class="clearfix"></div>
+                            <?php while ($row = mysqli_fetch_array($res)) { ?>
+                                <div class="col-md-4 col-sm-4  profile_details" id="room-<?= $row['id'] ?>">
+                                    <div class="well profile_view">
+                                        <div class="col-sm-12">
+                                            <div class="left col-md-7 col-sm-7">
+                                                <h2><?= $row['name'] ?></h2>
+                                                <p id="noidung"><strong>Số ghế: </strong> <?= $row['seat'] ?> </p>
+                                                <p id="soluong"><strong>Tình trạng: </strong> <?= $row['tinhtrang'] ?>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class=" profile-bottom text-center">
+                                            <div class=" row-sm-6 emphasis">
+                                                <a class="btn btn-app"
+                                                   href="../php/room/edit_room.php?id=<?php echo $row['id']; ?>"><i
+                                                            class="fa fa-edit"> </i> Sửa </a>
+                                                <a class="btn btn-app"
+                                                   href="../php/room/delete_room.php?id=<?php echo $row['id']; ?>"><i
+                                                            class="fa fa-close"> </i> Xóa</a>
+                                                <button type="button" class="btn btn-secondary"
+                                                        onclick="deleteAjax(<?php echo $row['id']; ?>)">Delete
+                                                </button>
+                                                <button class="btn btn-secondary source" onclick="new PNotify({
+                                  title: 'Regular Success',
+                                  text: 'That thing that you were trying to do worked!',
+                                  type: 'success',
+                                  styling: 'bootstrap3'
+                              });">Success
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php } ?>
+                        </div>
+                    </div>
                 </div>
             </div>
-          </div>
         </div>
       </div>
     </div>
@@ -216,6 +234,31 @@
       
     </div>
   </div>
+  <script type='text/javascript'>
+    // delete có thể dùng chung bằng cách truyền id, talbe vào và gọi đến delete.php
+    function deleteAjax(id) {
+        if (confirm('Are you sure delete this employee')) {
+            $.ajax({
+                type: 'post',
+                url: '../php/delete.php',
+                data: {
+                    id: id,
+                    table: 'room', //ten bang trong csdl
+                },
+                success: function (data) {
+                    $('#room-' + id).hide();
+                    new PNotify({
+                        title: 'Success',
+                        text: 'Delete Employee Success',
+                        type: 'success',
+                        styling: 'bootstrap3'
+                    });
+                }
+            });
+        }
+    }
+
+</script>
     <!-- jQuery -->
     <script src="../vendors/jquery/dist/jquery.min.js"></script>
     <!-- Bootstrap -->
