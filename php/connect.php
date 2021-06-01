@@ -13,7 +13,7 @@
     $res = mysqli_query($conn, $sql_class);
     if (mysqli_num_rows($res) >=0 ){
         while($row = mysqli_fetch_assoc($res)){
-            if ($row['date_from '] == date()){
+            if ($row['date_from'] == date("y-m-d")){
                 $sql_set = "UPDATE `class` SET `state`='studing' WHERE id = " . $row['id'];
                 mysqli_query($conn, $sql_set);
             }

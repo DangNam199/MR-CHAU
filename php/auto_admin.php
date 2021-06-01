@@ -41,10 +41,10 @@
         if ($res){
            while($row = mysqli_fetch_assoc($res_salary)) {
             $total = $row['sum_salary'] * $row['HSL'];
-
+            $sum = $row['sum_salary'];
             $staff_id = $row['staff_id'];
-            $sql_pay  = "INSERT INTO `pay_salary`(`id`, `staff_id`, `date`, `paied`) 
-            VALUES (null,'$staff_id',now(),'$total')";
+            $sql_pay  = "INSERT INTO `pay_salary`(`id`, `staff_id`, `date`, `paied`,`total`, `state`) 
+            VALUES (null,'$staff_id',now(),'$total', '$sum',`unpaid`)";
             $res = mysqli_query($conn, $sql_pay);
         }
         }

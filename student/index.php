@@ -40,7 +40,8 @@
             <!-- menu profile quick info -->
             <div class="profile clearfix">
               <div class="profile_pic">
-                <img src="images/img.jpg" alt="..." class="img-circle profile_img">
+              <?php
+                echo '<img src="data:image/jpeg;base64,'.base64_encode($_SESSION['avatar'] ).'" class="img-circle profile_img" />'; ?>  
               </div>
               <div class="profile_info">
                 <span>Welcome,</span>
@@ -49,7 +50,6 @@
             </div>
             <!-- /menu profile quick info -->
 
-            <br />
 
             <!-- sidebar menu -->
             <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
@@ -62,11 +62,10 @@
                   </li>
                   <li><a href='my_mark.php'> Điểm </a>
                   </li>
-                  <li><a href="../administration/homework.php?student_id=<?=$_SESSION['id']?>"> Bài tập </a>
+                  <li><a href="my_homework.php"> Bài tập </a>
                   </li> 
                 </ul>
               </div>
-
             </div>
 
             </div>
@@ -128,8 +127,6 @@
                 <div class="tile-stats">
                   
                   <div class="count">179</div>
-                  <h3>New Sign ups</h3>
-                  <p>Lorem ipsum psdea itgum rixt.</p>
                 </div>
               </div>
             </div>

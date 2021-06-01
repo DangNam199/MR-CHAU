@@ -41,7 +41,9 @@
             <!-- menu profile quick info -->
             <div class="profile clearfix">
               <div class="profile_pic">
-                <img src="images/img.jpg" alt="..." class="img-circle profile_img">
+              <?php 
+                    echo '<img src="data:image/jpeg;base64,'.base64_encode($_SESSION['avatar'] ).'" class="img-circle profile_img" />';
+              ?>
               </div>
               <div class="profile_info">
                 <span>Welcome,</span>
@@ -140,6 +142,12 @@
                  <li><a href="my_class.php">Lớp của tôi</a>
                   </li>
                   <li><a href="schedule.php"> Lịch  </a>
+                  </li>
+                  <li><a> Công <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="my_worktime.php">Xem lịch sử chấm công</a></li>
+                      <li><a href="my_salary.php">Lương</a></li>
+                    </ul>
                   </li>
                   <?php }?>
                 </ul>

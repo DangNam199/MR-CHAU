@@ -4,34 +4,9 @@
 
     if (isset($_GET['class_id'])){
       $class_id = $_GET['class_id'];
-      $sql = "SELECT * FROM hocvien WHERE class_id = " .$_GET['class_id']. " and state = 'studing' ORDER BY id ASC";
+      $sql = "SELECT hocvien.name as 'student_name', hocvien.id as 'student_id', mark.class_id as 'class_id' ,mark.mark as 'mark', mark.type as 'type', mark.date as 'mark_date' from mark INNER JOIN hocvien on mark.student_id = hocvien.id WHERE mark.class_id = ". $_GET['class_id'] ." ORDER BY `mark_date` ";
       $res = mysqli_query($conn, $sql);
-    }
-    if (isset($_POST['submit']) && isset($_POST['mark']) && isset($_POST['type'])){
-      if (isset($_GET['homework'])){
-        $homework_id = $_GET['homework'];
-      }
-      $type = $_POST['type'];
-      $marks = $_POST['mark'];
-      $count = 0;
-      $sql_mark ='';
-      while ($row_mark = mysqli_fetch_assoc($res)){
-        $student_id = $row_mark['id'];
-        if (!isset($_GET['homework'])){
-        $sql_mark .= "INSERT INTO `mark`(`id`, `class_id`, `student_id`, `mark`, `date`, `type`) VALUES (null,'$class_id','$student_id','$marks[$count]',now(), '$type');";
-        }
-        else {
-          $sql_mark .= "INSERT INTO `mark`(`id`, `class_id`, `student_id`, `mark`, `date`,`homework_id`, `type`) VALUES (null,'$class_id','$student_id','$marks[$count]',now(), $homework_id, '$type');";
-        }
-        $count ++;
-      }
-      if (mysqli_multi_query($conn,$sql_mark)){
-        $_SESSION['nofication'] = 'Nhập điểm thành công';
-        header("location: my_class.php");
-      }
-      else {
-        echo $sql_mark;
-      }
+
     }
 
     
@@ -137,14 +112,6 @@
                       <div class="clearfix"></div>
                       <div class="table-responsive">
                       <div class="form-group">
-                      <form  method="post" >
-                        <label for="sel1">Bài kĩ năng:</label>
-                        <select class="form-control" name="type">
-                          <option value='nghe'>Nghe</option>
-                          <option value = 'noi'>Nói</option>
-                          <option value='doc' >Đọc</option>
-                          <option value='viet '>Viết</option>
-                        </select>
                       </div> 
                       
                       <table class="table table-striped jambo_table bulk_action">
@@ -152,6 +119,8 @@
                           <tr class="headings">
                             <th class="column-title">Tên học viên </th>
                             <th class="column-title">Điểm </th>
+                            <th class="column-title">Ngày nhập điểm </th>
+                            <th class="column-title">Kỹ năng </th>
                             </th>
                           </tr>
                         </thead>
@@ -159,10 +128,28 @@
                         <tbody>
                             <?php while($row = mysqli_fetch_assoc($res)) { ?> 
                                 <tr class="even pointer">
-                            <td class=" "><?=$row['name']?></td>
+                            <td class=" "><?=$row['student_name']?></td>
                             <td>
-                            <input type="number" name="mark[]" min="0" max="10">
+                            <?=$row['mark']?>
                             </td>
+                            <td>
+                            <?=$row['mark_date']?>
+                            </td>
+                            <?php 
+                              if ($row['type'] == 'nghe'){
+                                echo "<td>Nghe</td>";
+                              }
+                              if ($row['type'] == 'noi'){
+                                echo "<td>Nói</td>";
+                              }
+                              if ($row['type'] == 'doc'){
+                                echo "<td>Đọc</td>";
+                              }
+                              if ($row['type'] == 'viet'){
+                                echo "<td>Viết</td>";
+                              }
+                            
+                            ?>
                           </tr>
                           <?php }?>
                         </tbody>

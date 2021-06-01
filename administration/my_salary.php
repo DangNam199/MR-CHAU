@@ -1,6 +1,9 @@
-<?php 
-  include '../php/connect.php';
-  
+<?php   
+      include '../php/session.php'; 
+      include '../php/auto_admin.php';
+      $id = $_SESSION['id'];
+      $sql = "SELECT * FROM pay_salary where staff_id = $id ORDER BY id desc" ;
+      $res = mysqli_query($conn, $sql); 
 ?>
 
 <!DOCTYPE html>
@@ -20,19 +23,12 @@
     <link href="../vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
     <!-- NProgress -->
     <link href="../vendors/nprogress/nprogress.css" rel="stylesheet">
-    <!-- FullCalendar -->
-    <link href="../vendors/fullcalendar/dist/fullcalendar.min.css" rel="stylesheet">
-    <link href="../vendors/fullcalendar/dist/fullcalendar.print.css" rel="stylesheet" media="print">
+    <!-- bootstrap-daterangepicker -->
+    <link href="../vendors/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
 
-    <link href='../src/js/lib/main.css' rel='stylesheet' />
-    <script src='../src/js/lib/main.js'></script>
-
-    <!-- Custom styling plus plugins -->
+    <!-- Custom Theme Style -->
     <link href="../build/css/custom.min.css" rel="stylesheet">
-
-    <link href="../vendors/pnotify/dist/pnotify.css" rel="stylesheet">
-    <link href="../vendors/pnotify/dist/pnotify.buttons.css" rel="stylesheet">
-    <link href="../vendors/pnotify/dist/pnotify.nonblock.css" rel="stylesheet">
+  </head>
 
   <body class="nav-md">
     <div class="container body">
@@ -40,7 +36,7 @@
         <div class="col-md-3 left_col">
           <div class="left_col scroll-view">
             <div class="navbar nav_title" style="border: 0;">
-              <a href="index.php" class="site_title"><i class="fa fa-paw"></i> <span>Anh ngữ Mr Chau</span></a>
+              <a href="index.html" class="site_title"><i class="fa fa-paw"></i> <span>Gentelella Alela!</span></a>
             </div>
 
             <div class="clearfix"></div>
@@ -49,17 +45,12 @@
             <div class="profile clearfix">
               <div class="profile_pic">
               <?php 
-              include('../php/connect.php');
-              include '../php/session.php';
-              if ($_SESSION['level'] != 1 && $_SESSION['level'] != 2 ){
-                header("location: index.php");
-              }
                     echo '<img src="data:image/jpeg;base64,'.base64_encode($_SESSION['avatar'] ).'" class="img-circle profile_img" />';
-              //}?>
+              ?>
               </div>
               <div class="profile_info">
                 <span>Welcome,</span>
-                <h2><?=$_SESSION['name'] ?></h2>
+                <h2><?=$_SESSION['name']?></h2>
               </div>
             </div>
             <!-- /menu profile quick info -->
@@ -155,18 +146,28 @@
                   </li>
                   <li><a href="schedule.php"> Lịch  </a>
                   </li>
+                  <li><a> Công <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="my_worktime.php">Xem lịch sử chấm công</a></li>
+                      <li><a href="my_salary.php">Lương</a></li>
+                    </ul>
+                  </li>
                   <?php }?>
                 </ul>
               </div>
 
             </div>
+
+            </div>
             <!-- /sidebar menu -->
+
+            <!-- /menu footer buttons -->
             <div class="sidebar-footer hidden-small">
               <a data-toggle="tooltip" data-placement="top" title="Logout" href="../php/logout.php">
                 <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
               </a>
             </div>
-
+            <!-- /menu footer buttons -->
           </div>
         </div>
 
@@ -175,39 +176,60 @@
         <div class="right_col" role="main">
           <div class="">
             <div class="page-title">
-
+              <div class="title_left">
+                <h3>Lịch sử chấm công</h3> 
+              </div>
 
             <div class="clearfix"></div>
 
             <div class="row">
-              <div class="col-md-12">
                 <div class="x_panel">
-                  <div class="x_title">
-                    <h2>Lịch học </h2>
-                    
-                    <ul class="nav navbar-right panel_toolbox">
-                    <button class="btn btn-primary" onclick="check_in()">Check In</button>
-                    <button class="btn btn-primary" onclick="check_out()">Check Out</button>
-                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                      
-                      </li>
-                      <li class="dropdown">
-                      
-                      </li>
-                      <li><a class="close-link"><i class="fa fa-close"></i></a>
-                      </li>
-                    </ul>
-                    <div class="clearfix"></div>
-                  </div>
-                  
-
                   <div class="x_content">
-                    <p id ='staff_id' hidden = 'true'><?=$_SESSION['id']?></p>
-                    <div id='cld'></div>
-
+                      <div class="col-md-12 col-sm-12  text-center">
+                      <div class="clearfix"></div>
+                      <div class="table-responsive">
+                      <div class="form-group">
+                      </div> 
+                      
+                      <table class="table table-striped jambo_table bulk_action">
+                        <thead>
+                          <tr class="headings">
+                            <th class="column-title">Tổng giờ làm</th>
+                            <th class="column-title">Số tiền được nhận </th>
+                            <th class="column-title">Ngày Trả </th>
+                            <th class="column-title">Tình Trạng </th>
+                            </th>
+                          </tr>
+                        </thead>
+                      
+                        <tbody>
+                            <?php while($row = mysqli_fetch_assoc($res)) { ?> 
+                                <tr class="even pointer">
+                                <td class=" "><?=$row['total']?></td>
+                            <td class=" "><?=$row['paied']?></td>
+                            <td class=" "><?=$row['date']?></td>
+                            <?php 
+                                if($row['state'] == 'paid'){
+                                    echo " <td class=' '><button class='btn btn-success'>Đã thanh toán</button></td>";
+                                }
+                                else{
+                                    echo " <td class=' '><button class='btn btn-danger'>Chưa thanh toán</button></td>";
+                                }
+                            ?>
+                          </tr>
+                          <?php }?>
+                        </tbody>
+                        </table>
+                        <div class="ln_solid">
+                            <div class="form-group">
+                                <div class="col-md-6 offset-md-3">
+                                    <button type='submit' name='submit' class="btn btn-primary">Tạo mới</button>
+                                </div>  
+                            </div>
+                        </div>
+                    </div>
                   </div>
                 </div>
-              </div>
             </div>
           </div>
         </div>
@@ -218,132 +240,16 @@
       </div>
     </div>
 
-    <!-- calendar modal -->
-
-    <!-- /calendar modal -->
-        
-    <script>
-
-    var calendarEl = document.getElementById('cld');
-
-    var calendar = new FullCalendar.Calendar(calendarEl, {
-      eventColor: 'green',
-      headerToolbar: {
-        left: 'prevYear,prev,next,nextYear today',
-        center: 'title',
-        right: 'dayGridMonth,dayGridWeek,dayGridDay'
-      },
-      eventBackgroundColor: 'red',
-      editable: true,
-      selectable:true,
-      displayEventTime: true,
-      events: '../php/nhanvien/test_schedule.php',  
-    });
-    
-    calendar.render();
-
-    function check_out() {
-        var check_out = new Date().toLocaleTimeString();
-        $.ajax({
-          type: "post",
-          url: "../php/nhanvien/chamcong.php",
-          data: {
-            check_out: 'true',
-            staff_id: $("#staff_id").text(),
-            date: new Date().toLocaleDateString('en-US'),
-          },
-          success: function (data) {
-            if (data == 'success'){
-                    new PNotify({
-                      title: 'Check out',
-                      text: 'Check out thành công.',
-                      type: 'success',
-                      hide: false,
-                      styling: 'bootstrap3'
-                  });
-                } else if (data == 'no check_in') {
-                  new PNotify({
-                      title: 'Check in đầu tiên',
-                      text: 'Check out thất bại.',
-                      type: 'error',
-                      hide: false,
-                      styling: 'bootstrap3'
-                  });
-                }
-          }
-        });
-      }
-
-    function check_in() {  
-      //SimpleDateFormat localDateFormat = new SimpleDateFormat("HH");
-      event = calendar.getEvents();
-      time_to = [];
-      time_end = [];
-      event.forEach(function(entry) { 
-          if (entry.start.toLocaleDateString('en-US') == new Date().toLocaleDateString('en-US')){
-            // time_to.push((entry.start.getTime().toLocaleTimeString());
-            time_to.push(entry.start);
-            time_end.push(entry.end);
-          }
-        });
-        //var today = new Date(date_to).toISOString().split('T')[0];
-        all_time = [time_to[0], time_end[time_end.length-1]];
-        check_in = new Date().toLocaleTimeString();
-        all_time = [all_time[0].toLocaleDateString('en-US')+ ' ' + all_time[0].toLocaleTimeString(), all_time[1].toLocaleDateString('en-US' )+ ' ' + all_time[1].toLocaleTimeString()]
-        console.log(all_time);
-        $.ajax({
-          type: "post",
-          url: "../php/nhanvien/chamcong.php",
-          data: {
-            all_time: all_time,
-            check_in: check_in,
-            staff_id: $("#staff_id").text(),
-          },
-          success: function (data) {
-            if (data == 'success'){
-                    new PNotify({
-                      title: 'Check in',
-                      text: 'Check in thành công.',
-                      type: 'success',
-                      hide: false,
-                      styling: 'bootstrap3'
-                  });
-                } else if (data == 'fail') {
-                  new PNotify({
-                      title: 'Check in',
-                      text: 'Check in thất bại.',
-                      type: 'error',
-                      hide: false,
-                      styling: 'bootstrap3'
-                  });
-                }
-          }
-        });
-    }
-
-</script>
-<style>
-
-</style>
-
     <!-- jQuery -->
     <script src="../vendors/jquery/dist/jquery.min.js"></script>
     <!-- Bootstrap -->
    <script src="../vendors/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <!-- FastClick -->
-    <script src="../vendors/fastclick/lib/fastclick.js"></script>
-    <!-- NProgress -->
-    <script src="../vendors/nprogress/nprogress.js"></script>
-    <!-- FullCalendar -->
-    <script src="../vendors/moment/min/moment.min.js"></script>
-    <script src="../vendors/fullcalendar/dist/fullcalendar.min.js"></script>
 
+    <!-- NProgress -->
+
+    
     <!-- Custom Theme Scripts -->
     <script src="../build/js/custom.min.js"></script>
-
-    <script src="../vendors/pnotify/dist/pnotify.js"></script>
-    <script src="../vendors/pnotify/dist/pnotify.buttons.js"></script>
-    <script src="../vendors/pnotify/dist/pnotify.nonblock.js"></script>
-
   </body>
 </html>

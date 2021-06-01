@@ -1,14 +1,11 @@
 <?php 
     include '../php/connect.php';
     include '../php/session.php';
-    if (isset($_GET['class_id'])){
-    $class_id = $_GET['class_id'];
-    $sql = "SELECT homework.name as 'homework_name', deadline, file, homework.id, homework.state FROM `homework` where  class_id = ". $_GET['class_id'] .' ORDER by homework.id';
+    $sql_classid = "SELECT class_id from hocvien WHERE id = ". $_SESSION['id'];
+    $class_id = mysqli_fetch_array(mysqli_query($conn, $sql_classid))['class_id'];
+    $sql = "SELECT homework.name as 'homework_name', deadline, file, homework.id, homework.state FROM `homework` where  class_id = ". $class_id .' ORDER by homework.id';
     $res = mysqli_query($conn,$sql);
-    }
-      else {
-      header('location: my_class.php');
-    }
+    
 
 ?>
 
@@ -56,15 +53,17 @@
         <div class="main_container">
         <div class="col-md-3 left_col">
           <div class="left_col scroll-view">
+            <div class="navbar nav_title" style="border: 0;">
+              <a href="index.html" class="site_title"><i class="fa fa-paw"></i> <span>Gentelella Alela!</span></a>
+            </div>
 
             <div class="clearfix"></div>
 
             <!-- menu profile quick info -->
             <div class="profile clearfix">
               <div class="profile_pic">
-              <?php 
-                    echo '<img src="data:image/jpeg;base64,'.base64_encode($_SESSION['avatar'] ).'" class="img-circle profile_img" />';
-              ?>
+              <?php
+                echo '<img src="data:image/jpeg;base64,'.base64_encode($_SESSION['avatar'] ).'" class="img-circle profile_img" />'; ?>  
               </div>
               <div class="profile_info">
                 <span>Welcome,</span>
@@ -73,7 +72,6 @@
             </div>
             <!-- /menu profile quick info -->
 
-            <br />
 
             <!-- sidebar menu -->
             <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
@@ -82,18 +80,26 @@
                 <ul class="nav side-menu">
                   <li><a href="index.php"><i class="fa fa-home"></i> Home </a>
                   </li>
-                  <li><a> Lịch học </a>
+                  <li><a href="schedule.php"> Lịch học </a>
                   </li>
-                  <li><a > Điểm </a>
+                  <li><a href='my_mark.php'> Điểm </a>
                   </li>
-                  <li><a href="../administration/homework.php?student_id=<?=$_SESSION['id']?>"> Bài tập </a>
-                  </li>
+                  <li><a href="my_homework.php"> Bài tập </a>
+                  </li> 
                 </ul>
               </div>
+            </div>
 
             </div>
             <!-- /sidebar menu -->
 
+            <!-- /menu footer buttons -->
+            <div class="sidebar-footer hidden-small">
+              <a data-toggle="tooltip" data-placement="top" title="Logout" href="../php/logout.php">
+                <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+              </a>
+            </div>
+            <!-- /menu footer buttons -->
           </div>
         </div>
 
@@ -107,18 +113,6 @@
               <div class="title_left">
                 <h3>Lớp học của tôi</h3>
               </div>
-
-              <div class="title_right">
-                <div class="col-md-5 col-sm-5  form-group pull-right top_search">
-                  <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search for...">
-                    <span class="input-group-btn">
-                      <button class="btn btn-default" type="button">Go!</button>
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
 
             <div class="clearfix"></div>
 
@@ -138,7 +132,7 @@
                             <th class="column-title">Tên bài tập</th>
                             <th class="column-title">Ngày hết hạn </th>
                             <th class="column-title"></th>
-                            <th class="column-title"></th>
+                            <th class="column-title">Nộp bài</th>
                             <th class="column-title"></th>
                             
                           </tr>
@@ -161,17 +155,7 @@
                             ><?=$row['homework_name']?></td>
                             <td class=" "><?=$row['deadline']?> </td>
                             <td><a href="downloads.php?file_id=<?php echo $row['id'] ?>">Download</a></td>
-                            <?php 
-                              if($_SESSION['level'] != 'hocvien'){
-                                ?>
-                                <td><a href="mark.php?class_id=<?php echo $_GET['class_id'] ?>&homework=<?php echo $row['id'] ?>">Nhập điểm cho bài tập</a></td>
-                                <td><a href="student_homework.php?homework_id=<?php echo $row['id'] ?>">Xem danh sách nộp</a></td> 
-                            <?php  } 
                               
-                              $sql_homework_student = 'SELECT * FROM `homework_student_rel` WHERE homework_id = '.$row['id'].' and student_id = '.$_SESSION['id'];
-                              $res_hw_st = mysqli_query($conn, $sql_homework_student);
-
-                            if($_SESSION['level'] == 'hocvien' && $row['state'] !='done' && mysqli_num_rows($res_hw_st) == 0) {?>
                               <td style="width: 25%;">
                                 <p id='student-<?=$row['id']?>' hidden><?=$_SESSION['id']?></p>
                                 <input type="file" id="my-homework-<?=$row['id']?>" class="form-control" name="product_file" style = "width: 50%;"/>
@@ -180,7 +164,7 @@
                               </td> 
                               
                           </tr>
-                          <?php }}?>
+                          <?php }?>
                           
                           
                         </tbody>
