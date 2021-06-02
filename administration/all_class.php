@@ -5,7 +5,12 @@
     if ($_SESSION['level'] != 5 and $_SESSION['level'] != 6){
       header("location: index.php");
     }
-    $sql= "SELECT * FROM `all_class` ORDER BY class_id DESC";
+    $state = 'studing';
+    if (!isset($_POST['submit'])){
+      $state = $_POST['state'];
+    }
+
+    $sql= "SELECT * FROM `all_class` where state = '$state' ORDER BY class_id DESC";
     $res = mysqli_query($conn,$sql);
     $number_row = mysqli_num_rows($res);
     $result_per_page = 9;
@@ -17,7 +22,7 @@
       $page = $_GET['page'];
     }
     $this_page_result = ($page-1)*$result_per_page;
-    $sql = "SELECT * FROM `all_class` ORDER BY class_id DESC limit ".$this_page_result. ','.$result_per_page;
+    $sql = "SELECT * FROM `all_class` where state = '$state' ORDER BY class_id DESC limit ".$this_page_result. ','.$result_per_page;
     $res = mysqli_query($conn,$sql);
 ?>
 
@@ -150,7 +155,7 @@
               </div>
 
               <div class="title_right">
-                <div class="col-md-5 col-sm-5  form-group pull-right top_search">
+                <div class="col-md-5 col-sm-5 form-group pull-right top_search">
                   <div class="input-group">
                     <input type="text" class="form-control" placeholder="Search for...">
                     <span class="input-group-btn">
@@ -166,6 +171,18 @@
             <div class="row">
                 <div class="x_panel">
                   <div class="x_content">
+                  <div class="form-group">
+                    <form method = "POST">
+                    <select class="form-control" name="state">
+                      <option value='studing'>Đang Học</option>
+                      <option value='done' >Đã học xong</option>
+                      <option value='waiting' >Đang chờ lịch</option>
+                      <option value='waiting_exam' >Đang chờ lịch thi </option>
+                      <option value='marking' >Đang chấm điểm </option>
+                    </select>
+                    <input type='submit' class ='btn btn-primary' value="Lọc Lớp"/>
+                    </form>
+                  </div> 
                       <div class="col-md-12 col-sm-12  text-center">
                       <ul class="pagination pagination-split">
                         <?php for($page =1; $page<=$number_page;$page++){ 
@@ -174,7 +191,6 @@
                         ?>
                       </ul>
                       </div>
-                      <h1>132213</h1>
                       <div class="clearfix"></div>
                       <?php while ($row = mysqli_fetch_array($res)){?>
                       <div class="col-md-4 col-sm-4  profile_details">
@@ -185,7 +201,7 @@
                               <p id="course" ><strong>Khoá: </strong> <?=$row['course_name'] ?> </p>
                               <p id="room" ><strong>Phòng: </strong> <?=$row['room_name'] ?> </p>
                               <p id="state" ><strong>Tình trạng: </strong> <?=$row['state'] ?> </p>
-                              <p id="date" ><strong>Thời gian học: </strong> <?=$row['date_from'] ?> - <?=$row['date_to']?></p>
+                              <p id="date" ><strong>Thời gian học: </strong> <?=$row['date_from'] ?> - <span id='date-end-<?=$row['class_id']?>'> <?=$row['date_to']?></span></span></p>
                               <p id="time" ><strong>Giờ học: </strong> <?=$row['time_from'] ?> - <?=$row['time_to']?></p>
                               
                               <?php 
@@ -199,13 +215,29 @@
                                 $row_count = mysqli_fetch_assoc(mysqli_query($conn,$sql_count));
                                 echo '<p id="seat" ><strong> Ghế: <span id="taken-seat-'.$row['class_id'].'">'.$row_count['count_id'] .'</strong>/ <span id = "seat-'.$row['class_id'] .'">'.$row['seat'] .'</p>' ;
                               ?>
+                              <?php 
+                              $sql_date_exam = "SELECT `date_exam` from class where id = ". $row['class_id'];
+                              $res_date_exam = mysqli_query($conn, $sql_date_exam);
+                              $date_exam = mysqli_fetch_assoc($res_date_exam)['date_exam'];
+                              echo "<p><strong>Ngày Thi: </strong> $date_exam</p>"
+                              
+                              ?>
+
+                              
                           </div>
                           <div class=" profile-bottom text-center">
                             <div class=" row-sm-6 emphasis">
                               <a class="btn btn-app"><i  class="fa fa-close"> </i> Xoá Lớp</a>
                                <?php 
-                                if($row['state']!= 'done' && $row_count['count_id'] < $row['seat']){
+                                if($row['state'] == 'waiting' && $row_count['count_id'] < $row['seat']){
                                   echo '<a class="btn btn-app" data-toggle="modal" onclick="add_student('.$row['class_id'].')"  data-role="update"q ><i  class="fa fa-plus"> </i> Thêm học viên </a>';
+                                }
+                                if($row['state'] != 'done' && $row['state'] != 'marking'){
+                                  echo '<a class="btn btn-app" data-toggle="modal-exam" onclick="exam('.$row['class_id'].')"  data-role="update"q ><i  class="fa fa-plus"> </i> Nhập ngày thi cấp chứng chỉ </a>';
+                                }
+                                if($row['state'] == 'marking'){
+                                  $class_id = $row['class_id'];
+                                  echo '<a class="btn btn-app" href="official_mark.php?class_id='.$class_id.'"><i  class="fa fa-plus"> </i> Nhập điểm thi chính thức </a>';
                                 }
                                ?>
                             </div>
@@ -257,9 +289,112 @@
       </div>
       
     </div>
+    </div>
+
+
+    <div class="modal" id="modal-exam">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Modal Heading</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        <input type='date' id = 'date-exam' onchange="date_exam_change()"> 
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="submit_exam()" >Nhập ngày thi</button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+      
+    </div>
+
   </div>
 
   <script>
+    var date_end;
+    var this_id;
+    function exam(id){
+      $("#modal-exam").modal("show");
+      this_id = id;
+      date_end = $("#date-end-"+this_id).text();
+      date_end = new Date(date_end.replaceAll("-","/"));
+      console.log(date_end);
+    }
+    function date_exam_change(){
+      date_exam = $("#date-exam").val();
+      date_exam = new Date(date_exam.replaceAll("-","/"));
+      if (date_exam < date_end){
+        alert("Hãy nhập ngày thi lớn hơn ngày kết thúc");
+        $("#date-exam").val('');
+      }
+    }
+    function submit_exam(){
+      $.ajax({
+        url : '../php/ajax/ajax_add_date_exam.php',
+        type : 'POST',
+        data : {
+          id: this_id,
+          date_exam: date_exam = $("#date-exam").val(),
+        },
+        success : function(data) {
+          new PNotify({
+                  title: 'Thành công',
+                  text: 'Tạo thành công!',
+                  type: 'success',
+                  styling: 'bootstrap3'
+              });
+
+        }
+        });
+    }
+      // else {
+      //   $.ajax({
+      //   url : '../php/ajax/ajax_add_homework.php',
+      //   type : 'POST',
+      //   data : formData,
+      //   processData: false,  // tell jQuery not to process the data
+      //   contentType: false,  // tell jQuery not to set contentType
+      //   success : function(data) {
+      //     $('#modal-homework').modal('toggle');
+      //       if (data =='empty'){
+      //         console.log('empty');
+      //         new PNotify({
+      //             title: 'Thất bại',
+      //             text: 'Vui lòng nhập đủ!',
+      //             styling: 'bootstrap4'
+      //         });
+      //       }
+      //       else if (data =='success'){
+      //         new PNotify({
+      //             title: 'Thành công',
+      //             text: 'Tạo thành công!',
+      //             type: 'success',
+      //             styling: 'bootstrap3'
+      //         });
+      //       }
+      //       else if (data =='fail'){
+      //         new PNotify({
+      //             title: 'Thất bại',
+      //             text: 'Tạo thất bại!',
+      //             type: 'error',
+      //             styling: 'bootstrap3'
+      //         });
+      //       }
+      //   }
+      //   });
+      // }
+
     var taken_seat = 0;
     var temp_id;
     function add_student(id){

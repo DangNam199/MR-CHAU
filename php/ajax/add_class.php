@@ -20,8 +20,8 @@
         }
     }
 
-    $sql_class = "INSERT INTO `class`(`id`, `name`, `date_from`, `date_to`, `time_from`, `time_to`, `weekdays`, `course_id`, `room_id`) 
-    VALUES ('$id','$name_class','$date_from','$date_to','$time_from','$time_to','$weekdays','$id_course','$id_room');";
+    $sql_class = "INSERT INTO `class`(`id`, `name`, `date_from`, `date_to`, `time_from`, `time_to`, `weekdays`, `course_id`, `room_id`,`state`) 
+    VALUES ('$id','$name_class','$date_from','$date_to','$time_from','$time_to','$weekdays','$id_course','$id_room','waiting');";
 
     $sql_teacher = "INSERT INTO `class_staff_rel`(`class_id`, `staff_ref`) VALUES ('$id','$teacher');";
 

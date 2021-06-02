@@ -50,12 +50,30 @@
         }
     }
     
-    $sql_class_end = "SELECT * FROM class where state = 'studing' and date_to < now()";
-    $res_class_end = mysqli_query($conn, $sql_class_end);
-    while ($row_class = mysqli_fetch_assoc($res_class_end)){
-        $sql_update_class = "UPDATE `class` SET `state`='done' WHERE id = ". $row_class['id'];
-        mysqli_query($conn, $sql_update_class);
+    $sql_class_exam = "SELECT * FROM class where state = 'studing' and date_to < now()";
+    $res_class_exam = mysqli_query($conn, $sql_class_exam);
+    while ($row_class_exam = mysqli_fetch_assoc($res_class_exam)){
+        $sql_update_class_exam = "UPDATE `class` SET `state`='waiting_exem' WHERE id = ". $row_row_class_examclass['id'];
+        mysqli_query($conn, $sql_update_class_exam);
+    }
+
+    $sql_class_waiting = "SELECT * FROM class where state ='waiting'";
+    $res_class_waiting = mysqli_query($conn, $sql_class_waiting);
+    while($row_class_waiting = mysqli_fetch_assoc($res_class_waiting)){
+        if ($row_class_waiting['date_from'] == date("Y-m-d")){
+        $sql_update_class_waiting = "UPDATE `class` SET `state`='studing' WHERE id = " . $row_class_waiting ['id'];
+        mysqli_query($conn, $sql_update_class_waiting);
+        }
     }
     
+    
+    $sql_class_done_exam = "SELECT * FROM class where state ='waiting_exam'";
+    $res_class_done_exam = mysqli_query($conn, $sql_class_done_exam);
+    while($row_class_done_exam = mysqli_fetch_assoc($res_class_done_exam)){
+        if ($row_class_done_exam['date_exam'] == date("Y-m-d")){
+        $sql_update_class_done_exam = "UPDATE `class` SET `state`='marking' WHERE id = " . $row_class_done_exam ['id'];
+        mysqli_query($conn, $sql_update_class_done_exam);
+        }
+    }
 
 ?>

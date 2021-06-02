@@ -248,7 +248,6 @@
                               <a class="btn btn-app" href='homework.php?class_id=<?=$row['class_id']?>'  > </i> Xem bài tập</a>
                               <a class="btn btn-app" href='mark.php?class_id=<?=$row['class_id']?>'  > </i> Nhập điểm</a>
                               <a class="btn btn-app" href='show_mark.php?class_id=<?=$row['class_id']?>'  > </i> Xem điểm</a>
-                              
                             </div>
                           </div>
                         </div>

@@ -13,7 +13,7 @@ if(isset($_POST['submit'])){
         echo"<script> alert('bạn hãy nhập đầy đủ thông tin yêu cầu!'); </script>";
     }
     else{
-        if($conn-> query("INSERT INTO lienhe(hoten,email,sodienthoai,ghichu) VALUES ('$usermes','$Email','$Phone','$Ghichu')")){
+        if($conn-> query("INSERT INTO lienhe(hoten,email,sodienthoai,ghichu, date ,state) VALUES ('$usermes','$Email','$Phone','$Ghichu', now(),'draft')")){
             echo"<script>alert('Gửi thành công !')
                    </script>";
         }
@@ -81,7 +81,7 @@ $conn->close();
     <div class="d-flex justify-content-between align-items-center">
         <a class="text-white ml-2" href="http://localhost/pro1013/login.php"> Đăng nhập</a>
         <div>
-            <a class="text-white mr-4" href="#"><i class="fa fa-phone"></i> Hotline: 0398060479</a>
+            <a class="text-white mr-4" href="#"><i class="fa fa-phone"></i> Hotline: 112341235</a>
             <a class="text-white" href="#"><i class="fa fa-clock-o"></i> Time: 8h - 18h</a>
         </div>
     </div>
@@ -134,9 +134,9 @@ $conn->close();
 
         <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3723.827622207749!2d105.80170731432445!3d21.03958218599249!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135ab3e638834e5%3A0xc0757decf12a8bf4!2zMTUgxJDDtG5nIFF1YW4sIFF1YW4gSG9hLCBD4bqndSBHaeG6pXksIEjDoCBO4buZaSwgVmlldG5hbQ!5e0!3m2!1sen!2s!4v1542356725898" width="100%" height="250" frameborder="0" style="border:0" allowfullscreen></iframe>                     <div class="row py-4">
             <div class="col-md-3">
-                <p>Địa chỉ: Phụng Châu, Chương Mỹ, Hà Nội</p>
-                <p>Phone: 01698060479</p>
-                <p>Email:  dienntph06483@fpt.edu.vn</p>
+                <p>Địa chỉ: Hải Phòng</p>
+                <p>Phone: 11111111111</p>
+                <p>Email:  mrchau@gmail.com</p>
             </div>
             <div class="col-md-5">
                 <form method="post" >

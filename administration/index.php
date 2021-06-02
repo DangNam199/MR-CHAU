@@ -185,31 +185,24 @@
                   <a href="contacts.php?end_contract=true" >Xem hợp đồng hết hạn</a>
                 </div>
               </div>
+              <?php } 
+
+              if ($_SESSION['level'] == 5 | $_SESSION['level'] == 6 ){
+                $sql_count_contact = "SELECT COUNT(id) as 'count_id' from lienhe where state = 'draft'";
+                
+                $res_count = mysqli_query($conn, $sql_count_contact);
+              ?>
+              
+              <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 ">
+                <div class="tile-stats">
+                  <div class="count"><?php echo mysqli_fetch_assoc($res_count)['count_id']; ?></div>
+                  <h3>Học viên tiềm năng mới</h3>
+                  <a href="contact_us.php" >    Xem</a>
+                </div>
+              </div>
               <?php } ?>
-              <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 ">
-                <div class="tile-stats">
-                  <div class="icon"><i class="fa fa-comments-o"></i></div>
-                  <div class="count">179</div>
-                  <h3>New Sign ups</h3>
-                  <p>Lorem ipsum psdea itgum rixt.</p>
-                </div>
-              </div>
-              <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 ">
-                <div class="tile-stats">
-                  <div class="icon"><i class="fa fa-sort-amount-desc"></i></div>
-                  <div class="count">179</div>
-                  <h3>New Sign ups</h3>
-                  <p>Lorem ipsum psdea itgum rixt.</p>
-                </div>
-              </div>
-              <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 ">
-                <div class="tile-stats">
-                  <div class="icon"><i class="fa fa-check-square-o"></i></div>
-                  <div class="count">179</div>
-                  <h3>New Sign ups</h3>
-                  <p>Lorem ipsum psdea itgum rixt.</p>
-                </div>
-              </div>
+
+            </div>
             </div>
           </div>
           </div>

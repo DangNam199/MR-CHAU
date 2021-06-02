@@ -154,13 +154,6 @@
                           <?php }?>
                         </tbody>
                         </table>
-                        <div class="ln_solid">
-                            <div class="form-group">
-                                <div class="col-md-6 offset-md-3">
-                                    <button type='submit' name='submit' class="btn btn-primary">Tạo mới</button>
-                                </div>  
-                            </div>
-                        </div>
                       </form>
                     </div>
                   </div>
