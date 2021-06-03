@@ -86,7 +86,7 @@
                   <li><a> Học phí <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
                       <li><a href="fee.php">Học viên đóng học phí</a></li>
-                      <li><a href="all_room.php">Tất Cả Phòng</a></li>
+                      <li><a href="all_fee.php">Danh sách học phí</a></li>
                     </ul>
                   </li>
                   <li><a> Lớp <span class="fa fa-chevron-down"></span></a>
@@ -152,19 +152,12 @@
                       <li><a href="my_salary.php">Lương</a></li>
                     </ul>
                   </li>
-                  <li><a> Công <span class="fa fa-chevron-down"></span></a>
-                    <ul class="nav child_menu">
-                      <li><a href="my_worktime.php">Xem lịch sử chấm công</a></li>
-                      <li><a href="my_salary.php">Lương</a></li>
-                    </ul>
-                  </li>
                   <?php }?>
                 </ul>
               </div>
 
             </div>
 
-            </div>
             <!-- /sidebar menu -->
 
             <!-- /menu footer buttons -->

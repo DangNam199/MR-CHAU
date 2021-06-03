@@ -8,7 +8,7 @@
         $price = $res_price['price'];
         $sql = "";
         foreach ($students as $st){
-            $sql .= "UPDATE `hocvien` SET class_id='$id' WHERE id = $st;";
+            $sql .= "UPDATE `hocvien` SET class_id='$id', state='studing' WHERE id = $st;";
         }
         $res = mysqli_multi_query($conn, $sql);
         if ($res){

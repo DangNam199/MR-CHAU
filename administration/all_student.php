@@ -5,7 +5,7 @@
       header("location: index.php");
     }
     //issue: not in currnt id
-    $sql= "SELECT * FROM `hocvien` WHERE state = 'studing' ORDER BY id DESC";
+    $sql= "SELECT * FROM `hocvien` ORDER BY id DESC";
     $res = mysqli_query($conn,$sql);
     $number_row = mysqli_num_rows($res);
     $result_per_page = 9;
@@ -17,7 +17,7 @@
       $page = $_GET['page'];
     }
     $this_page_result = ($page-1) * $result_per_page;
-    $sql = "SELECT * FROM `hocvien` WHERE state = 'studing' ORDER BY id DESC limit ".$this_page_result. ','.$result_per_page;
+    $sql = "SELECT * FROM `hocvien` ORDER BY id DESC limit ".$this_page_result. ','.$result_per_page;
     $res = mysqli_query($conn,$sql);
 
     
@@ -81,57 +81,113 @@
 
               <!-- sidebar menu -->
               <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
-                <div class="menu_section">
-                  <h3>General</h3>
-                  <ul class="nav side-menu">
-                    <li><a href="index.php"><i class="fa fa-home"></i> Home </a>
-                    </li>
-                    <li><a> Nhân Viên <span class="fa fa-chevron-down"></span></a>
-                      <ul class="nav child_menu">
-                        <li><a href="form_staff.php">Tạo Nhân Viên</a></li>
-                        <li><a href="contacts.php">Tất Cả Nhân Viên</a></li>
-                      </ul>
-                    </li>
-                    <li><a> Lớp <span class="fa fa-chevron-down"></span></a>
-                      <ul class="nav child_menu">
-                        <li><a href="form_class.php">Lớp</a></li>
-                        <li><a href="all_class.php">Tất Cả Lớp</a></li>
-                      </ul>
-                    </li>
-                    <li><a> Phòng Học <span class="fa fa-chevron-down"></span></a>
-                      <ul class="nav child_menu">
-                        <li><a href="form_room.php">Thêm Phòng</a></li>
-                        <li><a href="all_room.php">Tất Cả Phòng</a></li>
-                      </ul>
-                    </li>
-                    <li><a> Chứng chỉ đang đào tạo <span class="fa fa-chevron-down"></span></a>
-                      <ul class="nav child_menu">
-                        <li><a href="form_degree.php">Tạo Chứng Chỉ</a></li>
-                        <li><a href="all_degree.php">Tất Cả Chứng Chỉ</a></li>
-                      </ul>
-                    </li>
-                    <li><a> Khoá Học <span class="fa fa-chevron-down"></span></a>
-                      <ul class="nav child_menu">
-                        <li><a href="form_courses.php">Tạo Khoá Học</a></li>
-                        <li><a href="all_courses.php">Tất Cả Khoá Học</a></li>
-                      </ul>
-                    </li>
-                    <li><a> Tài Liệu <span class="fa fa-chevron-down"></span></a>
-                      <ul class="nav child_menu">
-                        <li><a href="form_document.php">Nhập tài liệu</a></li>
-                        <li><a href="all_document.php">Tất Cả Tài liệu</a></li>
-                      </ul>
-                    </li>
-                    <li><a> Tin Tức <span class="fa fa-chevron-down"></span></a>
-                      <ul class="nav child_menu">
-                        <li><a href="php">Tạo Tin Tức</a></li>
-                        <li><a href="all_news.php">Tất Cả Tin Tức</a></li>
-                      </ul>
-                    </li>
-                  </ul>
-                </div>
-
+              <div class="menu_section">
+                <h3>General</h3>
+                <ul class="nav side-menu">
+                  <li><a href="index.php"><i class="fa fa-home"></i> Home </a>
+                  </li>
+                  <?php 
+                    if ($_SESSION['level'] == 5 or $_SESSION['level'] == 6){
+                      ?>
+                  <li><a> Nhân Viên <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="form_staff.php">Tạo Nhân Viên</a></li>
+                      <li><a href="contacts.php">Tất Cả Nhân Viên</a></li>
+                      <li><a href="salary.php">Duyệt lương nhân viên</a></li>
+                      <li><a href="end_contacts.php">Tất Cả Nhân Viên Đã Lưu Trữ</a></li>
+                    </ul>
+                  </li>
+                  <li><a> Học Viên <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="form_student.php">Tạo Học Viên</a></li>
+                      <li><a href="csv_student.php">Nhập Học Viên bằng file csv</a></li>
+                      <li><a href="all_student.php">Tất Cả Học Viên</a></li>
+                      
+                    </ul>
+                  </li>
+                  <li><a> Học phí <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="fee.php">Học viên đóng học phí</a></li>
+                      <li><a href="all_fee.php">Danh sách học phí</a></li>
+                    </ul>
+                  </li>
+                  <li><a> Lớp <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="form_class.php">Lớp</a></li>
+                      <li><a href="all_class.php">Tất Cả Lớp</a></li>
+                    </ul>
+                  </li>
+                  <li><a> Phòng Học <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="form_room.php">Thêm Phòng</a></li>
+                      <li><a href="all_room.php">Tất Cả Phòng</a></li>
+                    </ul>
+                  </li>
+                  <li><a> Chứng chỉ đang đào tạo <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="form_degree.php">Tạo Chứng Chỉ</a></li>
+                      <li><a href="all_degree.php">Tất Cả Chứng Chỉ</a></li>
+                    </ul>
+                  </li>
+                  <li><a> Khoá Học <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="form_courses.php">Tạo Khoá Học</a></li>
+                      <li><a href="all_courses.php">Tất Cả Khoá Học</a></li>
+                    </ul>
+                  </li>
+                  <li><a> Tài Liệu <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="form_document.php">Nhập tài liệu</a></li>
+                      <li><a href="all_document.php">Tất Cả Tài liệu</a></li>
+                    </ul>
+                  </li>
+                  <li><a> Tin Tức <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="form_news.php">Tạo Tin Tức</a></li>
+                      <li><a href="all_news.php">Tất Cả Tin Tức</a></li>
+                    </ul>
+                  </li>
+                  <li><a> Chi <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="form_spending.php">Chi</a></li>
+                      <li><a href="all_spending.php">Tất cả chi</a></li>
+                    </ul>
+                  </li>
+                  <li><a> Báo Cáo <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="report_in.php">Báo cáo thu</a></li>
+                      <li><a href="report_out.php">Báo cáo chi</a></li>
+                      <li><a href="report_salary.php">Báo lương nhân viên</a></li>
+                      <li><a href="report_all.php">Báo Tổng </a></li>
+                    </ul>
+                  </li>
+                 <?php }
+                 else {
+                 ?>
+                 <li><a href="my_class.php">Lớp của tôi</a>
+                  </li>
+                  <li><a href="schedule.php"> Lịch  </a>
+                  </li>
+                  <li><a> Công <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="my_worktime.php">Xem lịch sử chấm công</a></li>
+                      <li><a href="my_salary.php">Lương</a></li>
+                    </ul>
+                  </li>
+                  <?php }?>
+                </ul>
               </div>
+
+            </div>
+
+            <!-- /sidebar menu -->
+
+            <!-- /menu footer buttons -->
+            <div class="sidebar-footer hidden-small">
+              <a data-toggle="tooltip" data-placement="top" title="Logout" href="../php/logout.php">
+                <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+              </a>
+            </div>
               <!-- /sidebar menu -->
 
             </div>

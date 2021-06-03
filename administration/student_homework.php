@@ -3,11 +3,9 @@
     include '../php/session.php';
     if (isset($_GET['homework_id'])){
       $homework_id = $_GET['homework_id'];
-      $sql_homework = "SELECT * FROM homework where id = ".$homework_id;
+      $sql_homework = "SELECT `homework_id`,`file`,`datetime_submit`, hocvien.name, hocvien.class_id FROM `homework_student_rel` inner JOIN hocvien on homework_student_rel.student_id = hocvien.id   where homework_id = ".$homework_id;
+      echo $sql_homework;
       $res_homework = mysqli_query($conn, $sql_homework);
-      $class_id = mysqli_fetch_assoc($res_homework)['class_id'];
-      $sql_student ="SELECT * FROM hocvien WHERE class_id = " . $class_id;
-      $res_student = mysqli_query($conn,$sql_student);
     }
    
     else {
@@ -148,22 +146,21 @@
 
                         <tbody>
                           <?php 
-                            while($row_student = mysqli_fetch_assoc($res_student))  {
+                            while($row_homework = mysqli_fetch_assoc($res_homework))  {
                              
                             ?>
                           <tr class="even pointer">
-                            <td class=" "><?=$row_student['name']?> </td>
+                            <td class=" "><?=$row_homework['name']?> </td>
                           <?php 
-                             $sql_rel = "select * from homework_student_rel where student_id = ". $row_student['id']. ' and homework_id = '. $homework_id;  
-                              $res_rel = mysqli_query($conn,$sql_rel);
-                              if (mysqli_num_rows($res_rel) > 0){
-                                $row_rel = mysqli_fetch_array($res_rel);
+                                if ($row_homework['datetime_submit'] == ''){
+                                  echo  '<td>Chưa nộp </td>';
+                                }
+                                else {
                                 ?>
-                                <td><?=$row_rel['datetime_submit']?></td>
-                                <td><a href="downloads.php?submit_id=<?php echo $row_rel['student_id'] ?>">Download</a></td>
-                              <?php } ?>
+                                <td><?=$row_homework['datetime_submit']?></td>
+                                <td><a href="downloads.php?submit_id=<?php echo $row_homework['student_id'] ?>">Download</a></td>
                         
-                       <?php }?>
+                       <?php }}?>
 
                         </tbody>
                       </table>

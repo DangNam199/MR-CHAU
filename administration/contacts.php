@@ -5,45 +5,27 @@
     if ( $_SESSION['level'] != 6){
       header("location: index.php");
     }
-    if (isset($_GET['end_contract'])){
-      if($_GET['end_contract'] == 'true'){
-        $end_contract = get_end_contract($conn);
-        $a = '(';
-        for ( $i=0;$i<count($end_contract); $i++){
-            if ($i == count($end_contract) -1 ){
-              $a .= $end_contract[$i]['staff_id'] . ')';
-            }
-            else {
-              $a .= $end_contract[$i]['staff_id'] . ',';
-            }
-        }
-        $sql= "SELECT * FROM `staff` WHERE id in $a  ORDER BY id DESC";
+    if (isset($_POST['submit']) && $_POST['level'] != '' && $_POST['type']){
+      $type = $_POST['type'];
+      $level =$_POST['level'];
+      $sql = "SELECT * FROM staff where level_id = $level and type = '$type'" ;
+      $res = mysqli_query($conn, $sql);
+      $number_row = mysqli_num_rows($res);
+      $result_per_page = 9;
+      $number_page = ceil($number_row/$result_per_page);
+      if (!isset($_GET['page'])){
+        $page=1;
       }
-    }
-    else {
-      $sql= "SELECT * FROM `staff` where state = 'working' ORDER BY id DESC";
-    }
-    //issue: not in currnt id
-    $res = mysqli_query($conn,$sql);
-    $number_row = mysqli_num_rows($res);
-    $result_per_page = 9;
-    $number_page = ceil($number_row/$result_per_page);
-    if (!isset($_GET['page'])){
-      $page=1;
-    }
-    else {
-      $page = $_GET['page'];
-    }
-    $this_page_result = ($page-1) * $result_per_page;
-    if (isset($_GET['end_contract'])){
-      if($_GET['end_contract'] == 'true'){
-        $sql= "SELECT * FROM `staff` WHERE id in $a  ORDER BY id DESC";
+      else {
+        $page = $_GET['page'];
       }
+      
+      
+
+      $this_page_result = ($page-1)*$result_per_page;
+      $sql = "SELECT * FROM staff where level_id = $level and type = '$type' ORDER BY id DESC limit ".$this_page_result. ','.$result_per_page;
+      $res = mysqli_query($conn,$sql);
     }
-    else {
-      $sql = "SELECT * FROM `staff` where state = 'working' ORDER BY id   DESC limit ".$this_page_result. ','.$result_per_page;
-    }
-    $res = mysqli_query($conn,$sql);
 ?>
 
 
@@ -106,57 +88,113 @@
 
               <!-- sidebar menu -->
               <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
-                <div class="menu_section">
-                  <h3>General</h3>
-                  <ul class="nav side-menu">
-                    <li><a href="index.php"><i class="fa fa-home"></i> Home </a>
-                    </li>
-                    <li><a> Nhân Viên <span class="fa fa-chevron-down"></span></a>
-                      <ul class="nav child_menu">
-                        <li><a href="form_staff.php">Tạo Nhân Viên</a></li>
-                        <li><a href="contacts.php">Tất Cả Nhân Viên</a></li>
-                      </ul>
-                    </li>
-                    <li><a> Lớp <span class="fa fa-chevron-down"></span></a>
-                      <ul class="nav child_menu">
-                        <li><a href="form_class.php">Lớp</a></li>
-                        <li><a href="all_class.php">Tất Cả Lớp</a></li>
-                      </ul>
-                    </li>
-                    <li><a> Phòng Học <span class="fa fa-chevron-down"></span></a>
-                      <ul class="nav child_menu">
-                        <li><a href="form_room.php">Thêm Phòng</a></li>
-                        <li><a href="all_room.php">Tất Cả Phòng</a></li>
-                      </ul>
-                    </li>
-                    <li><a> Chứng chỉ đang đào tạo <span class="fa fa-chevron-down"></span></a>
-                      <ul class="nav child_menu">
-                        <li><a href="form_degree.php">Tạo Chứng Chỉ</a></li>
-                        <li><a href="all_degree.php">Tất Cả Chứng Chỉ</a></li>
-                      </ul>
-                    </li>
-                    <li><a> Khoá Học <span class="fa fa-chevron-down"></span></a>
-                      <ul class="nav child_menu">
-                        <li><a href="form_courses.php">Tạo Khoá Học</a></li>
-                        <li><a href="all_courses.php">Tất Cả Khoá Học</a></li>
-                      </ul>
-                    </li>
-                    <li><a> Tài Liệu <span class="fa fa-chevron-down"></span></a>
-                      <ul class="nav child_menu">
-                        <li><a href="form_document.php">Nhập tài liệu</a></li>
-                        <li><a href="all_document.php">Tất Cả Tài liệu</a></li>
-                      </ul>
-                    </li>
-                    <li><a> Tin Tức <span class="fa fa-chevron-down"></span></a>
-                      <ul class="nav child_menu">
-                        <li><a href="php">Tạo Tin Tức</a></li>
-                        <li><a href="all_news.php">Tất Cả Tin Tức</a></li>
-                      </ul>
-                    </li>
-                  </ul>
-                </div>
-
+              <div class="menu_section">
+                <h3>General</h3>
+                <ul class="nav side-menu">
+                  <li><a href="index.php"><i class="fa fa-home"></i> Home </a>
+                  </li>
+                  <?php 
+                    if ($_SESSION['level'] == 5 or $_SESSION['level'] == 6){
+                      ?>
+                  <li><a> Nhân Viên <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="form_staff.php">Tạo Nhân Viên</a></li>
+                      <li><a href="contacts.php">Tất Cả Nhân Viên</a></li>
+                      <li><a href="salary.php">Duyệt lương nhân viên</a></li>
+                      <li><a href="end_contacts.php">Tất Cả Nhân Viên Đã Lưu Trữ</a></li>
+                    </ul>
+                  </li>
+                  <li><a> Học Viên <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="form_student.php">Tạo Học Viên</a></li>
+                      <li><a href="csv_student.php">Nhập Học Viên bằng file csv</a></li>
+                      <li><a href="all_student.php">Tất Cả Học Viên</a></li>
+                      
+                    </ul>
+                  </li>
+                  <li><a> Học phí <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="fee.php">Học viên đóng học phí</a></li>
+                      <li><a href="all_fee.php">Danh sách học phí</a></li>
+                    </ul>
+                  </li>
+                  <li><a> Lớp <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="form_class.php">Lớp</a></li>
+                      <li><a href="all_class.php">Tất Cả Lớp</a></li>
+                    </ul>
+                  </li>
+                  <li><a> Phòng Học <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="form_room.php">Thêm Phòng</a></li>
+                      <li><a href="all_room.php">Tất Cả Phòng</a></li>
+                    </ul>
+                  </li>
+                  <li><a> Chứng chỉ đang đào tạo <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="form_degree.php">Tạo Chứng Chỉ</a></li>
+                      <li><a href="all_degree.php">Tất Cả Chứng Chỉ</a></li>
+                    </ul>
+                  </li>
+                  <li><a> Khoá Học <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="form_courses.php">Tạo Khoá Học</a></li>
+                      <li><a href="all_courses.php">Tất Cả Khoá Học</a></li>
+                    </ul>
+                  </li>
+                  <li><a> Tài Liệu <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="form_document.php">Nhập tài liệu</a></li>
+                      <li><a href="all_document.php">Tất Cả Tài liệu</a></li>
+                    </ul>
+                  </li>
+                  <li><a> Tin Tức <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="form_news.php">Tạo Tin Tức</a></li>
+                      <li><a href="all_news.php">Tất Cả Tin Tức</a></li>
+                    </ul>
+                  </li>
+                  <li><a> Chi <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="form_spending.php">Chi</a></li>
+                      <li><a href="all_spending.php">Tất cả chi</a></li>
+                    </ul>
+                  </li>
+                  <li><a> Báo Cáo <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="report_in.php">Báo cáo thu</a></li>
+                      <li><a href="report_out.php">Báo cáo chi</a></li>
+                      <li><a href="report_salary.php">Báo lương nhân viên</a></li>
+                      <li><a href="report_all.php">Báo Tổng </a></li>
+                    </ul>
+                  </li>
+                 <?php }
+                 else {
+                 ?>
+                 <li><a href="my_class.php">Lớp của tôi</a>
+                  </li>
+                  <li><a href="schedule.php"> Lịch  </a>
+                  </li>
+                  <li><a> Công <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="my_worktime.php">Xem lịch sử chấm công</a></li>
+                      <li><a href="my_salary.php">Lương</a></li>
+                    </ul>
+                  </li>
+                  <?php }?>
+                </ul>
               </div>
+
+            </div>
+
+            <!-- /sidebar menu -->
+
+            <!-- /menu footer buttons -->
+            <div class="sidebar-footer hidden-small">
+              <a data-toggle="tooltip" data-placement="top" title="Logout" href="../php/logout.php">
+                <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+              </a>
+            </div>
               <!-- /sidebar menu -->
 
             </div>
@@ -196,7 +234,23 @@
             <div class="row">
                 <div class="x_panel">
                   <div class="x_content">
+                      <form method = "POST">
+                        <select class= "form-control" name='type'>
+                            <option value = "official">Chính Thức</option>
+                            <option value = "probation">Thử việc</option>
+                        </select>
+                        <select class= "form-control" name='level'>
+                            <option value = "1">Giảng viên</option>
+                            <option value = "2">Trợ giảng</option>
+                            <option value = "3">IT</option>
+                            <option value = "4">Tạp vụ</option>
+                            <option value = "6">Giám đốc</option>
+                            <option value = "5">Quản trị viên</option>
+                        </select>
+                        <input type = "submit" class = "form-control" name="submit">
+                      </form>
                       <div class="col-md-12 col-sm-12  text-center">
+
                       <ul class="pagination pagination-split">
                         <?php for($page =1; $page<=$number_page;$page++){ 
                            echo '<li><a href="?page='.$page.'">'.$page. '</a></li>';

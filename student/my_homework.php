@@ -3,7 +3,7 @@
     include '../php/session.php';
     $sql_classid = "SELECT class_id from hocvien WHERE id = ". $_SESSION['id'];
     $class_id = mysqli_fetch_array(mysqli_query($conn, $sql_classid))['class_id'];
-    $sql = "SELECT homework.name as 'homework_name', deadline, file, homework.id, homework.state FROM `homework` where  class_id = ". $class_id .' ORDER by homework.id';
+    $sql = "SELECT homework.name as 'homework_name', deadline, file, homework.id, homework.state FROM `homework` where  class_id =  $class_id  and homework.state = 'new' ORDER by homework.id";
     $res = mysqli_query($conn,$sql);
     
 
@@ -54,7 +54,7 @@
         <div class="col-md-3 left_col">
           <div class="left_col scroll-view">
             <div class="navbar nav_title" style="border: 0;">
-              <a href="index.html" class="site_title"><i class="fa fa-paw"></i> <span>Gentelella Alela!</span></a>
+              <a href="index.php" class="site_title"><i class="fa fa-paw"></i> <span>Gentelella Alela!</span></a>
             </div>
 
             <div class="clearfix"></div>
@@ -211,12 +211,12 @@
             else if (data =='success'){
               new PNotify({
                   title: 'Thành công',
-                  text: 'Tạo thành công!',
+                  text: 'Nộp thành công!',
                   type: 'success',
                   styling: 'bootstrap3'
               });
               setTimeout(function() {
-              window.location.replace("homework.php");
+              window.location.replace("my_homework.php");
               }, 3000);
             }
             else if (data =='fail'){

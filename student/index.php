@@ -32,7 +32,7 @@
         <div class="col-md-3 left_col">
           <div class="left_col scroll-view">
             <div class="navbar nav_title" style="border: 0;">
-              <a href="index.html" class="site_title"><i class="fa fa-paw"></i> <span>Gentelella Alela!</span></a>
+              <a href="index.php" class="site_title"><i class="fa fa-paw"></i> <span>Gentelella Alela!</span></a>
             </div>
 
             <div class="clearfix"></div>
@@ -63,7 +63,7 @@
                   <li><a href='my_mark.php'> Điểm </a>
                   </li>
                   <li><a href="my_homework.php"> Bài tập </a>
-                  </li> 
+                  </li>
                 </ul>
               </div>
             </div>
@@ -91,42 +91,19 @@
                 <div class="tile-stats">
                 <div class="icon"><i class="fa fa-check-square-o"></i></div>
                   <?php 
-                    $sql_homework = "SELECT COUNT(id) as 'count_id' FROM homework where state != 'done'"; 
+                    $sql_class = "SELECT class_id from hocvien where id = ". $_SESSION['id'];
+                    $res_class = mysqli_fetch_assoc(mysqli_query($conn, $sql_class))['class_id'];
+                    $sql_homework = "SELECT COUNT(id) as 'count_id' FROM homework where state != 'done' and class_id = $res_class"; 
                     $res = mysqli_fetch_assoc(mysqli_query($conn, $sql_homework));
                     echo '<div class="count">'.$res['count_id'].'</div>';
                     $sql_count_homework = "SELECT count(homework.id) as 'count_homework'  FROM homework INNER JOIN hocvien on homework.class_id = hocvien.class_id where hocvien.id =". $_SESSION['id'];  
                     $sql_count_my_homework = "SELECT COUNT(homework_id) as count_id FROM `homework_student_rel` WHERE student_id  = ". $_SESSION['id'];
                     $res_count = mysqli_fetch_assoc(mysqli_query($conn, $sql_count_homework));
                     $res_count_my_homework = mysqli_fetch_assoc(mysqli_query($conn, $sql_count_my_homework));
-                    echo '<p>'.$res_count_my_homework['count_id'].'/'.$res_count['count_homework'].' được giao </p>';
+                    echo '<p>'.$res_count_my_homework['count_id'].'/'.' được giao </p>';
                   ?>
                   <h3>Bài tập cần phải hoàn thành</h3>
                   
-                </div>
-              </div>
-              <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 ">
-                <div class="tile-stats">
-                  <div class="icon"><i class="fa fa-comments-o"></i></div>
-                  <div class="count">179</div>
-                  <h3>New Sign ups</h3>
-                  <p>Lorem ipsum psdea itgum rixt.</p>
-                </div>
-              </div>
-              <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 ">
-                <div class="tile-stats">
-                  <?php 
-                    $sql_avg = "SELECT AVG(mark) as avg FROM student_mark where student_id = ". $_SESSION['id'];
-                    $res_avg = mysqli_query($conn, $sql_avg);
-                    $row_avg = mysqli_fetch_assoc($res_avg);
-                    echo '<div class="count">'.$row_avg['avg'].'</div>';
-                  ?>
-                  <h3>Điểm trung bình</h3>
-                </div>
-              </div>
-              <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 ">
-                <div class="tile-stats">
-                  
-                  <div class="count">179</div>
                 </div>
               </div>
             </div>

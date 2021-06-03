@@ -3,7 +3,7 @@
     include '../php/session.php';
     if (isset($_GET['class_id'])){
     $class_id = $_GET['class_id'];
-    $sql = "SELECT homework.name as 'homework_name', deadline, file, homework.id, homework.state FROM `homework` where  class_id = ". $_GET['class_id'] .' ORDER by homework.id';
+    $sql = "SELECT homework.name as 'homework_name', deadline, file, homework.id, homework.state FROM `homework` where  class_id = ". $_GET['class_id'] .' ORDER by homework.id desc';
     $res = mysqli_query($conn,$sql);
     }
       else {

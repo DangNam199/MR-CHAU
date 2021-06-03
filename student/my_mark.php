@@ -46,7 +46,7 @@
       <div class="col-md-3 left_col">
           <div class="left_col scroll-view">
             <div class="navbar nav_title" style="border: 0;">
-              <a href="index.html" class="site_title"><i class="fa fa-paw"></i> <span>Gentelella Alela!</span></a>
+              <a href="index.php" class="site_title"><i class="fa fa-paw"></i> <span>Gentelella Alela!</span></a>
             </div>
 
             <div class="clearfix"></div>
@@ -76,8 +76,8 @@
                   </li>
                   <li><a href='my_mark.php'> Điểm </a>
                   </li>
-                  <li><a href="../administration/homework.php?student_id=<?=$_SESSION['id']?>"> Bài tập </a>
-                  </li> 
+                  <li><a href="my_homework.php"> Bài tập </a>
+                  </li>
                 </ul>
               </div>
             </div>
@@ -134,6 +134,7 @@
                           <tr class="headings">
                             <th class="column-title">Tên bài kiểm tra </th>
                             <th class="column-title">Điểm </th>
+                            <th class="column-title">Loại </th>
                             </th>
                           </tr>
                         </thead>
@@ -143,6 +144,11 @@
                                 <tr class="even pointer">
                             <td class=" "><?=$row['homework_name']?></td>
                             <td class=" "><?=$row['mark']?></td>
+                            <?php 
+                              $sql_type = "SELECT type from mark where id = ". $row['mark_id'];
+                              $res_type = mysqli_fetch_assoc(mysqli_query($conn, $sql_type))['type'];
+                            ?>
+                            <td class=" "><?=$res_type?></td>
                           </tr>
                           <?php }?>
                           <tr><td colspan="4"><hr style="border-top: 3px solid black;"></td></tr>
@@ -152,14 +158,41 @@
                                 $sql_avg = "SELECT AVG(mark) as avg FROM student_mark where student_id = ". $_SESSION['id'];
                                 $res_avg = mysqli_query($conn, $sql_avg);
                                 $row_avg = mysqli_fetch_assoc($res_avg);
-                                echo '<td>'.$row_avg['avg'].'</td>';
+                                echo '<td> Điểm trung bình '.$row_avg['avg'].'</td>';
                               ?>
+                              <td></td>
                           </tr>
                         </tbody>
                         </table>
-                        <div class="ln_solid">
-                            <div class="form-group">
-                            </div>
+
+                        <?php 
+                          $sql_official = "SELECT * FROM `officail_mark` where student_id = ". $id;
+                          $res_official = mysqli_query($conn, $sql_official);
+                          if (mysqli_num_rows($res_official) > 0){
+                        ?>
+
+<table class="table table-striped jambo_table bulk_action">
+                        <thead>
+                          <tr class="headings">
+                            <th class="column-title">Điểm nghe </th>
+                            <th class="column-title">Điểm đọc </th>
+                            <th class="column-title">Điểm viết </th>
+                            <th class="column-title">Điểm nói </th>
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                            <?php while($row_official = mysqli_fetch_assoc($res_official)) { ?> 
+                                <tr class="even pointer">
+                            <td class=" "><?=$row_official['listening']?></td>
+                            <td class=" "><?=$row_official['reading']?></td>
+                            <td class=" "><?=$row_official['writing']?></td>
+                            <td class=" "><?=$row_official['speaking']?></td>
+                          </tr>
+                          <?php }?>
+                        </tbody>
+                        </table>
+                        <?php }?>
                         </div>
                       </form>
                     </div>

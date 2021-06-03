@@ -19,8 +19,8 @@ if (isset($_POST['submit']) && empty($_FILES['image']['tmp_name'])==false){
     $password =  $day.'/'.$month.'/'.$year;
     $password = md5($password);
     $file = addslashes(file_get_contents($_FILES['image']['tmp_name']));
-    $sql = "INSERT INTO `nhanvien`(`id`, `TenNV`, `NgaySinh`,`gender`, `sdt`, `address`,`CMND`, `ChungChi`, `HSL`, `email`, `password`, `level_id`, `avatar`) 
-    VALUES (null,'$user_name','$date','$gender',$phone, '$address', $cmnd,'$chungchi',$hsl,'$email','$password','$chucvu','$file')";
+    $sql = "INSERT INTO `nhanvien`(`id`, `TenNV`, `NgaySinh`,`gender`, `sdt`, `address`,`CMND`, `ChungChi`, `HSL`, `email`, `password`, `level_id`, `avatar`, `state`) 
+    VALUES (null,'$user_name','$date','$gender',$phone, '$address', $cmnd,'$chungchi',$hsl,'$email','$password','$chucvu','$file', 'working')";
     $sql_select = "SELECT `email` `CMND` FROM `nhanvien` WHERE email='$email' and CMND='$email'";
     $res_select = mysqli_fetch_array(mysqli_query($conn, $sql_select));
     if(empty($res_select)){
@@ -105,10 +105,29 @@ if (isset($_POST['submit']) && empty($_FILES['image']['tmp_name'])==false){
                 <ul class="nav side-menu">
                   <li><a href="index.php"><i class="fa fa-home"></i> Home </a>
                   </li>
+                  <?php 
+                    if ($_SESSION['level'] == 5 or $_SESSION['level'] == 6){
+                      ?>
                   <li><a> Nhân Viên <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
                       <li><a href="form_staff.php">Tạo Nhân Viên</a></li>
                       <li><a href="contacts.php">Tất Cả Nhân Viên</a></li>
+                      <li><a href="salary.php">Duyệt lương nhân viên</a></li>
+                      <li><a href="end_contacts.php">Tất Cả Nhân Viên Đã Lưu Trữ</a></li>
+                    </ul>
+                  </li>
+                  <li><a> Học Viên <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="form_student.php">Tạo Học Viên</a></li>
+                      <li><a href="csv_student.php">Nhập Học Viên bằng file csv</a></li>
+                      <li><a href="all_student.php">Tất Cả Học Viên</a></li>
+                      
+                    </ul>
+                  </li>
+                  <li><a> Học phí <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="fee.php">Học viên đóng học phí</a></li>
+                      <li><a href="all_fee.php">Danh sách học phí</a></li>
                     </ul>
                   </li>
                   <li><a> Lớp <span class="fa fa-chevron-down"></span></a>
@@ -147,9 +166,46 @@ if (isset($_POST['submit']) && empty($_FILES['image']['tmp_name'])==false){
                       <li><a href="all_news.php">Tất Cả Tin Tức</a></li>
                     </ul>
                   </li>
+                  <li><a> Chi <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="form_spending.php">Chi</a></li>
+                      <li><a href="all_spending.php">Tất cả chi</a></li>
+                    </ul>
+                  </li>
+                  <li><a> Báo Cáo <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="report_in.php">Báo cáo thu</a></li>
+                      <li><a href="report_out.php">Báo cáo chi</a></li>
+                      <li><a href="report_salary.php">Báo lương nhân viên</a></li>
+                      <li><a href="report_all.php">Báo Tổng </a></li>
+                    </ul>
+                  </li>
+                 <?php }
+                 else {
+                 ?>
+                 <li><a href="my_class.php">Lớp của tôi</a>
+                  </li>
+                  <li><a href="schedule.php"> Lịch  </a>
+                  </li>
+                  <li><a> Công <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="my_worktime.php">Xem lịch sử chấm công</a></li>
+                      <li><a href="my_salary.php">Lương</a></li>
+                    </ul>
+                  </li>
+                  <?php }?>
                 </ul>
               </div>
 
+            </div>
+
+            <!-- /sidebar menu -->
+
+            <!-- /menu footer buttons -->
+            <div class="sidebar-footer hidden-small">
+              <a data-toggle="tooltip" data-placement="top" title="Logout" href="../php/logout.php">
+                <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+              </a>
             </div>
             <!-- /sidebar menu -->
 

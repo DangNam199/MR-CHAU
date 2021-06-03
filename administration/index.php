@@ -1,6 +1,7 @@
 <?php   
       include '../php/session.php'; 
       include '../php/auto_admin.php';
+      include '../php/auto_student.php';
 ?>
 
 <!DOCTYPE html>
@@ -83,7 +84,7 @@
                   <li><a> Học phí <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
                       <li><a href="fee.php">Học viên đóng học phí</a></li>
-                      <li><a href="all_room.php">Tất Cả Phòng</a></li>
+                      <li><a href="all_fee.php">Danh sách học phí</a></li>
                     </ul>
                   </li>
                   <li><a> Lớp <span class="fa fa-chevron-down"></span></a>
@@ -155,7 +156,6 @@
 
             </div>
 
-            </div>
             <!-- /sidebar menu -->
 
             <!-- /menu footer buttons -->

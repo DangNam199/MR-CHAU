@@ -1,11 +1,31 @@
 <?php 
-  include '../php/connect.php';
-  
+include '../php/connect.php';
+    if (isset($_POST['submit']) && isset($_POST['datepicker']) && $_POST['datepicker'] != ''){
+        $all = $_POST['datepicker'];
+        $all = explode('-', $all);
+        $date = $all[0];
+        $year = $all[1];
+        $sql_paid = "SELECT sum(paied) as 'sum_paid'  FROM pay_salary WHERE month(pay_salary.date) = $date  and YEAR(pay_salary.date) = $year and `state` = 'paid'";
+        $res_paid = mysqli_fetch_assoc( mysqli_query($conn,$sql_paid))['sum_paid'];
+        $sql_spending = "SELECT SUM(price) as 'sum_price' from spending WHERE month(spending.date) = $date  and YEAR(spending.date) = $year";
+        $res_spending = mysqli_fetch_assoc(mysqli_query($conn, $sql_spending));
+        $total_out = intval($res_paid) + intval($res_spending);
+        $sql_in = "SELECT SUM(paid) as 'sum_pay', COUNT(invoice.student_id) as 'student_count', invoice.date, course.tenKH  FROM invoice INNER JOIN course on invoice.course_id = course.id  WHERE month(invoice.date) = $date  and YEAR(invoice.date) = $year GROUP BY `course_id`";
+        $res_in = mysqli_fetch_assoc( mysqli_query($conn,$sql_in))['sum_pay'];
+    }
+    
+    include '../php/session.php';
+    if ($_SESSION['level'] != 5 and $_SESSION['level'] != 6){
+      header("location: index.php");
+    }
 ?>
+
+
 
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <!-- Meta, title, CSS, favicons, etc. -->
     <meta charset="utf-8">
@@ -20,28 +40,16 @@
     <link href="../vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
     <!-- NProgress -->
     <link href="../vendors/nprogress/nprogress.css" rel="stylesheet">
-    <!-- FullCalendar -->
-    <link href="../vendors/fullcalendar/dist/fullcalendar.min.css" rel="stylesheet">
-    <link href="../vendors/fullcalendar/dist/fullcalendar.print.css" rel="stylesheet" media="print">
 
-    <link href='../src/js/lib/main.css' rel='stylesheet' />
-    <script src='../src/js/lib/main.js'></script>
-
-    <!-- Custom styling plus plugins -->
+    <!-- Custom Theme Style -->
     <link href="../build/css/custom.min.css" rel="stylesheet">
+</head>
 
-    <link href="../vendors/pnotify/dist/pnotify.css" rel="stylesheet">
-    <link href="../vendors/pnotify/dist/pnotify.buttons.css" rel="stylesheet">
-    <link href="../vendors/pnotify/dist/pnotify.nonblock.css" rel="stylesheet">
-
-  <body class="nav-md">
+<body class="nav-md">
     <div class="container body">
-      <div class="main_container">
+        <div class="main_container">
         <div class="col-md-3 left_col">
           <div class="left_col scroll-view">
-            <div class="navbar nav_title" style="border: 0;">
-              <a href="index.php" class="site_title"><i class="fa fa-paw"></i> <span>Anh ngữ Mr Chau</span></a>
-            </div>
 
             <div class="clearfix"></div>
 
@@ -49,13 +57,8 @@
             <div class="profile clearfix">
               <div class="profile_pic">
               <?php 
-              include('../php/connect.php');
-              include '../php/session.php';
-              if ($_SESSION['level'] != 1 && $_SESSION['level'] != 2 ){
-                header("location: index.php");
-              }
                     echo '<img src="data:image/jpeg;base64,'.base64_encode($_SESSION['avatar'] ).'" class="img-circle profile_img" />';
-              //}?>
+              ?>
               </div>
               <div class="profile_info">
                 <span>Welcome,</span>
@@ -175,184 +178,113 @@
                 <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
               </a>
             </div>
+            <!-- /sidebar menu -->
 
           </div>
         </div>
 
+        <!-- top navigation --> 
+            <!-- /top navigation -->
 
-        <!-- page content -->
-        <div class="right_col" role="main">
-          <div class="">
-            <div class="page-title">
-
-
-            <div class="clearfix"></div>
-
-            <div class="row">
-              <div class="col-md-12">
-                <div class="x_panel">
-                  <div class="x_title">
-                    <h2>Lịch học </h2>
-                    
-                    <ul class="nav navbar-right panel_toolbox">
-                    <button class="btn btn-primary" onclick="check_in()">Check In</button>
-                    <button class="btn btn-primary" onclick="check_out()">Check Out</button>
-                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                      
-                      </li>
-                      <li class="dropdown">
-                      
-                      </li>
-                      <li><a class="close-link"><i class="fa fa-close"></i></a>
-                      </li>
-                    </ul>
+            <!-- page content -->
+            <div class="right_col" role="main">
+                <div class="">
+                    <div class="page-title">
+                        <div class="title_left">
+                            <h3>Báo cáo doanh thu</h3>
+                        </div>
+                    </div>
                     <div class="clearfix"></div>
-                  </div>
-                  
 
-                  <div class="x_content">
-                    <p id ='staff_id' hidden = 'true'><?=$_SESSION['id']?></p>
-                    <div id='cld'></div>
-
-                  </div>
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12">
+                            <div class="x_panel">
+                            <div class="table-responsive">
+                                <p>Chọn tháng báo cáo</p>
+                                <form method = "post">
+                            <input type="text" class="form-control" name="datepicker" id="datepicker" />
+                            <input type="submit" class="form-control" name="submit"/>
+                            </form>
+                      <?php 
+                      if (isset($_POST['submit']) && isset($_POST['datepicker']) && $_POST['datepicker'] != ''){
+                      ?>
+                      <table class="table table-striped jambo_table bulk_action bulk_action">
+                        <thead>
+                          <tr class="headings">
+                            <th class="column-title">Tổng thu </th>
+                            <th class="column-title">Tổng chi </th>
+                            <th class="column-title">Lãi </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                          <td><?=$res_in?></td>
+                          <td><?=$res_paid?></td>
+                          <td><?=$res_in - $res_paid?></td>
+                        </tr>
+                        </tbody>
+                      </table>
+                      <?php }?>
+                    </div>       
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-              </div>
             </div>
-          </div>
-        </div>
-        <!-- /page content -->
+            <!-- /page content -->
 
-        <!-- footer content -->
-        <!-- /footer content -->
-      </div>
+            <!-- footer content -->
+            <footer>
+            </footer>
+            <!-- /footer content -->
+        </div>
     </div>
 
-    <!-- calendar modal -->
 
-    <!-- /calendar modal -->
-        
-    <script>
-
-    var calendarEl = document.getElementById('cld');
-
-    var calendar = new FullCalendar.Calendar(calendarEl, {
-      eventColor: 'green',
-      headerToolbar: {
-        left: 'prevYear,prev,next,nextYear today',
-        center: 'title',
-        right: 'dayGridMonth,dayGridWeek,dayGridDay'
-      },
-      eventBackgroundColor: 'red',
-      editable: true,
-      selectable:true,
-      displayEventTime: true,
-      events: '../php/nhanvien/test_schedule.php',  
-    });
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="../vendors/validator/multifield.js"></script>
+    <script src="../vendors/validator/validator.js"></script>
     
-    calendar.render();
+    <!-- Javascript functions	-->
+	<script>
+		function hideshow(){
+			var password = document.getElementById("password1");
+			var slash = document.getElementById("slash");
+			var eye = document.getElementById("eye");
+			
+			if(password.type === 'password'){
+				password.type = "text";
+				slash.style.display = "block";
+				eye.style.display = "none";
+			}
+			else{
+				password.type = "password";
+				slash.style.display = "none";
+				eye.style.display = "block";
+			}
 
-    function check_out() {
-        var check_out = new Date().toLocaleTimeString();
-        $.ajax({
-          type: "post",
-          url: "../php/nhanvien/chamcong.php",
-          data: {
-            check_out: 'true',
-            staff_id: $("#staff_id").text(),
-            date: new Date().toLocaleDateString('en-US'),
-          },
-          success: function (data) {
-            if (data == 'success'){
-                    new PNotify({
-                      title: 'Check out',
-                      text: 'Check out thành công.',
-                      type: 'success',
-                      hide: false,
-                      styling: 'bootstrap3'
-                  });
-                } else if (data == 'no check_in') {
-                  new PNotify({
-                      title: 'Check in đầu tiên',
-                      text: 'Check out thất bại.',
-                      type: 'error',
-                      hide: false,
-                      styling: 'bootstrap3'
-                  });
-                }
-          }
-        });
-      }
+		}
+	</script>
 
-    function check_in() {  
-      //SimpleDateFormat localDateFormat = new SimpleDateFormat("HH");
-      event = calendar.getEvents();
-      time_to = [];
-      time_end = [];
-      event.forEach(function(entry) { 
-          if (entry.start.toLocaleDateString('en-US') == new Date().toLocaleDateString('en-US')){
-            // time_to.push((entry.start.getTime().toLocaleTimeString());
-            time_to.push(entry.start);
-            time_end.push(entry.end);
-          }
-        });
-        //var today = new Date(date_to).toISOString().split('T')[0];
-        all_time = [time_to[0], time_end[time_end.length-1]];
-        check_in = new Date().toLocaleTimeString();
-        all_time = [all_time[0].toLocaleDateString('en-US')+ ' ' + all_time[0].toLocaleTimeString(), all_time[1].toLocaleDateString('en-US' )+ ' ' + all_time[1].toLocaleTimeString()]
-        console.log(all_time);
-        $.ajax({
-          type: "post",
-          url: "../php/nhanvien/chamcong.php",
-          data: {
-            all_time: all_time,
-            check_in: check_in,
-            staff_id: $("#staff_id").text(),
-          },
-          success: function (data) {
-            if (data == 'success'){
-                    new PNotify({
-                      title: 'Check in',
-                      text: 'Check in thành công.',
-                      type: 'success',
-                      hide: false,
-                      styling: 'bootstrap3'
-                  });
-                } else if (data == 'fail') {
-                  new PNotify({
-                      title: 'Check in',
-                      text: 'Check in thất bại.',
-                      type: 'error',
-                      hide: false,
-                      styling: 'bootstrap3'
-                  });
-                }
-          }
-        });
-    }
+    <script type="text/javascript">
+    $(function () {  
+    $("#datepicker").datepicker({         
+        format: "mm-yyyy",
+        startView: "months", 
+        minViewMode: "months"
+    });
+    });
+    </script>
 
-</script>
-<style>
-
-</style>
-
-    <!-- jQuery -->
     <script src="../vendors/jquery/dist/jquery.min.js"></script>
-    <!-- Bootstrap -->
-   <script src="../vendors/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- FastClick -->
+    <script src="../vendors/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../vendors/fastclick/lib/fastclick.js"></script>
-    <!-- NProgress -->
     <script src="../vendors/nprogress/nprogress.js"></script>
-    <!-- FullCalendar -->
-    <script src="../vendors/moment/min/moment.min.js"></script>
-    <script src="../vendors/fullcalendar/dist/fullcalendar.min.js"></script>
-
-    <!-- Custom Theme Scripts -->
     <script src="../build/js/custom.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/css/datepicker.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/js/bootstrap-datepicker.min.js"></script>
 
-    <script src="../vendors/pnotify/dist/pnotify.js"></script>
-    <script src="../vendors/pnotify/dist/pnotify.buttons.js"></script>
-    <script src="../vendors/pnotify/dist/pnotify.nonblock.js"></script>
+</body>
 
-  </body>
 </html>

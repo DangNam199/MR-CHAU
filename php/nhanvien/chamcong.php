@@ -13,7 +13,7 @@
         $res = mysqli_query($conn, $sql_check);
         if (mysqli_num_rows($res)  == 0 ) {
         $sql_first = "INSERT INTO `chamcong`(`id`, `staff_id`,`shift_begin`, `shift_end`, `real_begin`, `real_end`, `date`, `real_work_time`, state) 
-        VALUES (null, $staff_id,'$shift_begin','$shift_end','$check_in','','$this_date','','pending')";
+        VALUES (null, $staff_id,'$shift_begin','$shift_end','$check_in',null,'$this_date',null,'pending')";
         if (mysqli_query($conn, $sql_first)){
             echo 'success';
         }
@@ -22,14 +22,14 @@
         }
         }
     }
-    if (isset($_POST['check_out']) && isset($_POST['date']) ){
+    if (isset($_POST['check_out']) && isset($_POST['date']) && $_POST['check_out'] == 'true'){
         $orgDate = $_POST['date'];
         $date = date("Y-m-d", strtotime($orgDate));  
         $staff_id = $_POST['staff_id'];
         $sql_check = "SELECT * FROM `chamcong` where staff_id = $staff_id and date = '$date'";
         $res = mysqli_query($conn, $sql_check);
         if (mysqli_num_rows($res) == 1 ) {
-            $sql = "UPDATE `chamcong` SET `real_end`= now() WHERE staff_id = 69 and date = '$date'";
+            $sql = "UPDATE `chamcong` SET `real_end`= now() WHERE staff_id = $staff_id and date = '$date'";
             if (mysqli_query($conn, $sql)){
                 echo 'success';
             }
