@@ -1,0 +1,4 @@
+<br />
+<b>Warning</b>:  mysqli_fetch_assoc() expects parameter 1 to be mysqli_result, bool given in <b>C:\xampp\htdocs\mrchau\administration\downloads.php</b> on line <b>24</b><br />
+<br />
+<b>Warning</b>:  mysqli_fetch_assoc() expects parameter 1 to be mysqli_result, bool given in <b>C:\xampp\htdocs\mrchau\administration\downloads.php</b> on line <b>27</b><br />

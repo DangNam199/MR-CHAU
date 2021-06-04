@@ -16,7 +16,7 @@ $res_user4 = mysqli_query($conn,$sql_user4);
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Trung tâm ngoại ngữ</title>
@@ -68,7 +68,7 @@ $res_user4 = mysqli_query($conn,$sql_user4);
 
 <header class="blog-header bg-dark py-1">
     <div class="d-flex justify-content-between align-items-center">
-        <a class="text-white ml-2" href="http://localhost/pro1013/login.php"> Đăng nhập</a>
+        <a class="text-white ml-2" href="administration/login.php"> Đăng nhập</a>
         <div>
             <a class="text-white mr-4" href="#"><i class="fa fa-phone"></i> Hotline: 0398060479</a>
             <a class="text-white" href="#"><i class="fa fa-clock-o"></i> Time: 8h - 18h</a>
@@ -121,9 +121,9 @@ $res_user4 = mysqli_query($conn,$sql_user4);
             while ($row = mysqli_fetch_array($res_user4)) {
             ?>
         <?php
-            echo"<div"." class='col-md-4  border-bottom pt-4 mb-5'".">"."<img src='../".$row["thumbnail"]."'><br>".""."</div>";
+            echo '<img src="data:image/jpeg;base64,'.base64_encode($row['thumbnail'] ).'" class="img-circle profile_img avatar" />';
 
-            echo"<div"." class='col-md-8  border-bottom mb-5'".">"."<p>".$row["NoiDungTT"]."</p>"."</div>";
+            echo"<div"." class='col-md-8  border-bottom mb-5'".">"."<p>".$row["TenTT"]."</p>"."</div>";
             ?>
               <?php
            }
@@ -160,10 +160,10 @@ $res_user4 = mysqli_query($conn,$sql_user4);
             </div>
             <div class="col-md-4">
                 <h5 class="text-white mb-1">ĐỊA CHỈ</h5>
-                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3723.827622207749!2d105.80170731432445!3d21.03958218599249!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135ab3e638834e5%3A0xc0757decf12a8bf4!2zMTUgxJDDtG5nIFF1YW4sIFF1YW4gSG9hLCBD4bqndSBHaeG6pXksIEjDoCBO4buZaSwgVmlldG5hbQ!5e0!3m2!1sen!2s!4v1542356725898" width="100%" height="250" frameborder="0" style="border:0" allowfullscreen></iframe>                </div>
+                <iframe src="" width="100%" height="250" frameborder="0" style="border:0" allowfullscreen></iframe>                </div>
             <div class="col-md-4">
                 <h5 class="text-white mb-1">FACEBOOK</h5>
-                <iframe src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Ffacebook&tabs=timeline&width=340&height=450&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true&appId=191565505069352" width="100%" height="250" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowTransparency="true" allow="encrypted-media"></iframe>              </div>
+                <iframe src="" width="100%" height="250" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowTransparency="true" allow="encrypted-media"></iframe>              </div>
         </div>
     </div>
 </footer>        <script>
@@ -183,7 +183,13 @@ $res_user4 = mysqli_query($conn,$sql_user4);
 
     });
 </script>
-<script src="../build/js/owl.carousel.min.js"></script>
+<script src="../../build/js/owl.carousel.min.js"></script>
+<style>
+.avatar {
+    width: 150px;
+}
+
+</style>
 
 </body>
 </html>

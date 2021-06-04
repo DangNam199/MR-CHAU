@@ -1,7 +1,6 @@
 <?php 
     include '../php/connect.php';
-    include '../php/weekday.php';
-    include '../php/auto_admin.php';
+    include '../php/weekday.php'; 
     include '../php/auto_student.php';
     include '../php/session.php';
     if ($_SESSION['level'] != 5 and $_SESSION['level'] != 6){
