@@ -1,9 +1,10 @@
 <?php 
     include '../php/connect.php';
     include '../php/session.php';
+    $id = $_SESSION['id'];
     $sql_classid = "SELECT class_id from hocvien WHERE id = ". $_SESSION['id'];
     $class_id = mysqli_fetch_array(mysqli_query($conn, $sql_classid))['class_id'];
-    $sql = "SELECT homework.name as 'homework_name', deadline, file, homework.id, homework.state FROM `homework` where  class_id =  $class_id  and homework.state = 'new' ORDER by homework.id";
+    $sql = "SELECT homework.name as 'homework_name', deadline, file, homework.id, homework.state FROM `homework` where  class_id =  $class_id and homework.state = 'new' ORDER by homework.id";
     $res = mysqli_query($conn,$sql);
     
 
@@ -154,12 +155,23 @@
                             ?>
                             ><?=$row['homework_name']?></td>
                             <td class=" "><?=$row['deadline']?> </td>
-                            <td><a href="downloads.php?file_id=<?php echo $row['id'] ?>">Download</a></td>
+                            <td><a href="../administration/downloads.php?file_id=<?php echo $row['id'] ?>">Download</a></td>
                               
                               <td style="width: 25%;">
                                 <p id='student-<?=$row['id']?>' hidden><?=$_SESSION['id']?></p>
-                                <input type="file" id="my-homework-<?=$row['id']?>" class="form-control" name="product_file" style = "width: 50%;"/>
+                                <?php 
+                                  $sql_check = "SELECT * FROM homework_student_rel where student_id = $id and homework_id = ". $row['id'];
+                                  $res_check = mysqli_query($conn, $sql_check);
+                                  if (mysqli_num_rows($res_check) == 0){
+                                ?>
+
+                                 <input type="file" id="my-homework-<?=$row['id']?>" class="form-control" name="product_file" style = "width: 50%;"/>
                                 <button onclick="submit(<?=$row['id']?>)" class ='btn btn-primary'>  </button>
+                                      <?php } 
+                                      else {
+                                        echo "Bạn đã nộp bài tập";
+                                      }
+                                      ?>
                                 <br>
                               </td> 
                               

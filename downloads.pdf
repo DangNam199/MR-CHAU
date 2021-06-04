@@ -1,4 +1,2 @@
-<br />
-<b>Warning</b>:  mysqli_fetch_assoc() expects parameter 1 to be mysqli_result, bool given in <b>C:\xampp\htdocs\mrchau\administration\downloads.php</b> on line <b>24</b><br />
-<br />
-<b>Warning</b>:  mysqli_fetch_assoc() expects parameter 1 to be mysqli_result, bool given in <b>C:\xampp\htdocs\mrchau\administration\downloads.php</b> on line <b>27</b><br />
+SELECT * FROM homework_student_rel WHERE student_id = '154' and homework_id = '12'<br />
+<b>Notice</b>:  Undefined variable: name in <b>C:\xampp\htdocs\mrchau\administration\downloads.php</b> on line <b>29</b><br />

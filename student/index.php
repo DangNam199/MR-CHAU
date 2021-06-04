@@ -100,7 +100,7 @@
                     $sql_count_my_homework = "SELECT COUNT(homework_id) as count_id FROM `homework_student_rel` WHERE student_id  = ". $_SESSION['id'];
                     $res_count = mysqli_fetch_assoc(mysqli_query($conn, $sql_count_homework));
                     $res_count_my_homework = mysqli_fetch_assoc(mysqli_query($conn, $sql_count_my_homework));
-                    echo '<p>'.$res_count_my_homework['count_id'].'/'.' được giao </p>';
+                    echo '<p>'.$res_count_my_homework['count_id'].' được giao </p>';
                   ?>
                   <h3>Bài tập cần phải hoàn thành</h3>
                   

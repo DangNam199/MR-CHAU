@@ -17,7 +17,6 @@
     }
     $this_page_result = ($page-1)*$result_per_page;
     $sql = "SELECT * from `course` INNER JOIN `degree` on course.degree_id = degree.id ORDER BY `course`.`id` DESC limit ".$this_page_result. ','.$result_per_page;
-    echo $sql;
     $res = mysqli_query($conn,$sql);
 
 ?>

@@ -52,18 +52,12 @@
               $password = md5($dob);
               list($day,$month,$year) = explode("/",$dob);
               $date = $year.'-'.$month.'-'.$day;
-              $sql .= "(null,'$name','$date','$address',null,'$sdt','$email','$password','$gender','', now(), 'studing')";
-              if($count < $num){
-                $sql .= ',';
-              }
-              else {
-                $sql.=';';
-              }
+              $sql .= "(null,'$name','$date','$address',null,'$sdt','$email','$password','$gender','', now(), 'new');";
             }
             $count ++;
           }
           fclose($handle);
-          $res_student = mysqli_query($conn,$sql);
+          $res_student = mysqli_multi_query($conn,$sql);
           if ($res_student){
             $_SESSION['notification']= 'Thêm Học viên mới thành công';
             ;

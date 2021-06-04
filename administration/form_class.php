@@ -345,6 +345,16 @@
     </div>
 
     <script>
+            $('#date_from').change(function() {
+                var date = $(this).val();
+                date.replaceAll('-','/');
+                date = new Date(date);
+                if (date <= Date.now()){
+                  alert("Mở lớp sớm hơn 1 ngày để có thờI gian chuẩn bị");
+                  var date = $(this).val("");
+                }
+            });
+                                                
              var id_course, techer , tutors, time_from,time_to, date_from, date_to, weekDay = [];
              var price, time, duration;
             $("#select-course").change(function(){

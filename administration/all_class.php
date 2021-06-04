@@ -7,7 +7,7 @@
       header("location: index.php");
     }
     $state = 'studing';
-    if (!isset($_POST['submit'])){
+    if (!isset($_POST['submit']) && isset($_POST['state'])){
       $state = $_POST['state'];
     }
 
@@ -256,10 +256,19 @@
                             
                               <h2><?=$row['class_name'] ?></h2>
                               <p id="course" ><strong>Khoá: </strong> <?=$row['course_name'] ?> </p>
-                              <p id="room" ><strong>Phòng: </strong> <?=$row['room_name'] ?> </p>
-                              <p id="state" ><strong>Tình trạng: </strong> <?=$row['state'] ?> </p>
+                              <p id="room" ><strong>Phòng: </strong> <?=$row['room_name'] ?> </p>s
                               <p id="date" ><strong>Thời gian học: </strong> <?=$row['date_from'] ?> - <span id='date-end-<?=$row['class_id']?>'> <?=$row['date_to']?></span></span></p>
                               <p id="time" ><strong>Giờ học: </strong> <?=$row['time_from'] ?> - <?=$row['time_to']?></p>
+                              <p id="time" ><strong>Nhân viên phụ trách: 
+                              <?php 
+                                $sql_staff = "SELECT * FROM `class_staff_rel` inner JOIN nhanvien on class_staff_rel.staff_ref = nhanvien.id inner join level on nhanvien.level_id = level.id where class_id = ". $row['class_id'];
+                                $res_staff = mysqli_query($conn, $sql_staff);
+                                while($row_staff = mysqli_fetch_array($res_staff)){
+                                  echo $row_staff['TenNV']. " - ". $row_staff['name'] . "<br>" ;
+                                }
+                              ?>
+
+                              </p>
                               
                               <?php 
                                 $arr = getListWeekday($row['weekdays']);
@@ -284,8 +293,13 @@
                           </div>
                           <div class=" profile-bottom text-center">
                             <div class=" row-sm-6 emphasis">
+                              <?php 
+                                if ($row['state'] == 'waiting'){
+                              ?>
                               <a class="btn btn-app"><i  class="fa fa-close"> </i> Xoá Lớp</a>
+                              <?php }?>
                                <?php 
+                                $class_id = $row['class_id'];
                                 if($row['state'] == 'waiting' && $row_count['count_id'] < $row['seat']){
                                   echo '<a class="btn btn-app" data-toggle="modal" onclick="add_student('.$row['class_id'].')"  data-role="update"q ><i  class="fa fa-plus"> </i> Thêm học viên </a>';
                                 }
@@ -293,9 +307,10 @@
                                   echo '<a class="btn btn-app" data-toggle="modal-exam" onclick="exam('.$row['class_id'].')"  data-role="update"q ><i  class="fa fa-plus"> </i> Nhập ngày thi cấp chứng chỉ </a>';
                                 }
                                 if($row['state'] == 'marking'){
-                                  $class_id = $row['class_id'];
+                                 
                                   echo '<a class="btn btn-app" href="official_mark.php?class_id='.$class_id.'"><i  class="fa fa-plus"> </i> Nhập điểm thi chính thức </a>';
                                 }
+                                echo '<a class="btn btn-app" href="student_class.php?class_id='.$class_id.'"><i  class="fa fa-plus"> </i> Xem danh sách học viên </a>';
                                ?>
                             </div>
                           </div>
