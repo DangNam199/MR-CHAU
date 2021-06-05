@@ -240,6 +240,7 @@
                               <p id="time" ><strong>Giờ học: </strong> <?=$row['time_from'] ?> - <?=$row['time_to']?></p>
                               
                               <?php 
+                              $class_id = $row['class_id'];
                                 $arr = getListWeekday($row['weekdays']);
                                 echo '<p><strong> Học vào: </strong>';
                                 foreach ($arr as $r){
@@ -257,6 +258,7 @@
                               <a class="btn btn-app" href='homework.php?class_id=<?=$row['class_id']?>'  > </i> Xem bài tập</a>
                               <a class="btn btn-app" href='mark.php?class_id=<?=$row['class_id']?>'  > </i> Nhập điểm</a>
                               <a class="btn btn-app" href='show_mark.php?class_id=<?=$row['class_id']?>'  > </i> Xem điểm</a>
+                              <a class="btn btn-app" href="student_class.php?class_id=<?=$class_id?>"> Xem danh sách học viên </a>
                             </div>
                           </div>
                         </div>

@@ -1,9 +1,24 @@
-<?php   
-      include '../php/session.php'; 
-      include '../php/auto_admin.php';
-      include '../php/auto_student.php';
-?>
+<?php 
+    include '../php/connect.php';
+    include '../php/session.php';
+    include '../php/weekday.php';
+    if(isset($_GET['student_id']) && isset($_GET['class_id']))
+    {
+        $student_id = $_GET['student_id'];
+        $class_id = $_GET['class_id'];
+        $sql = "SELECT * FROM attendance where student_id = ". $_GET['student_id'] . " and class_id = ".$class_id;
+        $res = mysqli_query($conn, $sql);
+        $sql_name = "SELECT name from hocvien where id = $student_id";
+        $name = mysqli_fetch_assoc(mysqli_query($conn, $sql_name))['name'];
 
+    }
+    else 
+    {
+      header("location: index.php");
+    }
+
+    
+?>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -13,50 +28,56 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Gentelella Alela! | </title>
+    <title>Trung tâm MR.CHAU</title>
 
     <!-- Bootstrap -->
     <link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <!-- Font Awesome -->
     <link href="../vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
     <!-- NProgress -->
     <link href="../vendors/nprogress/nprogress.css" rel="stylesheet">
-    <!-- bootstrap-daterangepicker -->
-    <link href="../vendors/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
 
     <!-- Custom Theme Style -->
     <link href="../build/css/custom.min.css" rel="stylesheet">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+
+    <!-- thư viên để thông báo -->
+    <link href="../vendors/pnotify/dist/pnotify.css" rel="stylesheet">
+    <link href="../vendors/pnotify/dist/pnotify.buttons.css" rel="stylesheet">
+    <link href="../vendors/pnotify/dist/pnotify.nonblock.css" rel="stylesheet">
+
+
+ 
   </head>
 
   <body class="nav-md">
     <div class="container body">
       <div class="main_container">
+        
         <div class="col-md-3 left_col">
-          <div class="left_col scroll-view">
-            <div class="navbar nav_title" style="border: 0;">
-              <a href="index.html" class="site_title"><i class="fa fa-paw"></i> <span>Gentelella Alela!</span></a>
-            </div>
+            <div class="left_col scroll-view">
 
-            <div class="clearfix"></div>
+              <div class="clearfix"></div>
 
-            <!-- menu profile quick info -->
-            <div class="profile clearfix">
-              <div class="profile_pic">
-              <?php 
-                    echo '<img src="data:image/jpeg;base64,'.base64_encode($_SESSION['avatar'] ).'" class="img-circle profile_img" />';
-              ?>
+              <!-- menu profile quick info -->
+              <div class="profile clearfix">
+                <div class="profile_pic">
+                  <?php
+                echo '<img src="data:image/jpeg;base64,'.base64_encode($_SESSION['avatar'] ).'" class="img-circle profile_img" />'; ?>
+                </div>
+                <div class="profile_info">
+                  <span>Welcome,</span>
+                  <h2><?=$_SESSION['name'] ?></h2>
+                </div>
               </div>
-              <div class="profile_info">
-                <span>Welcome,</span>
-                <h2><?=$_SESSION['name']?></h2>
-              </div>
-            </div>
-            <!-- /menu profile quick info -->
+              <!-- /menu profile quick info -->
 
-            <br />
+              <br />
 
-            <!-- sidebar menu -->
-            <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+              <!-- sidebar menu -->
+              <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
               <div class="menu_section">
                 <h3>General</h3>
                 <ul class="nav side-menu">
@@ -164,65 +185,109 @@
                 <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
               </a>
             </div>
-            <!-- /menu footer buttons -->
-          </div>
+
+            </div>
+              <!-- /sidebar menu -->
+
+            </div>
         </div>
 
+        <!-- top navigation -->
+        <!-- top navigation -->
 
         <!-- page content -->
         <div class="right_col" role="main">
           <div class="">
-            <div class="row" style="display: inline-block;">
-            <div class="top_tiles">
-            <?php 
-              $arr = get_end_contract($conn);
-              if (count($arr) > 0 ){
-            ?>
-              <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 ">
-                <div class="tile-stats">
-                  <div class="count"><?=count($arr)?></div>
-                  <h4>Hợp đồng hết hạn ngày hôm nay cần có hành động</h4>
-                  <a href="contacts.php?end_contract=true" >Xem hợp đồng hết hạn</a>
-                </div>
+            <div class="page-title">
+              <div class="title_left">
+                <h3>Học Viên</h3> 
+                <?php 
+                  if (isset($_SESSION['notification'])){
+                    echo '<p>'. $_SESSION['notification'] . '</p>';
+                    unset($_SESSION['notification']);
+                  }
+                ?>
               </div>
-              <?php } 
+            <div class="clearfix"></div>
 
-              if ($_SESSION['level'] == 5 | $_SESSION['level'] == 6 ){
-                $sql_count_contact = "SELECT COUNT(id) as 'count_id' from lienhe where state = 'draft'";
-                
-                $res_count = mysqli_query($conn, $sql_count_contact);
-              ?>
-              
-              
-                <div class="tile-stats">
-                  <div class="count"><?php echo mysqli_fetch_assoc($res_count)['count_id']; ?></div>
-                  <h3>Học viên tiềm năng mới</h3>
-                  <a href="contact_us.php" > Xem</a>
+            <div class="row">
+                <div class="x_panel">
+                  <div class="x_content">
+                      
+                      <div class="col-md-12 col-sm-12  text-center">
+                      <div class="clearfix"></div>
+                      <div class="table-responsive">
+                      <table class="table table-striped jambo_table bulk_action">
+                      <p>Bảng điểm danh học viên - <?=$name?></p>
+                        <thead>
+                          <tr class="headings">
+                            <th class="column-title">Buổi</th>
+                            <th class="column-title">Ngày</th>
+                          </tr>
+                        </thead>
+
+                        <tbody>
+                        
+                              <tr class="even pointer">
+                              
+                            <?php 
+                            $sql_max = "SELECT max(lession) as 'max_lession' FROM attendance where class_id = " . $_GET['class_id'];
+                            $max = mysqli_fetch_assoc(mysqli_query($conn, $sql_max))['max_lession'];
+                            for ($i =1; $i<=$max;$i++){
+                              $sql_check = "SELECT * FROM attendance where student_id = ". $student_id . ' and class_id = '.$class_id . ' and lession = '. $i;
+                              $res_check = mysqli_query($conn, $sql_check);
+                              $row_check  = mysqli_fetch_assoc($res_check);
+                              if (mysqli_num_rows($res_check) > 0){
+                                  echo "<tr>";
+                                  echo "<td>".$row_check['lession']."</td>";
+                                  echo "<td >".$row_check['date_attendance']."</td>";
+                                  echo "</tr>";
+                              }
+                              else {
+                                echo "<tr>";
+                                echo "<td style='color:#ff0000'>Vắng mặt</td><td></td>";
+                                echo "</tr>";
+                              }
+
+                            }
+
+                              ?>
+                            
+                        </tbody>
+                      </table>
+                  </div>
                 </div>
-              
-              <?php } ?>
-              
             </div>
-            </div>
-          </div>
           </div>
         </div>
-        <!-- /page content -->
-
-        <!-- footer content -->
-        <!-- /footer content -->
+              
       </div>
     </div>
 
+
+
+    <!-- mẫu xoá -->
+    <!-- hết mẫu xoá -->
+    <!-- jQuery -->
+    
     <!-- jQuery -->
     <script src="../vendors/jquery/dist/jquery.min.js"></script>
     <!-- Bootstrap -->
    <script src="../vendors/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <!-- FastClick -->
-
+    <script src="../vendors/fastclick/lib/fastclick.js"></script>
     <!-- NProgress -->
+    <script src="../vendors/nprogress/nprogress.js"></script>
+    <!-- bootstrap-progressbar -->
+    <script src="../vendors/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
+    <!-- iCheck -->
+    <script src="../vendors/iCheck/icheck.min.js"></script>
+    <!-- PNotify -->
+    <!-- thư viên để thông báo -->
+    <script src="../vendors/pnotify/dist/pnotify.js"></script>
+    <script src="../vendors/pnotify/dist/pnotify.buttons.js"></script>
+    <script src="../vendors/pnotify/dist/pnotify.nonblock.js"></script>
 
-    
     <!-- Custom Theme Scripts -->
     <script src="../build/js/custom.min.js"></script>
   </body>

@@ -6,6 +6,8 @@
     {
         $sql = "SELECT * FROM hocvien where class_id = ". $_GET['class_id'];
         $res = mysqli_query($conn, $sql);
+        $sql_max_lession = "SELECT max(lession) as 'max_lession' from attendance where class_id = ". $_GET['class_id'];
+        $max = mysqli_fetch_assoc(mysqli_query($conn, $sql_max_lession))['max_lession'];
     }
     else 
     {
@@ -224,10 +226,10 @@
                       <div class="col-md-12 col-sm-12  text-center">
                       <div class="clearfix"></div>
                       <div class="table-responsive">
+                      <p>Số buổi đã học: <?=$max?></p>
                       <table class="table table-striped jambo_table bulk_action">
                         <thead>
                           <tr class="headings">
-                            <th></th>
                             <th></th>
                             <th>
                               Tên
@@ -237,21 +239,25 @@
                             <th class="column-title">Ngày sinh</th>
                             <th class="column-title">Email</th>
                             <th class="column-title">Ngày nhập học</th>
+                            <th class="column-title">Tiến độ học</th>
                           </tr>
                         </thead>
 
                         <tbody>
-                            <?php while($row = mysqli_fetch_assoc($res)) { ?>
+                            <?php while($row = mysqli_fetch_assoc($res)) { 
+                              $sql_student_total = "SELECT COUNT(lession) as 'count_id' from attendance where student_id = ". $row['id']. " and class_id = ".$_GET['class_id'];
+                              $total = mysqli_fetch_assoc(mysqli_query($conn, $sql_student_total))['count_id'];
+                              ?>
                               <tr class="even pointer">
                               <?php
-                echo '<td><img width="50" height="50" src="data:image/jpeg;base64,'.base64_encode($_SESSION['avatar'] ).'" class="img-circle profile_img" /></td>'; ?>
+                echo '<td><img width="50" height="50" src="data:image/jpeg;base64,'.base64_encode($row['avatar'] ).'" class="img-circle profile_img" /></td>'; ?>
                             <td class=" "><?=$row['name']?></td>
-                            <td class=" "><?=$row['address']?></td>
                             <td class=" "><?=$row['gender']?></td>
+                            <td class=" "><?=$row['address']?></td>
                             <td class=" "><?=$row['dob']?></td>
-                            <td class=" "><?=$row['name']?></td>
                             <td class=" "><?=$row['email']?></td>
                             <td class=" "><?=$row['ngaynhaphoc']?></td>
+                            <td class=" "><?php echo $total.' / '. $max?> <br> <a class = 'btn btn-primary' href= 'progress.php?student_id=<?php echo $row['id']?>&class_id=<?=$row['class_id']?>' >Xem quá trình </a></td>
                             </td>
                             </tr>
                             <?php } ?>

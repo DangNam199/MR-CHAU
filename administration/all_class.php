@@ -304,13 +304,13 @@
                                   echo '<a class="btn btn-app" data-toggle="modal" onclick="add_student('.$row['class_id'].')"  data-role="update"q ><i  class="fa fa-plus"> </i> Thêm học viên </a>';
                                 }
                                 if($row['state'] != 'done' && $row['state'] != 'marking'){
-                                  echo '<a class="btn btn-app" data-toggle="modal-exam" onclick="exam('.$row['class_id'].')"  data-role="update"q ><i  class="fa fa-plus"> </i> Nhập ngày thi cấp chứng chỉ </a>';
+                                  echo '<a class="btn btn-app" data-toggle="modal-exam" onclick="exam('.$row['class_id'].')"  data-role="update"q > Nhập ngày thi cấp chứng chỉ </a>';
                                 }
                                 if($row['state'] == 'marking'){
                                  
-                                  echo '<a class="btn btn-app" href="official_mark.php?class_id='.$class_id.'"><i  class="fa fa-plus"> </i> Nhập điểm thi chính thức </a>';
+                                  echo '<a class="btn btn-app" href="official_mark.php?class_id='.$class_id.'"> Nhập điểm thi chính thức </a>';
                                 }
-                                echo '<a class="btn btn-app" href="student_class.php?class_id='.$class_id.'"><i  class="fa fa-plus"> </i> Xem danh sách học viên </a>';
+                                echo '<a class="btn btn-app" href="student_class.php?class_id='.$class_id.'"> Xem danh sách học viên </a>';
                                ?>
                             </div>
                           </div>

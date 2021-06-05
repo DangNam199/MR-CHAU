@@ -87,7 +87,7 @@
           <div class="">
             <div class="row" style="display: inline-block;">
             <div class="top_tiles">
-              <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 ">
+              
                 <div class="tile-stats">
                 <div class="icon"><i class="fa fa-check-square-o"></i></div>
                   <?php 
@@ -104,7 +104,7 @@
                   ?>
                   <h3>Bài tập cần phải hoàn thành</h3>
                   
-                </div>
+                
               </div>
             </div>
           </div>
