@@ -42,6 +42,10 @@
     <link href="../vendors/nprogress/nprogress.css" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
+    <link href="../vendors/pnotify/dist/pnotify.css" rel="stylesheet">
+    <link href="../vendors/pnotify/dist/pnotify.buttons.css" rel="stylesheet">
+    <link href="../vendors/pnotify/dist/pnotify.nonblock.css" rel="stylesheet">
+
     <!-- Custom Theme Style -->
     <link href="../build/css/custom.min.css" rel="stylesheet">
   </head>
@@ -190,7 +194,7 @@
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h3>Contacts Design</h3>
+                <h3>Danh sách chứng chỉ</h3>
               </div>
 
               <div class="title_right">
@@ -230,12 +234,6 @@
                             <div class=" row-sm-6 emphasis">
                               <a class="btn btn-app" href="../php/degree/edit_degree.php?id=<?php echo  $row['id'];?>"><i class="fa fa-edit"> </i>Sửa</a>
                                 <button type="button" class="btn btn-secondary" onclick="deleteAjax(<?php echo $row['id'];?>)">Xóa</button>
-                                <button class="btn btn-secondary source" onclick="new PNotify({
-                                  title: 'Regular Success',
-                                  text: 'That thing that you were trying to do worked!',
-                                  type: 'success',
-                                  styling: 'bootstrap3'
-                              });">Success</button>
                             </div>
                           </div>
                         </div>
@@ -260,28 +258,44 @@
     <!-- NProgress -->
     <script src="../vendors/nprogress/nprogress.js"></script>
 
+    <script src="../vendors/pnotify/dist/pnotify.js"></script>
+    <script src="../vendors/pnotify/dist/pnotify.buttons.js"></script>
+    <script src="../vendors/pnotify/dist/pnotify.nonblock.js"></script>
+
     <!-- Custom Theme Scripts -->
     <script src="../build/js/custom.min.js"></script>
   </body>
   <script type='text/javascript'>
         // delete có thể dùng chung bằng cách truyền id, talbe vào và gọi đến delete.php
         function deleteAjax(id){
-            if (confirm('Are you sure delete this employee')){
+            if (confirm('Bạn có chắc muốn xoá khoá học này')){
                 $.ajax({
                     type:'post',
-                    url: '../php/delete.php',
+                    url: '../php/delete_degree.php',
                     data: {
-                        id: id,
-                        table: 'degree', //ten bang trong csdl
+                        degree_id: id,
                     },
                     success: function(data){
+                      if(data == 'success'){
                         $('#degree-'+id).hide();
                         new PNotify({
-                            title: 'Success',
-                            text: 'Delete Employee Success',
+                            title: 'Thành công',
+                            text: 'Xoá chứng chỉ thành công',
                             type: 'success',
                             styling: 'bootstrap3'
                         });
+                      }
+                      else if( data=='cannot'){
+                        alert("Không thể xoá chứng chỉ vì chứng chỉ đang được đào tạo");
+                      }
+                      else {
+                        new PNotify({
+                            title: 'Thất bại',
+                            text: 'Xoá chứng chỉ thất bại',
+                            type: 'error',
+                            styling: 'bootstrap3'
+                        });
+                      }
                     }
                 });
             }

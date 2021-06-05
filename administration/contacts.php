@@ -8,7 +8,7 @@
     if (isset($_POST['submit']) && $_POST['level'] != '' && $_POST['type']){
       $type = $_POST['type'];
       $level =$_POST['level'];
-      $sql = "SELECT * FROM staff where level_id = $level and type = '$type'" ;
+      $sql = "SELECT * FROM staff where level_id = $level and type = '$type' and state = 'working'" ;
       $res = mysqli_query($conn, $sql);
       $number_row = mysqli_num_rows($res);
       $result_per_page = 9;
@@ -19,12 +19,35 @@
       else {
         $page = $_GET['page'];
       }
-      
-      
-
       $this_page_result = ($page-1)*$result_per_page;
-      $sql = "SELECT * FROM staff where level_id = $level and type = '$type' ORDER BY id DESC limit ".$this_page_result. ','.$result_per_page;
+      $sql = "SELECT * FROM staff where level_id = $level and type = '$type' and state='working' ORDER BY id DESC limit ".$this_page_result. ','.$result_per_page;
       $res = mysqli_query($conn,$sql);
+    }
+    if(isset($_GET['end_contract']) && $_GET['end_contract'] == 'true'){
+      $sql_end =  "SELECT staff_id FROM contract_end";
+      $res_end = mysqli_query($conn, $sql_end);
+      $num_end = mysqli_num_rows($res_end);
+      if($num_end > 0 ){
+        $total_count = $num_end;
+        $temp_id = "(";
+        $count = 0;
+        while($row_end = mysqli_fetch_assoc($res_end)){
+          $uid = $row_end['staff_id'];
+          $temp_id .= "$uid";
+          $count ++;
+          if ($count == $total_count){
+            $temp_id .= ')';
+          }
+          else {
+            $temp_id .= ',';
+          }
+        }
+        $sql = "SELECT * FROM staff where id in $temp_id";
+        $res = mysqli_query($conn,$sql);
+      }
+      else {
+        $noti = "Không có nhân viên hết hợp đồng";
+      }
     }
 ?>
 
@@ -208,11 +231,14 @@
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h3>Tất cả nhân viên</h3>
+                <h3>Danh sách nhân viên</h3>
                 <?php 
                   if (isset($_SESSION['notification'])){
                     echo '<p>'. $notification . '</p>';
                     unset($_SESSION['notification']);
+                  }
+                  if(isset($noti)){
+                    echo '<p>'. $noti . '</p>';
                   }
                 ?>
               </div>
@@ -234,6 +260,7 @@
             <div class="row">
                 <div class="x_panel">
                   <div class="x_content">
+                      <?php  if (!isset($_GET['end_contract'])) { ?>
                       <form method = "POST">
                         <select class= "form-control" name='type'>
                             <option value = "official">Chính Thức</option>
@@ -249,12 +276,15 @@
                         </select>
                         <input type = "submit" class = "form-control" name="submit">
                       </form>
+                      <?php }?>
                       <div class="col-md-12 col-sm-12  text-center">
 
                       <ul class="pagination pagination-split">
-                        <?php for($page =1; $page<=$number_page;$page++){ 
+                        <?php
+                        if(isset($number_page)){
+                        for($page =1; $page<=$number_page;$page++){ 
                            echo '<li><a href="?page='.$page.'">'.$page. '</a></li>';
-                        }
+                        }}
                         ?>
                       </ul>
                       <div class="clearfix"></div>
@@ -263,9 +293,9 @@
                           <div class="well profile_view">
                             <div class="col-sm-12">
                             <?php 
-                          if(isset($_GET['end_contract'])){
-                            echo '<p style="color: red;">Hết hợp đồng</p>';
-                          }
+                          // if(isset($_GET['end_contract'])){
+                          //   echo '<p style="color: red;">Hết hợp đồng</p>';
+                          // }
                         ?>
                                   <h4 class='brief'><?=$row['level_name']?></h4>
                                   <p hidden id="level-id-<?=$row['id']?>"><?=$row['level_id']?></p>  
@@ -307,6 +337,7 @@
                               <div class=" row-sm-6 emphasis">
                               <a class="btn btn-app" data-toggle="modal" onclick="open_modal(<?php echo $row['id']?>)" data-id="<?php echo  $row['id'];?>" data-role='update' ><i  class="fa fa-plus"> </i> Edit </a>
                                 <button type="button" class="btn btn-secondary" onclick="deleteAjax(<?php echo $row['id'];?>)">Delete</button>
+                                <button type="button" class="btn btn-primary" onclick="show_contract(<?php echo $row['id'];?>)">Xem hợp đồng</button>
                                 <button type="button" class="btn btn-secondary" onclick="end_contract(<?php echo $row['id'];?>)">Chấm dứt hợp đồng và lưu trữ nhân viên</button>
                                       <?php 
                                 if(isset($_GET['end_contract'])){ ?>
@@ -333,7 +364,7 @@
             <div class="modal-content">
               <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Modal Header</h4>
+                <h4 class="modal-title">Gia hạn hợp đồng nhân viên</h4>
               </div>
               <div class="modal-body">
               <label>Tên hợp đồng</label>
@@ -358,7 +389,10 @@
             
           </div>
         </div>
-      </div>
+    </div>
+
+
+
     <div class="modal fade" id="myModal" role="dialog">
       <div class="modal-dialog">
      
@@ -431,6 +465,43 @@
       </div>
       
     </div>
+    </div>
+
+  
+<!-- Modal -->
+    <div id="myModal-contract" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <div class="modal-body">
+          <table class="table table-striped jambo_table bulk_action bulk_action">
+              <thead>
+              <tr class="headings">
+                  <th class="column-title">Mã hợp đồng</th>
+                  <th class="column-title">Tên hợp đồng</th>
+                  <th class="column-title">Ngày bắt đầu</th>
+                  <th class="column-title">Ngày kết thúc</th>
+                  <th class="column-title">Loại hợp đồng</th>
+                  <th class="column-title">Tình trạng</th>
+              </tr>
+              </thead>
+              <tbody id='table-contract'>                                                                                                        
+              </tbody>
+          </table>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+
 
 
     <!-- mẫu xoá -->
@@ -454,15 +525,17 @@
               });
               window.location.replace("contacts.php");
               }, 3000);
-          console.log("ADSA");
+           }
+           else if (data == 'cannot'){
+             alert("Nhân viên có lớp đang phụ trách, không thể lưu trữ");
            }
            else {
             new PNotify({
-                                  title: 'Thất bại',
-                                  text: 'Lưu trữ nhân viên thất bại',
-                                  type: 'error',
-                                  styling: 'bootstrap3'
-                              });
+                  title: 'Thất bại',
+                  text: 'Lưu trữ nhân viên thất bại',
+                  type: 'error',
+                  styling: 'bootstrap3'
+              });
            }
         }
       });
@@ -493,23 +566,24 @@
          success: function (data) {
           $('#modal-contract').modal('toggle');
            if (data =="success"){
-            setTimeout(function() {
-              new PNotify({
+            new PNotify({
                                   title: 'Thành công',
                                   text: 'Gia hạn hợp đồng thành công',
                                   type: 'success',
                                   styling: 'bootstrap3'
                               });
+            setTimeout(function() {
               window.location.replace("contacts.php");
               }, 3000);
            }
+           
            else {
             new PNotify({
-                                  title: 'Thất bại',
-                                  text: 'Gia hạn hợp đồng thất bại',
-                                  type: 'error',
-                                  styling: 'bootstrap3'
-                              });
+                      title: 'Thất bại',
+                      text: 'Gia hạn hợp đồng thất bại',
+                      type: 'error',
+                      styling: 'bootstrap3'
+                  });
            }
          }
        });
@@ -519,13 +593,12 @@
 
     // delete có thể dùng chung bằng cách truyền id, talbe vào và gọi đến delete.php
       function deleteAjax(id){
-        if (confirm('Are you sure delete this employee')){
+        if (confirm('Xoá nhân viên này?')){
             $.ajax({
               type:'post',
-              url: '../php/delete.php',
+              url: '../php/nhanvien/delete.php',
               data: {
                 id: id,
-                table: 'nhanvien', //ten bang trong csdl
               },
               success: function(data){
                   if(data=="success"){
@@ -537,6 +610,9 @@
                                   styling: 'bootstrap3'
                               });
                   }
+                  else if (data =="cannot"){
+                  alert("Nhân viên có lớp để phụ trách, không thể xoá");
+                }
               }
             });
         }
@@ -620,7 +696,24 @@
               }
               });
             };
-
+    function show_contract(id){
+      $("#myModal-contract").modal("show");
+      var html_temp = '';
+      $.ajax({
+              type:'post',
+              url: '../php/ajax/ajax_show_contract.php',
+              dataType: 'json',
+              data: {id: id},
+              success: function(data){
+                for(var i = 0; i < data.length; i++) {
+                  html_temp += `<tr><td style="color: ${data[i].color}">${data[i].id}</td><td>${data[i].name}</td>
+                    <td>${data[i].date_from}</td><td>${data[i].date_to}</td><td>${data[i].type}</td><td style="color: ${data[i].color}">${data[i].state}</td></tr>`;
+                    $("#table-contract").html(html_temp);
+                }
+              }
+              });
+      
+    }
     </script>
     <!-- hết mẫu xoá -->
     <!-- jQuery -->

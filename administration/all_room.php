@@ -198,11 +198,11 @@
             <div class="">
                 <div class="page-title">
                     <div class="title_left">
-                        <h3>Contacts Design</h3>
+                        <h3>Danh sách phòng</h3>
                     </div>
 
                     <div class="title_right">
-                        <div class="col-md-5 col-sm-5  form-group pull-right top_search">\
+                        <div class="col-md-5 col-sm-5  form-group pull-right top_search">
                             <form method="post" action="../php/room/search_room.php">
                                 <div class="input-group">
                                     <input type="text" class="form-control" name="search" placeholder="Search for...">
@@ -235,30 +235,20 @@
                                 <div class="col-md-4 col-sm-4  profile_details" id="room-<?= $row['id'] ?>">
                                     <div class="well profile_view">
                                         <div class="col-sm-12">
-                                            <div class="left col-md-7 col-sm-7">
+                                            
                                                 <h2><?= $row['name'] ?></h2>
                                                 <p id="noidung"><strong>Số ghế: </strong> <?= $row['seat'] ?> </p>
                                                 <p id="soluong"><strong>Tình trạng: </strong> <?= $row['tinhtrang'] ?>
                                                 </p>
-                                            </div>
+                                          
                                         </div>
                                         <div class=" profile-bottom text-center">
                                             <div class=" row-sm-6 emphasis">
                                                 <a class="btn btn-app"
                                                    href="../php/room/edit_room.php?id=<?php echo $row['id']; ?>"><i
                                                             class="fa fa-edit"> </i> Sửa </a>
-                                                <a class="btn btn-app"
-                                                   href="../php/room/delete_room.php?id=<?php echo $row['id']; ?>"><i
-                                                            class="fa fa-close"> </i> Xóa</a>
                                                 <button type="button" class="btn btn-secondary"
-                                                        onclick="deleteAjax(<?php echo $row['id']; ?>)">Delete
-                                                </button>
-                                                <button class="btn btn-secondary source" onclick="new PNotify({
-                                  title: 'Regular Success',
-                                  text: 'That thing that you were trying to do worked!',
-                                  type: 'success',
-                                  styling: 'bootstrap3'
-                              });">Success
+                                                        onclick="deleteAjax(<?php echo $row['id']; ?>)">Xoá
                                                 </button>
                                             </div>
                                         </div>
@@ -302,7 +292,7 @@
   <script type='text/javascript'>
     // delete có thể dùng chung bằng cách truyền id, talbe vào và gọi đến delete.php
     function deleteAjax(id) {
-        if (confirm('Are you sure delete this employee')) {
+        if (confirm('Bạn muốn xoá phòng này')) {
             $.ajax({
                 type: 'post',
                 url: '../php/delete.php',

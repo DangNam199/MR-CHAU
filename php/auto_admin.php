@@ -40,9 +40,17 @@
         $res_salary = mysqli_query($conn, $sql_salary);
         if ($res){
            while($row = mysqli_fetch_assoc($res_salary)) {
-            $total = $row['sum_salary'] * $row['HSL'];
-            $sum = $row['sum_salary'];
             $staff_id = $row['staff_id'];
+            $sql_check_contract = "SELECT * FROM contract where state = 'effected' and staff_id = $staff_id";
+            $type = mysqli_fetch_assoc(mysqli_query($conn, $sql_check_contract))['type'];
+            if ($type == 'probation'){
+                $total = $row['sum_salary'] * $row['HSL'] * 0.75;
+                echo $staff_id;
+            }
+            else if ($type == 'official'){
+                $total = $row['sum_salary'] * $row['HSL'];
+            }
+            $sum = $row['sum_salary'];
             $sql_pay  = "INSERT INTO `pay_salary`(`id`, `staff_id`, `date`, `paied`,`total`, `state`) 
             VALUES (null,'$staff_id',now(),'$total', '$sum',`unpaid`)";
             $res = mysqli_query($conn, $sql_pay);
@@ -53,8 +61,11 @@
     $sql_class_exam = "SELECT * FROM class where state = 'studing' and date_to < now()";
     $res_class_exam = mysqli_query($conn, $sql_class_exam);
     while ($row_class_exam = mysqli_fetch_assoc($res_class_exam)){
-        $sql_update_class_exam = "UPDATE `class` SET `state`='waiting_exem' WHERE id = ". $row_row_class_examclass['id'];
+        $sql_update_class_exam = "UPDATE `class` SET `state`='waiting_exem' WHERE id = ". $row_class_exam['id'];
         mysqli_query($conn, $sql_update_class_exam);
+        $sql_student = "UPDATE `hocvien` SET `class_id`=null,`tinhtranghocphi`= null,`state`= 'draft' WHERE class_id =  ". $row_class_exam['id'];
+        $res_student = mysqli_query($conn, $sql_student);
+
     }
 
     $sql_class_waiting = "SELECT * FROM class where state ='waiting'";

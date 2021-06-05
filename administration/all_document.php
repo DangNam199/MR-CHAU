@@ -191,7 +191,7 @@
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h3>Contacts Design</h3>
+                <h3>Danh sách tài liệu</h3>
               </div>
 
               <div class="title_right">
@@ -222,7 +222,7 @@
 
                       <div class="clearfix"></div>
                       <?php while ($row = mysqli_fetch_array($res)){?>
-                      <div class="col-md-4 col-sm-4  profile_details">
+                      <div class="col-md-4 col-sm-4  profile_details" id='doc-<?=$row['id']?>'>
                         <div class="well profile_view">
                           <div class="col-sm-12">
                             <div class="left col-md-7 col-sm-7">
@@ -240,8 +240,8 @@
                           </div>
                           <div class=" profile-bottom text-center">
                             <div class=" row-sm-6 emphasis">
-                              <a class="btn btn-app" href="./edit_news.php?id=<?php echo  $row['id'];?>"><i class="fa fa-edit"> </i> View News</a>
-                               <a class="btn btn-app" href="../php/delete_news.php?id=<?php echo  $row['id'];?>" ><i  class="fa fa-close"> </i> Delete Document</a>
+                              <!-- <a class="btn btn-app" href="./.php?id=<?php echo  $row['id'];?>"><i class="fa fa-edit"> </i> View News</a> -->
+                               <button class="btn btn-app" onclick="delete_doc(<?php echo  $row['id'];?>)" ><i  class="fa fa-close"> </i> Delete Document</button>
                                <a class="btn btn-app" data-toggle="modal" data-target="#myModal" href="#" data-id="<?php echo  $row['id'];?>" data-role='update' ><i  class="fa fa-plus"> </i> Add  </a>
                             </div>
                           </div>
@@ -293,6 +293,17 @@
     <script src="../build/js/custom.min.js"></script>
   </body>
   <script>
+    function delete_doc(id){
+      $.ajax({ 
+          url: '../php/delete.php',
+          method: 'POST',
+          data: {id: id, table: 'tailieu'},
+          success: function(data){
+            $("#doc-"+id).hide();
+          }
+        });
+    }
+
     $(document).ready(function(){
       var id;
       $(document).on("click", "a", function () {

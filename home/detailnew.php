@@ -7,7 +7,7 @@ include 'header.php';
 $hostname = '127.0.0.1';
 $username = 'root';
 $password = '';
-$dbname = "sd";
+$dbname = "doan";
 $conn = mysqli_connect($hostname, $username, $password,$dbname);
 
 $id = $_GET['id'];

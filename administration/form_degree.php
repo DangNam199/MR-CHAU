@@ -194,7 +194,7 @@ if (isset($_POST['submit'])){
                         <div class="col-md-12 col-sm-12">
                             <div class="x_panel">
                                 <div class="x_title">
-                                    <h2>Thông tin khoá học</h2>
+                                    <h2>Thêm chứng chỉ</h2>
                                     <div class="clearfix"></div>
                                 </div>
                                 <div class="x_content">

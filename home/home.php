@@ -5,7 +5,7 @@ include 'header.php';
 $hostname = '127.0.0.1';
 $username = 'root';
 $password = '';
-$dbname = "sd";
+$dbname = "doan";
 $conn = mysqli_connect($hostname, $username, $password,$dbname);
 $sql_user = "SELECT * FROM `nhanvien` ";
 $res_user = mysqli_query($conn,$sql_user);
@@ -141,57 +141,6 @@ $res_user2 = mysqli_query($conn,$sql_user2);
 </div>
 </div>
 
-<div class="container-fluid py-4" style="background: #f7f7f7;">
-    <div class="container">
-        <div class="row">
-
-            <div class="col-md-5">
-                <div class="card shadow-sm rounded">
-                    <img class="card-img-top" src="holder.js/100px180/" alt="">
-                    <div class="card-body">
-                        <h2>Đăng ký</h2>
-                        <form method="post" action="dangky.php">
-                            <div class="form-group">
-                                <label for="">Họ tên</label>
-                                <input type="text" class="form-control" name="fullname">
-                            </div>
-                            <div class="form-group">
-                                <label for="">Số điện thoại</label>
-                                <input type="text" class="form-control" name="phone">
-                            </div>
-                            <div class="form-group">
-                                <label for="">Email</label>
-                                <input type="email" class="form-control" name="email">
-                            </div>
-                            <div class="form-group">
-                                <label for="exampleFormControlSelect1">Chọn khóa học</label>
-                                <select class="form-control" id="course_id" name="course_id">
-                                    <option value="0">--Chọn khóa học--</option>
-                                    <option value="1">Toiec</option>
-                                    <option value="2">IELTS</option>
-                                    <option value="3">Giao tiếp cơ bản</option>
-                                    <option value="4">Tiếng anh chuyên</option>
-                                    <option value="5">Chuyên ngành</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="">Chọn lớp học</label>
-                                <select class="form-control" id="class_id" name="class_id">
-                                    <option value="0">--Chọn lớp học--</option>
-                                    <option value="27">Toiec_1ứdsd</option>
-                                    <option value="28">IELTS_1</option>
-                                    <option value="29">IELTS_2</option>
-                                    <option value="30">Toiec_2</option>
-                                </select>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Submit</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 <script type="text/javascript">
     $(document).ready(function(){
         $('#course_id').change(function(){

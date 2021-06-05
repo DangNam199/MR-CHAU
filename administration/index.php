@@ -199,7 +199,6 @@
                   <h3>Học viên tiềm năng mới</h3>
                   <a href="contact_us.php" > Xem</a>
                 </div>
-              
               <?php } ?>
               
             </div>

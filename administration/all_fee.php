@@ -1,12 +1,11 @@
 <?php 
 include '../php/connect.php';
-    if (isset($_POST['submit'])){
+    if (isset($_POST['submit']) && $_POST['datepicker']!= ''){
         $all = $_POST['datepicker'];
         $all = explode('-', $all);
         $date = $all[0];
         $year = $all[1];
-        $sql_in = "SELECT * FROM hocvien WHERE month(ngaynhaphoc) = $date  and YEAR(ngaynhaphoc) = $year ORDER BY ngaynhaphoc ";
-        echo $sql_in;
+        $sql_in = "SELECT *  FROM hocvien WHERE month(ngaynhaphoc) = $date  and YEAR(ngaynhaphoc) = $year ORDER BY ngaynhaphoc ";
         $res_in = mysqli_query($conn,$sql_in);
     }
     
@@ -208,6 +207,7 @@ include '../php/connect.php';
                             <th class="column-title">Mã học viên </th>
                             <th class="column-title">Tên học viên </th>
                             <th class="column-title">Ngày nhập học </th>
+                            <th class="column-title">Lớp</th>
                             <th class="column-title">Tình trạng học phí </th>
                             </th>
                           </tr>
@@ -221,7 +221,16 @@ include '../php/connect.php';
                             <td><?=$row['id']?></td>
                             <td><?=$row['name']?></td>
                             <td><?=$row['ngaynhaphoc']?></td>
-                            <?php 
+                           
+                            <?php
+                           $sql_class = "SELECT * FROM class where id = ".$row['class_id'];
+                           $class_name = mysqli_fetch_array(mysqli_query($conn, $sql_class))['name'];
+                           if ($class_name != ''){
+                           echo " <td>$class_name</td>";
+                          }
+                          else {
+                            echo 'Chưa có lớp ';
+                          }
                             if($row["tinhtranghocphi"] == 1){
                               echo "<td><div class='btn btn-success'>Đã đóng</div></td>";
                             }

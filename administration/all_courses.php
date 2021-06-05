@@ -4,7 +4,7 @@
     if ($_SESSION['level'] != 5 and $_SESSION['level'] != 6){
       header("location: index.php");
     }
-    $sql= "SELECT * from `course` INNER JOIN `degree` on course.degree_id = degree.id ORDER BY `course`.`id` DESC";
+    $sql= "SELECT course.id, course.tenKH, course.duration, course.price, course.time, degree.tenDegree  from `course` INNER JOIN `degree` on course.degree_id = degree.id ORDER BY `course`.`id` DESC";
     $res = mysqli_query($conn,$sql);
     $number_row = mysqli_num_rows($res);
     $result_per_page = 6;
@@ -16,7 +16,7 @@
       $page = $_GET['page'];
     }
     $this_page_result = ($page-1)*$result_per_page;
-    $sql = "SELECT * from `course` INNER JOIN `degree` on course.degree_id = degree.id ORDER BY `course`.`id` DESC limit ".$this_page_result. ','.$result_per_page;
+    $sql = "SELECT course.id, course.tenKH, course.duration, course.price, course.time, degree.tenDegree  from `course` INNER JOIN `degree` on course.degree_id = degree.id ORDER BY `course`.`id` DESC limit ".$this_page_result. ','.$result_per_page;
     $res = mysqli_query($conn,$sql);
 
 ?>
@@ -40,6 +40,11 @@
     <!-- NProgress -->
     <link href="../vendors/nprogress/nprogress.css" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    
+    <link href="../vendors/pnotify/dist/pnotify.css" rel="stylesheet">
+    <link href="../vendors/pnotify/dist/pnotify.buttons.css" rel="stylesheet">
+    <link href="../vendors/pnotify/dist/pnotify.nonblock.css" rel="stylesheet">
 
     <!-- Custom Theme Style -->
     <link href="../build/css/custom.min.css" rel="stylesheet">
@@ -190,7 +195,7 @@
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h3>Contacts Design</h3>
+                <h3>Danh sách khoá học</h3>
               </div>
 
               <div class="title_right">
@@ -223,13 +228,12 @@
                       <div class="col-md-4 col-sm-4  profile_details" id="course-<?=$row['id']?>">
                         <div class="well profile_view">
                           <div class="col-sm-12">
-                            <div class="left col-md-7 col-sm-7">
                               <h2><?=$row['tenKH'] ?></h2>
 
                               <p id="soluong" ><strong>Tên Chứng chỉ: </strong> <?=$row['tenDegree']?> </p>
                               <p id="noidung" ><strong>Số buổi: </strong> <?=$row['duration'] ?> </p>
                               <p id="soluong" ><strong>Học phí: </strong> <?=$row['price'] ?> </p>
-                            </div>
+                              <p id="soluong" ><strong>Thời gian dạy mỗi buổi: </strong> <?=$row['time'] ?> </p>
 
                           </div>
                             <div class=" profile-bottom text-center">
@@ -237,14 +241,7 @@
                                     <a class="btn btn-app"
                                        href="../php/course/edit_course.php?id=<?php echo $row['id']; ?>"><i
                                                 class="fa fa-edit"> </i> Sửa </a>
-                                    <button type="button" class="btn btn-secondary" onclick="deleteAjax(<?php echo $row['id'];?>)">Xóa</button>
-                                    <button class="btn btn-secondary source" onclick="new PNotify({
-                                  title: 'Regular Success',
-                                  text: 'That thing that you were trying to do worked!',
-                                  type: 'success',
-                                  styling: 'bootstrap3'
-                              });">Success
-                                    </button>
+                                    <button type="button" class="btn btn-secondary" onclick="delete_course(<?php echo $row['id'];?>)">Xóa</button>
                                 </div>
                             </div>
                         </div>
@@ -266,6 +263,11 @@
     <script src="../vendors/fastclick/lib/fastclick.js"></script>
     <!-- NProgress -->
     <script src="../vendors/nprogress/nprogress.js"></script>
+
+                        
+    <script src="../vendors/pnotify/dist/pnotify.js"></script>
+    <script src="../vendors/pnotify/dist/pnotify.buttons.js"></script>
+    <script src="../vendors/pnotify/dist/pnotify.nonblock.js"></script>
 
     <!-- Custom Theme Scripts -->
     <script src="../build/js/custom.min.js"></script>
@@ -296,6 +298,23 @@
         
       });
       
-    })
+    });
+    function delete_course(id){
+      if (confirm('Xoá khoá học này?')){
+      $.ajax({ 
+          url: '../php/delete_course.php',
+          method: 'POST',
+          data: {course_id: id},
+          success: function(data){
+            if (data =='success'){
+              $("#course-"+id).hide();
+            }
+            else if (data == 'cannot'){
+              alert("Không thể xoá khoá này vì khoá đang có lớp đang đào tạo khoá học này");
+            }
+          }
+        });
+    }
+  }
   </script>
 </html>

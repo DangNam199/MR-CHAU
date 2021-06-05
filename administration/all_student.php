@@ -201,7 +201,7 @@
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h3>Học Viên</h3> 
+                <h3>Danh sách học viên</h3> 
                 <?php 
                   if (isset($_SESSION['notification'])){
                     echo '<p>'. $_SESSION['notification'] . '</p>';
@@ -280,6 +280,15 @@
                               <a class="btn btn-app" data-toggle="modal" data-target="#myModal" href="#" data-id="<?php echo  $row['id'];?>" data-role='update' ><i  class="fa fa-plus"> </i> Edit </a>
                                 <!-- mẫu xoá -->
                                 <button type="button" class="btn btn-secondary" onclick="deleteAjax(<?php echo $row['id'];?>)">Delete</button>
+                                <?php 
+                                $id = $row['id'];
+                                  if($row['tinhtranghocphi'] == 1){
+                                    echo "<button onclick='show_invoice($id)' class = 'btn btn-success'>Xem hoá đơn</button>";
+                                  }
+                                  else {
+                                    echo "<div  class = 'btn btn-danger'>Chưa đóng học phí</div>";
+                                  }
+                                ?>
                               </div>
                             </div>
                           </div>
@@ -293,75 +302,11 @@
               
       </div>
     </div>
-
-    <div class="modal fade" id="myModal" role="dialog">
-      <div class="modal-dialog">
      
       <!-- Để edit nhanh thì có thể copy thì form_ ten vào modal-body cho nhanh, xoá thẻ div col-md-6 col-sm-6 để input được to -->
                                 <!-- đổ dữ liệu vào -->
       <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-        </div>
-        <div class="modal-body">
-          <div class="field item form-group">
-              <label class="col-form-label col-md-3 col-sm-3  label-align">Họ Và Tên<span class="required">*</span></label>
-              <input class="form-control" data-validate-length-range="6" data-validate-words="2" name="user_name" required="required" />
-          </div>
-          <div class="field item form-group">
-              <label class="col-form-label col-md-3 col-sm-3  label-align">Địa Chỉ<span class="required">*</span></label>
-              
-                  <input class="form-control" class='optional' name="address" data-validate-length-range="5,15" type="text" />
-          </div>
-          <div class="field item form-group">
-              <label class="col-form-label col-md-3 col-sm-3  label-align">Email<span class="required">*</span></label>
-                  <input class="form-control" type="email" class='email' name="email" data-validate-linked='email' required='required' />
-          </div>
-          <div class="item form-group">
-              <label class="col-form-label col-md-3 col-sm-3 label-align">Gender</label>
-              <select name="gender" class="form-control" value="<?=$row['level']?>"  > 
-                  <option value="male">Nam</option>
-                  <option value="female">Nữ</option>
-              </select>
-              </div>
-          <div class="field item form-group">
-              <label class="col-form-label col-md-3 col-sm-3  label-align">Date<span class="required">*</span></label>
-                  <input class="form-control" class='date' type="date" name="dob" required='required'>
-          </div>
-
-          <div class="field item form-group">
-              <label class="col-form-label col-md-3 col-sm-3  label-align">Số điện thoại<span class="required">*</span></label>
-                  <input class="form-control" type="tel" class='tel' name="phone" required='required' data-validate-length-range="8,20" />
-                </div>
-          <div class="field item form-group">
-              <label class="col-form-label col-md-3 col-sm-3  label-align">Chức Vụ<span class="required">*</span></label>
-              <select name="position" class="form-control"  > 
-                  <option value="giangvien">Giảng Viên</option>
-                  <option value="trogiang">Trợ Giảng</option>
-                  <option value="tapvu">Tạp Vụ</option>
-                  <option value="IT">IT</option>
-                  <option value="quantrivien">Quản Trị Viên</option>
-              </select>
-          
-          </div>
-          <div class="field item form-group">
-              <label class="col-form-label col-md-3 col-sm-3  label-align">Chứng Chỉ<span class="required">*</span></label>
-                  <input class="form-control" class='text' name="chungchi" required='required' data-validate-length-range="5,20" /></div>
-          <div class="field item form-group">
-              <label class="col-form-label col-md-3 col-sm-3  label-align">Số Chứng Minh Thư<span class="required">*</span></label>
-            
-                  <input class="form-control" type="number" name="cmnd" required='required' data-validate-length-range="10,15" /></div>
-          <div class="field item form-group">
-              <label class="col-form-label col-md-3 col-sm-3  label-align">Hệ số lương<span class="required">*</span></label>
-                  <input class="form-control" type="number"  name="hsl" required='required' data-validate-length-range="0,10" /></div>
          
-        </div>
-        <div class="modal-footer">
-        <a href="#" id='add-more' class="btn btn-primary pull-right" >Add</a>
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        </div>
-      </div>
       
     </div>
 
@@ -390,6 +335,22 @@
               }
             });
         }
+      }
+      function show_invoice(id){
+        var str_url = "/mrchau/administration/invoice_template.php?student_id=" + id;
+              printWindow = window.open(str_url, 'Print', 'left=200, top=200, width=950, height=500, toolbar=0, resizable=0');
+              console.log(printWindow);
+              printWindow.addEventListener('load', function() {
+                  if (Boolean(printWindow.chrome)) {
+                      printWindow.print();
+                      setTimeout(function(){
+                          printWindow.close();
+                      }, 500);
+                  } else {
+                      printWindow.print();
+                      printWindow.close();
+                  }
+              }, true);  
       }
 
     </script>

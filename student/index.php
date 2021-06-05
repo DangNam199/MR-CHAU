@@ -103,8 +103,6 @@
                     echo '<p>'.$res_count_my_homework['count_id'].' được giao </p>';
                   ?>
                   <h3>Bài tập cần phải hoàn thành</h3>
-                  
-                
               </div>
             </div>
           </div>

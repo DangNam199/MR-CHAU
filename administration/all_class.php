@@ -208,7 +208,7 @@
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h3>Contacts Design</h3>
+                <h3>Danh sách Lớp</h3>
               </div>
 
               <div class="title_right">
@@ -256,7 +256,7 @@
                             
                               <h2><?=$row['class_name'] ?></h2>
                               <p id="course" ><strong>Khoá: </strong> <?=$row['course_name'] ?> </p>
-                              <p id="room" ><strong>Phòng: </strong> <?=$row['room_name'] ?> </p>s
+                              <p id="room" ><strong>Phòng: </strong> <?=$row['room_name'] ?> </p>
                               <p id="date" ><strong>Thời gian học: </strong> <?=$row['date_from'] ?> - <span id='date-end-<?=$row['class_id']?>'> <?=$row['date_to']?></span></span></p>
                               <p id="time" ><strong>Giờ học: </strong> <?=$row['time_from'] ?> - <?=$row['time_to']?></p>
                               <p id="time" ><strong>Nhân viên phụ trách: 
@@ -312,6 +312,8 @@
                                 }
                                 echo '<a class="btn btn-app" href="student_class.php?class_id='.$class_id.'"> Xem danh sách học viên </a>';
                                ?>
+                               <a class="btn btn-app" href='show_mark.php?class_id=<?=$row['class_id']?>'> </i> Xem điểm</a>
+                               <a class="btn btn-app" href='homework.php?class_id=<?=$row['class_id']?>'  > </i> Xem bài tập</a>
                             </div>
                           </div>
                         </div>

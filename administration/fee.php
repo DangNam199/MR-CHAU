@@ -267,7 +267,7 @@
                             <td class=" "><?php 
                               $total = $row_fee['course_price'] + $doc_price;
                               echo number_format($total, 0, ',', '.') . "đ";?> <span hidden id="price-<?=$row_fee['student_id']?>"><?=$total?></span></td>
-                            <td class=" "><button onclick="pay(<?=$row_fee['student_id']?>)" class='btn btn-success' >Đóng</button></td>
+                            <td class=" "><button onclick="pay(<?=$row_fee['student_id']?>)" class='btn btn-success' >Thanh toán</button></td>
                           </tr>
                           
                           <?php }?>
@@ -335,8 +335,6 @@
         }); 
     });
 
-
-    // delete có thể dùng chung bằng cách truyền id, talbe vào và gọi đến delete.php
     function pay(id){  
       course_id = parseInt($('#course-'+id).text());
       student_id = id;
@@ -348,7 +346,6 @@
         form_input = parseInt($("#input-money").val());
         temp_debt = price - form_input;
         temp_debt =  temp_debt.toLocaleString('it-IT', {style : 'currency', currency : 'VND'});
-        $("#modal-debit").text(temp_debt);
       });
     }
 
@@ -356,8 +353,7 @@
       $("#myModal").modal('toggle');
       console.log(paid);
       if (invoice_id){
-              var str_url = "/mrchau/administration/invoice_template.php?student_id=" + student_id +"&course_id="+ course_id + "&invoice_id=" +invoice_id+"&paid="+paid+"&price="+price;
-              console.log(str_url);
+              var str_url = "/mrchau/administration/invoice_template.php?invoice_id=" +invoice_id;
               printWindow = window.open(str_url, 'Print', 'left=200, top=200, width=950, height=500, toolbar=0, resizable=0');
               console.log(printWindow);
               printWindow.addEventListener('load', function() {

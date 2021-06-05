@@ -1,13 +1,25 @@
 <?php 
 	include '../php/connect.php';
 	session_start();
-	$student_id = $_GET['student_id'];
+	if(isset($_GET['invoice_id'])){
 	$invoice_id = $_GET['invoice_id'];
-	$course_id = $_GET['course_id'];
-	$sql_user = "SELECT * FROM nhanvien where email ='". $_SESSION['user']. "' limit 1";
-	$res = mysqli_query($conn, $sql_user);
-	$row_user = mysqli_fetch_assoc($res);
-	$price = $_GET['price'];
+	$sql_invoice = "SELECT * FROM invoice where id = $invoice_id";
+	$res_invoice = mysqli_query($conn, $sql_invoice);
+	$row_invoice = mysqli_fetch_assoc($res_invoice);
+	}
+	if(isset($_GET['student_id'])){
+		$student_id = $_GET['student_id'];
+		$sql_invoice = "SELECT * FROM invoice where student_id = $student_id";
+		$res_invoice = mysqli_query($conn, $sql_invoice);
+		$row_invoice = mysqli_fetch_assoc($res_invoice);
+		$invoice_id = $row_invoice['id'];
+	}
+	$course_id = $row_invoice['course_id'];
+	$price =  $row_invoice['total'];
+	$paid = $row_invoice['paid'];
+	$student_id = $row_invoice['student_id'];
+	$create_uid = $row_invoice['create_uid'];
+	
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -156,26 +168,41 @@
 								</td>
 
 								<td>
-									<?=$row_user['TenNV']?><br />
-									<?=$row_user['sdt']?><br />
-									<?=$row_user['email']?><br />
+								<?php 
+									$sql_staff = "SELECT * FROM nhanvien where id = $create_uid";
+									$res_staff = mysqli_query($conn, $sql_staff);
+									while ($row_staff = mysqli_fetch_assoc($res_staff)){
+								?>
+									<strong>Bên thu: </strong><br>
+									 <?=$row_staff['TenNV']?><br />
+									<?=$row_staff['sdt']?><br />
+									<?=$row_staff['email']?><br />
+									<?php } ?>
 								</td>
+
 							</tr>
 						</table>
 					</td>
 				</tr>
-
+				<?php 
+					$sql_student = "SELECT * FROM hocvien where id = $student_id";
+					$res_student = mysqli_query($conn, $sql_student);
+					$row = mysqli_fetch_assoc($res_student);
+					$id_student = $row['id'];
+					$name_student = $row['name'];
+				?>
+				<p>Hoá đơn tiền học của <?=$id_student?> - <?=$name_student?></p>
 				<tr class="heading">
 					<td>Khoá Học</td>
 					<td>Price</td>
 				</tr>	
 				<?php 
 					$sql_course = "SELECT * FROM course WHERE id = ". $course_id;
-					$res = mysqli_query($conn,$sql_course);
-					while ($row = mysqli_fetch_assoc($res)){
+					$res_course = mysqli_query($conn,$sql_course);
+					while ($row_course = mysqli_fetch_assoc($res_course)){
 						echo '<tr>';
-						echo '<td>'.$row['tenKH'].'</td>';
-						echo '<td>'.$row['price'].'</td>';
+						echo '<td>'.$row_course['tenKH'].'</td>';
+						echo '<td>'.$row_course['price'].'</td>';
 						echo '</tr>';
 						
 					}
@@ -187,10 +214,10 @@
 				<?php 
 					$sql_doc = "SELECT tailieu.tenTL, tailieu.price from course_tailieu_rel INNER JOIN tailieu on course_tailieu_rel.id_tailieu = tailieu.id WHERE course_tailieu_rel.id_khoahoc = ". $course_id;
 					$res_doc = mysqli_query($conn, $sql_doc);
-					while ($row = mysqli_fetch_assoc($res_doc)){
+					while ($row_doc = mysqli_fetch_assoc($res_doc)){
 						echo '<tr>';
-						echo '<td>'.$row['tenTL'].'</td>';
-						echo '<td>'.$row['price'].'</td>';
+						echo '<td>'.$row_doc['tenTL'].'</td>';
+						echo '<td>'.$row_doc['price'].'</td>';
 						echo '</tr>';
 					}
 				?>
@@ -198,10 +225,10 @@
 				<?php 
 					$sql_doc = "SELECT sum(tailieu.price) as 'sum_price_doc' from course_tailieu_rel INNER JOIN tailieu on course_tailieu_rel.id_tailieu = tailieu.id WHERE course_tailieu_rel.id_khoahoc = ". $course_id;
 					$res_doc = mysqli_query($conn, $sql_doc);
-					while ($row = mysqli_fetch_assoc($res_doc)){
+					while ($row_total_doc = mysqli_fetch_assoc($res_doc)){
 						echo '<tr class="total">';
 						echo '<td><strong>Tổng tài liệu</strong></td>';
-						echo '<td>'.$row['sum_price_doc'].'</td>';
+						echo '<td>'.$row_total_doc['sum_price_doc'].'</td>';
 						echo '</tr>';
 					}
 				?>

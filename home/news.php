@@ -6,7 +6,7 @@ include 'header.php';
 $hostname = '127.0.0.1';
 $username = 'root';
 $password = '';
-$dbname = "sd";
+$dbname = "doan";
 $conn = mysqli_connect($hostname, $username, $password,$dbname);
 $sql_user4 = "SELECT * FROM `tintuc` ";
 $res_user4 = mysqli_query($conn,$sql_user4);
@@ -41,7 +41,7 @@ $res_user4 = mysqli_query($conn,$sql_user4);
             ?>
         <?php
                 echo '<div class="col-md-6 mb-5 border">';
-            echo '<a href="detailnew.php?id='.$row['id'].'"><img src="data:image/jpeg;base64,'.base64_encode($row['thumbnail'] ).'" class="img-fluid  img-circle profile_img avatar" /></a>';
+            echo '<a href="detailnew.php?id='.$row['id'].'"><img width="150" src="data:image/jpeg;base64,'.base64_encode($row['thumbnail'] ).'" class="img-fluid  img-circle profile_img avatar" /></a>';
                 echo '</div>';
             ?>
                 <div class="col-md-6  border-bottom mb-5">
