@@ -2,14 +2,23 @@
 <?php
 include 'header.php';
 ?>
+
 <?php
 $hostname = '127.0.0.1';
 $username = 'root';
 $password = '';
 $dbname = "sd";
 $conn = mysqli_connect($hostname, $username, $password,$dbname);
-$sql_user4 = "SELECT * FROM `tintuc` ";
-$res_user4 = mysqli_query($conn,$sql_user4);
+
+$id = $_GET['id'];
+if (isset($_GET['id'])){
+    $sql_user4 = "SELECT * FROM `tintuc` WHERE id = '$id'";
+    $res_user4 = mysqli_query($conn,$sql_user4);
+    if ($res_user4->num_rows > 0) {
+        // output data of each row
+        $row = $res_user4->fetch_assoc();
+    }
+}
 ?>
 
 
@@ -36,20 +45,14 @@ $res_user4 = mysqli_query($conn,$sql_user4);
 <div class="container-fluid bg-white py-2">
     <div class="container mt-5">
         <div class="row bg-light">
-            <?php
-            while ($row = mysqli_fetch_array($res_user4)) {
-            ?>
-        <?php
-                echo '<div class="col-md-6 mb-5 border">';
-            echo '<a href="detailnew.php?id='.$row['id'].'"><img src="data:image/jpeg;base64,'.base64_encode($row['thumbnail'] ).'" class="img-fluid  img-circle profile_img avatar" /></a>';
+
+                <?php
+                echo '<div class="col-md-6">';
+                echo '<img src="data:image/jpeg;base64,'.base64_encode($row['thumbnail'] ).'" class="img-fluid  img-circle profile_img avatar" />';
                 echo '</div>';
-            ?>
-                <div class="col-md-6  border-bottom mb-5">
-                    <h2><a href="detailnew.php?id=<?=$row['id']?>"><?=$row["TenTT"]?></a></h2>
-                </div>
-              <?php
-           }
-            ?>
+                echo"<div"." class='col-md-6  border-bottom mb-5'".">"."<p>".$row["TenTT"]."</p>"."</div>";
+                echo"<div"." class='col-12  border-bottom mb-5'".">"."<p>".$row["NoiDungTT"]."</p>"."</div>";
+                ?>
         </div>
 
     </div>

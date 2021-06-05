@@ -2,7 +2,7 @@
     $hostname = '127.0.0.1';
     $username = 'root';
     $password = '';
-    $dbname = "doan";
+    $dbname = "sd";
     $conn = mysqli_connect($hostname, $username, $password,$dbname);
     mysqli_set_charset($conn, "utf8");
     if (!$conn) {
