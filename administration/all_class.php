@@ -310,6 +310,10 @@
                                  
                                   echo '<a class="btn btn-app" href="official_mark.php?class_id='.$class_id.'"> Nhập điểm thi chính thức </a>';
                                 }
+                                if($row['state'] == 'done'){
+                                 
+                                  echo '<a class="btn btn-app" href="show_official_mark.php?class_id='.$class_id.'"> Xem điểm thi chính thức </a>';
+                                }
                                 echo '<a class="btn btn-app" href="student_class.php?class_id='.$class_id.'"> Xem danh sách học viên </a>';
                                ?>
                                <a class="btn btn-app" href='show_mark.php?class_id=<?=$row['class_id']?>'> </i> Xem điểm</a>

@@ -2,7 +2,8 @@
     include '../php/connect.php';
     include '../php/weekday.php';
     include '../php/session.php';
-    $sql= "SELECT * FROM `my_class` where state='studing' and staff_id = ". $_SESSION['staff_id']." ORDER BY class_id DESC";
+    $sql= "SELECT * FROM `my_class` where state != 'done' and staff_id = ". $_SESSION['staff_id']." ORDER BY class_id DESC";
+    echo $sql;
     $res = mysqli_query($conn,$sql);
     $number_row = mysqli_num_rows($res);
     $result_per_page = 9;
@@ -14,7 +15,7 @@
       $page = $_GET['page'];
     }
     $this_page_result = ($page-1)*$result_per_page;
-    $sql = "SELECT * FROM `my_class` where state='studing' and staff_id = ". $_SESSION['staff_id']." ORDER BY class_id DESC limit ".$this_page_result. ','.$result_per_page;
+    $sql = "SELECT * FROM `my_class` where state != 'done' and staff_id = ". $_SESSION['staff_id']." ORDER BY class_id DESC limit ".$this_page_result. ','.$result_per_page;
     $res = mysqli_query($conn,$sql);
 
 ?>

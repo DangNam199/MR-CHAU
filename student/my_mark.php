@@ -171,7 +171,7 @@
                           if (mysqli_num_rows($res_official) > 0){
                         ?>
 
-<table class="table table-striped jambo_table bulk_action">
+                        <table class="table table-striped jambo_table bulk_action">
                         <thead>
                           <tr class="headings">
                             <th class="column-title">Điểm nghe </th>
@@ -204,6 +204,82 @@
               
       </div>
     </div>
+
+    <script>
+    function showGraph(data){    
+    console.log(data);
+    let myChart = document.getElementById('myChart').getContext('2d');
+    // Global Options
+    Chart.defaults.global.defaultFontFamily = 'Lato';
+    Chart.defaults.global.defaultFontSize = 18;
+    Chart.defaults.global.defaultFontColor = '#777';
+
+    let massPopChart = new Chart(myChart, {
+      type:'line', // bar, horizontalBar, pie, line, doughnut, radar, polarArea
+      data:{
+        labels: data[0],
+        datasets:[{
+          label:'Nghe',
+          data: data[1],
+          //backgroundColor:'green'
+          borderWidth:6,
+          borderColor:'#4287f5',
+          hoverBorderWidth:3,
+          hoverBorderColor:'#000'
+        },
+        {
+          label:'Nói',
+          data: data[2],
+          //backgroundColor:'green'
+          borderWidth:6,
+          borderColor:'#42c5f5',
+          hoverBorderWidth:3,
+          hoverBorderColor:'#000'
+        },
+        {
+          label:'Đọc',
+          data: [10,,10],
+          //backgroundColor:'green'
+          borderWidth:6,
+          borderColor:'#f59e42',
+          hoverBorderWidth:3,
+          hoverBorderColor:'#000'
+        },
+        {
+          label:'Viết',
+          data: data[4],
+         // backgroundColor:'white',
+          borderWidth:6,
+          borderColor:'#eb4034',
+          hoverBorderWidth:3,
+          hoverBorderColor:'#eb4034'
+        }
+      ]
+      },
+      options: {
+        scales: {
+          spanGaps: true,
+        }
+    }      
+    });}
+    var all_data;
+    function getData(){
+      var res = [];
+      $.ajax({
+        type: "POST",
+        url: "../php/mark_chart.php",
+        async: false,
+        success: function(data){
+          res = JSON.parse(data);
+        },
+      });
+      return res;
+    }
+    all_data = getData();
+    showGraph(all_data);
+      
+
+  </script>
 
 
     <script src="../vendors/jquery/dist/jquery.min.js"></script>

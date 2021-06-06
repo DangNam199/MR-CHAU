@@ -206,18 +206,6 @@
                 ?>
               </div>
 
-              <div class="title_right">
-                <div class="col-md-5 col-sm-5  form-group pull-right top_search">
-                  <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search for...">
-                    <span class="input-group-btn">
-                      <button class="btn btn-default" type="button">Go!</button>
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
             <div class="clearfix"></div>
 
             <div class="row">
@@ -240,6 +228,7 @@
                             <th class="column-title">Email</th>
                             <th class="column-title">Ngày nhập học</th>
                             <th class="column-title">Tiến độ học</th>
+                            <th class="column-title">Điểm</th>
                           </tr>
                         </thead>
 
@@ -258,6 +247,8 @@
                             <td class=" "><?=$row['email']?></td>
                             <td class=" "><?=$row['ngaynhaphoc']?></td>
                             <td class=" "><?php echo $total.' / '. $max?> <br> <a class = 'btn btn-primary' href= 'progress.php?student_id=<?php echo $row['id']?>&class_id=<?=$row['class_id']?>' >Xem quá trình </a></td>
+                            </td>
+                            <td class=" "> <a class = 'btn btn-primary' href= 'student_mark.php?student_id=<?php echo $row['id']?>&class_id=<?=$row['class_id']?>' >Xem Điểm </a></td>
                             </td>
                             </tr>
                             <?php } ?>
