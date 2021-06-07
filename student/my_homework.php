@@ -1,6 +1,9 @@
 <?php 
     include '../php/connect.php';
     include '../php/session.php';
+    if($_SESSION['level'] != 'hocvien'){
+      header("location: ../administration/login.php");
+    }
     $id = $_SESSION['id'];
     $sql_classid = "SELECT class_id from hocvien WHERE id = ". $_SESSION['id'];
     $class_id = mysqli_fetch_array(mysqli_query($conn, $sql_classid))['class_id'];
@@ -22,7 +25,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Gentelella Alela! | </title>
+    <title><?php
+        include '../php/general_setting.php';
+    echo $res_setting['name'];?> </title>
 
     <!-- Bootstrap -->
     <link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">

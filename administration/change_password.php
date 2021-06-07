@@ -1,19 +1,33 @@
 <?php 
-    include '../php/session.php';
-    if ($_SESSION['level'] != 5 and $_SESSION['level'] != 6){
-      header("location: index.php");
-    }
 include '../php/connect.php';
-    if (isset($_POST['submit'])){
-        $all = $_POST['datepicker'];
-        $all = explode('-', $all);
-        $date = $all[0];
-        $year = $all[1];
-        $sql_in = "SELECT *  FROM spending WHERE month(spending.date) = $date  and YEAR(spending.date) = $year";
-        $res_in = mysqli_query($conn,$sql_in);
+include '../php/session.php';
+if (isset($_POST['submit'])){
+  $email = $_SESSION['user'];
+  $old = md5($_POST['old']);
+  $new = $_POST['new'];
+  $re_new = $_POST['re_new'];
+  $sql_old = "SELECT password from nhanvien where email = '$email'";
+  $old_ps = mysqli_fetch_array(mysqli_query($conn,$sql_old))['password'];
+  if ($old == $old_ps){
+    if($new == $re_new){
+      $new_ps = md5($new);
+      $sql_new = "UPDATE `nhanvien` SET `password`='$new_ps' WHERE email = '$email'";
+      if(mysqli_query($conn, $sql_new)){
+        header("location: index.php");
+      }
+      else {
+        $_SESSION['thongbaomk'] = 'Đổi mật khẩu không thành công';
+        echo $sql_new;
+      }
     }
-    
-
+    else {
+        $_SESSION['thongbaomk'] = 'Hai mật khẩu mới không giống nhau';
+    }
+  }
+  else {
+      $_SESSION['thongbaomk'] = 'Mật khẩu cũ không chính xác';
+  }
+}
 ?>
 
 
@@ -189,9 +203,9 @@ include '../php/connect.php';
             <!-- /sidebar menu -->
 
           </div>
-        </div>
+      </div>
 
-        <!-- top navigation --> 
+        <!-- top navigation -->
             <!-- /top navigation -->
 
             <!-- page content -->
@@ -199,7 +213,7 @@ include '../php/connect.php';
                 <div class="">
                     <div class="page-title">
                         <div class="title_left">
-                            <h3>Báo cáo chi</h3>
+                            <h3>Đổi mật khẩu</h3>
                         </div>
                     </div>
                     <div class="clearfix"></div>
@@ -207,57 +221,44 @@ include '../php/connect.php';
                     <div class="row">
                         <div class="col-md-12 col-sm-12">
                             <div class="x_panel">
-                            <div class="table-responsive">
-                                <p>Chọn tháng báo cáo</p>
-                                <form method = "post">
-                            <input type="text" class="form-control" name="datepicker" id="datepicker" />
-                            <input type="submit" class="form-control" name="submit"/>
-                            </form>
-
-                      <table class="table table-striped jambo_table bulk_action bulk_action">
-                        <thead>
-                          <tr class="headings">
-                            <th class="column-title">Mã Hoá Đơn </th>
-                            <th class="column-title">Tên </th>
-                            <th class="column-title">Mô tả </th>
-                            <th class="column-title">Ngày xuất </th>
-                            <th class="column-title">Loại </th>
-                            <th class="column-title">Số tiền </th>
-                            
-                          </tr>
-                        </thead>
-                        <tbody>
-                            <?php 
-                                if(isset($_POST['submit'])){
-                                while($row = mysqli_fetch_assoc($res_in)) {
-                            ?>
-                        <tr>
-                            <td><?=$row['id']?></td>
-                            <td><?=$row['name']?></td>
-                            <td><?=$row['description']?></td>
-                            <td><?=$row['date']?></td>
-                            <td><?=$row['type']?></td>
-                            <td><?=$row['price']?></td>
-                            <?php }}?>
-                        </tr>
-                        <tr>
-                            <td>Tổng</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <?php 
-                              if(isset($_POST['submit'])){
-                               $sql_sum = "SELECT sum(price) as 'sum_price' FROM spending WHERE month(spending.date) = $date  and YEAR(spending.date) = $year";
-                                $rom_sum = mysqli_fetch_assoc(mysqli_query($conn, $sql_sum));
-                            ?>
-                            <td></td>
-                            <td><?=$rom_sum['sum_price']?>
-                            </td>
-                            <?php }?>
-                        </tr>
-                        </tbody>
-                      </table>
-                    </div>       
+                                <div class="x_title">
+                                    <div class="clearfix"></div>
+                                    <?php 
+                                      if(isset($_SESSION['thongbaomk'])){
+                                        echo '<p>'.$_SESSION['thongbaomk'].'</p>';
+                                        unset($_SESSION['thongbaomk']);
+                                      }
+                                    ?>
+                                </div>
+                                <div class="x_content">
+                                    <form  method="post">
+                                        <div class="field item form-group">
+                                            <label class="col-form-label col-md-3 col-sm-3  label-align">Mật khẩu cũ<span class="required">*</span></label>
+                                            <div class="col-md-6 col-sm-6">
+                                                <input class="form-control"  type="password" name="old" required="required" />
+                                            </div>
+                                        </div>
+                                        <div class="field item form-group">
+                                            <label class="col-form-label col-md-3 col-sm-3  label-align">Mật khẩu mới<span class="required">*</span></label>
+                                            <div class="col-md-6 col-sm-6">
+                                                <input class="form-control" type="password" name="new" required="required" />
+                                            </div>
+                                        </div>
+                                        <div class="field item form-group">
+                                            <label class="col-form-label col-md-3 col-sm-3  label-align">Nhập lại<span class="required">*</span></label>
+                                            <div class="col-md-6 col-sm-6">
+                                                <input class="form-control" type="password" name="re_new" required="required" />
+                                            </div>
+                                        </div>
+                                        <div class="ln_solid">
+                                            <div class="form-group">
+                                                <div class="col-md-6 offset-md-3">
+                                                    <button type='submit' name='submit' class="btn btn-primary">Đổi</button>
+                                                    <button type='reset' class="btn btn-success">Nhập lại</button>
+                                                </div>  
+                                            </div>
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -299,14 +300,31 @@ include '../php/connect.php';
 		}
 	</script>
 
-    <script type="text/javascript">
-    $(function () {  
-    $("#datepicker").datepicker({         
-        format: "mm-yyyy",
-        startView: "months", 
-        minViewMode: "months"
-    });
-    });
+    <script>
+        // initialize a validator instance from the "FormValidator" constructor.
+        // A "<form>" element is optionally passed as an argument, but is not a must
+        var validator = new FormValidator({
+            "events": ['blur', 'input', 'change']
+        }, document.forms[0]);
+        // on form "submit" event
+        document.forms[0].onsubmit = function(e) {
+            var submit = true,
+                validatorResult = validator.checkAll(this);
+            console.log(validatorResult);
+            return !!validatorResult.valid;
+        };
+        // on form "reset" event
+        document.forms[0].onreset = function(e) {
+            validator.reset();
+        };
+        // stuff related ONLY for this demo page:
+        $('.toggleValidationTooltips').change(function() {
+            validator.settings.alerts = !this.checked;
+            if (this.checked)
+                $('form .alert').remove();
+        }).prop('checked', false);
+}
+
     </script>
 
     <script src="../vendors/jquery/dist/jquery.min.js"></script>
@@ -314,8 +332,6 @@ include '../php/connect.php';
     <script src="../vendors/fastclick/lib/fastclick.js"></script>
     <script src="../vendors/nprogress/nprogress.js"></script>
     <script src="../build/js/custom.min.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/css/datepicker.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/js/bootstrap-datepicker.min.js"></script>
 
 </body>
 

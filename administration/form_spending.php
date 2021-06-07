@@ -23,7 +23,9 @@ if ($_SESSION['level'] != 5 and $_SESSION['level'] != 6){
     <link href="../vendors/pnotify/dist/pnotify.buttons.css" rel="stylesheet">
     <link href="../vendors/pnotify/dist/pnotify.nonblock.css" rel="stylesheet">
 
-    <title>Gentelella Alela! | </title>
+    <title><?php
+        include '../php/general_setting.php';
+    echo $res_setting['name'];?> </title>
 
     <!-- Bootstrap -->
     <link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -169,6 +171,16 @@ if ($_SESSION['level'] != 5 and $_SESSION['level'] != 6){
               <a data-toggle="tooltip" data-placement="top" title="Logout" href="../php/logout.php">
                 <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
               </a>
+              <a data-toggle="tooltip" data-placement="top" title="Profile" href="profile.php">
+                <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+              </a>
+              <?php  
+                if($_SESSION['level'] == 6){
+              ?>
+              <a data-toggle="tooltip" data-placement="top" title="Settings" href="setting.php">
+                <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+              </a>
+              <?php }   ?>
             </div>
             <!-- /sidebar menu -->
 

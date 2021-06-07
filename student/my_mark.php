@@ -1,7 +1,9 @@
 <?php 
     include '../php/connect.php';
     include '../php/session.php';
-
+    if($_SESSION['level'] != 'hocvien'){
+      header("location: ../administration/login.php");
+    }
     $id = $_SESSION['id'];
     $sql = "SELECT * FROM student_mark where student_id = " .$id;
     $res = mysqli_query($conn, $sql);
@@ -16,7 +18,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Trung tâm MR.CHAU</title>
+    <title><?php
+        include '../php/general_setting.php';
+    echo $res_setting['name'];?> </title>
 
     <!-- Bootstrap -->
     <link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">

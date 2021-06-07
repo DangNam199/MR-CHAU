@@ -161,6 +161,9 @@
               <a data-toggle="tooltip" data-placement="top" title="Logout" href="../php/logout.php">
                 <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
               </a>
+              <a data-toggle="tooltip" data-placement="top" title="Profile" href="profile.php">
+                <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+              </a>
               <?php  
                 if($_SESSION['level'] == 6){
               ?>

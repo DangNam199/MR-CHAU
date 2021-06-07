@@ -41,7 +41,9 @@ if (isset($_POST['submit']) && empty($_FILES['image']['tmp_name'])==false){
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Gentelella Alela! | </title>
+    <title><?php
+        include '../php/general_setting.php';
+    echo $res_setting['name'];?> </title>
 
     <!-- Bootstrap -->
     <link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -106,7 +108,7 @@ if (isset($_POST['submit']) && empty($_FILES['image']['tmp_name'])==false){
                   <li><a> Học phí <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
                       <li><a href="fee.php">Học viên đóng học phí</a></li>
-                      <li><a href="all_room.php">Tất Cả Phòng</a></li>
+                      <li><a href="all_fee.php">Danh sách học phí</a></li>
                     </ul>
                   </li>
                   <li><a> Lớp <span class="fa fa-chevron-down"></span></a>
@@ -185,6 +187,16 @@ if (isset($_POST['submit']) && empty($_FILES['image']['tmp_name'])==false){
               <a data-toggle="tooltip" data-placement="top" title="Logout" href="../php/logout.php">
                 <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
               </a>
+              <a data-toggle="tooltip" data-placement="top" title="Profile" href="profile.php">
+                <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+              </a>
+              <?php  
+                if($_SESSION['level'] == 6){
+              ?>
+              <a data-toggle="tooltip" data-placement="top" title="Settings" href="setting.php">
+                <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+              </a>
+              <?php }   ?>
             </div>
             <!-- /sidebar menu -->
 

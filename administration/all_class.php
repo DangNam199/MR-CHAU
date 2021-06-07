@@ -195,6 +195,9 @@
               <a data-toggle="tooltip" data-placement="top" title="Logout" href="../php/logout.php">
                 <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
               </a>
+              <a data-toggle="tooltip" data-placement="top" title="Profile" href="profile.php">
+                <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+              </a>
               <?php  
                 if($_SESSION['level'] == 6){
               ?>
@@ -218,19 +221,6 @@
               <div class="title_left">
                 <h3>Danh sách Lớp</h3>
               </div>
-
-              <div class="title_right">
-                <div class="col-md-5 col-sm-5 form-group pull-right top_search">
-                  <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search for...">
-                    <span class="input-group-btn">
-                      <button class="btn btn-default" type="button">Go!</button>
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
             <div class="clearfix"></div>
 
             <div class="row">

@@ -1,5 +1,6 @@
 <?php 
     include '../php/connect.php';
+    include '../php/session.php';
     $sql = "SELECT `id`, `TenNV`, `NgaySinh`, `gender`, `SoDT`, `address`, `CMND`, `ChungChi`, `HSL`, `email`, `password`, `level`, `avatar` FROM `nhanvien` WHERE id=".$_GET['id'];
     $row=mysqli_fetch_assoc(mysqli_query($conn, $sql));
     if (isset( $_POST['submit'])){
@@ -34,7 +35,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Gentelella Alela! | </title>
+    <title><?php
+        include '../php/general_setting.php';
+    echo $res_setting['name'];?> </title>
 
     <!-- Bootstrap -->
     <link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -74,191 +77,129 @@
 
                     <!-- sidebar menu -->
                     <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
-                        <div class="menu_section">
-                            <h3>General</h3>
-                            <ul class="nav side-menu">
-                                <li><a><i class="fa fa-home"></i> Home <span class="fa fa-chevron-down"></span></a>
-                                    <ul class="nav child_menu">
-                                        <li><a href="index.html">Dashboard</a></li>
-                                        <li><a href="index2.html">Dashboard2</a></li>
-                                        <li><a href="index3.html">Dashboard3</a></li>
-                                    </ul>
-                                </li>
-                                <li><a><i class="fa fa-edit"></i> Forms <span class="fa fa-chevron-down"></span></a>
-                                    <ul class="nav child_menu">
-                                      <li><a href="form.html">General Form</a></li>
-                                      <li><a href="form_advanced.html">Advanced Components</a></li>
-                                      <li><a href="form_staff.html">Tạo Nhân Viên</a></li>
-                                      <li><a href="form_news.php">Tạo Sự Kiện</a></li>
-                                      <li><a href="form_wizards.html">Form Wizard</a></li>
-                                      <li><a href="form_upload.html">Form Upload</a></li>
-                                      <li><a href="form_buttons.html">Form Buttons</a></li>
-                                    </ul>
-                                  </li>
-                                <li><a><i class="fa fa-desktop"></i> UI Elements <span class="fa fa-chevron-down"></span></a>
-                                    <ul class="nav child_menu">
-                                        <li><a href="general_elements.html">General Elements</a></li>
-                                        <li><a href="media_gallery.html">Media Gallery</a></li>
-                                        <li><a href="typography.html">Typography</a></li>
-                                        <li><a href="icons.html">Icons</a></li>
-                                        <li><a href="glyphicons.html">Glyphicons</a></li>
-                                        <li><a href="widgets.html">Widgets</a></li>
-                                        <li><a href="invoice.html">Invoice</a></li>
-                                        <li><a href="inbox.html">Inbox</a></li>
-                                        <li><a href="calendar.html">Calendar</a></li>
-                                    </ul>
-                                </li>
-                                <li><a><i class="fa fa-table"></i> Tables <span class="fa fa-chevron-down"></span></a>
-                                    <ul class="nav child_menu">
-                                        <li><a href="tables.html">Tables</a></li>
-                                        <li><a href="tables_dynamic.html">Table Dynamic</a></li>
-                                    </ul>
-                                </li>
-                                <li><a><i class="fa fa-bar-chart-o"></i> Data Presentation <span class="fa fa-chevron-down"></span></a>
-                                    <ul class="nav child_menu">
-                                        <li><a href="chartjs.html">Chart JS</a></li>
-                                        <li><a href="chartjs2.html">Chart JS2</a></li>
-                                        <li><a href="morisjs.html">Moris JS</a></li>
-                                        <li><a href="echarts.html">ECharts</a></li>
-                                        <li><a href="other_charts.html">Other Charts</a></li>
-                                    </ul>
-                                </li>
-                                <li><a><i class="fa fa-clone"></i>Layouts <span class="fa fa-chevron-down"></span></a>
-                                    <ul class="nav child_menu">
-                                        <li><a href="fixed_sidebar.html">Fixed Sidebar</a></li>
-                                        <li><a href="fixed_footer.html">Fixed Footer</a></li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="menu_section">
-                            <h3>Live On</h3>
-                            <ul class="nav side-menu">
-                                <li><a><i class="fa fa-bug"></i> Additional Pages <span class="fa fa-chevron-down"></span></a>
-                                    <ul class="nav child_menu">
-                                        <li><a href="e_commerce.html">E-commerce</a></li>
-                                        <li><a href="projects.html">Projects</a></li>
-                                        <li><a href="project_detail.html">Project Detail</a></li>
-                                        <li><a href="contacts.html">Contacts</a></li>
-                                        <li><a href="profile.html">Profile</a></li>
-                                    </ul>
-                                </li>
-                                <li><a><i class="fa fa-windows"></i> Extras <span class="fa fa-chevron-down"></span></a>
-                                    <ul class="nav child_menu">
-                                        <li><a href="page_403.html">403 Error</a></li>
-                                        <li><a href="page_404.html">404 Error</a></li>
-                                        <li><a href="page_500.html">500 Error</a></li>
-                                        <li><a href="plain_page.html">Plain Page</a></li>
-                                        <li><a href="login.html">Login Page</a></li>
-                                        <li><a href="pricing_tables.html">Pricing Tables</a></li>
-                                    </ul>
-                                </li>   
-                            </ul>
-                        </div>
+              <div class="menu_section">
+                <h3>General</h3>
+                <ul class="nav side-menu">
+                  <li><a href="index.php"><i class="fa fa-home"></i> Home </a>
+                  </li>
+                  <?php 
+                    if ($_SESSION['level'] == 5 or $_SESSION['level'] == 6){
+                      ?>
+                  <li><a> Nhân Viên <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="form_staff.php">Tạo Nhân Viên</a></li>
+                      <li><a href="contacts.php">Tất Cả Nhân Viên</a></li>
+                      <li><a href="salary.php">Duyệt lương nhân viên</a></li>
+                      <li><a href="end_contacts.php">Tất Cả Nhân Viên Đã Lưu Trữ</a></li>
+                    </ul>
+                  </li>
+                  <li><a> Học Viên <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="form_student.php">Tạo Học Viên</a></li>
+                      <li><a href="csv_student.php">Nhập Học Viên bằng file csv</a></li>
+                      <li><a href="all_student.php">Tất Cả Học Viên</a></li>
+                      
+                    </ul>
+                  </li>
+                  <li><a> Học phí <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="fee.php">Học viên đóng học phí</a></li>
+                      <li><a href="all_fee.php">Danh sách học phí</a></li>
+                    </ul>
+                  </li>
+                  <li><a> Lớp <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="form_class.php">Lớp</a></li>
+                      <li><a href="all_class.php">Tất Cả Lớp</a></li>
+                    </ul>
+                  </li>
+                  <li><a> Phòng Học <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="form_room.php">Thêm Phòng</a></li>
+                      <li><a href="all_room.php">Tất Cả Phòng</a></li>
+                    </ul>
+                  </li>
+                  <li><a> Chứng chỉ đang đào tạo <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="form_degree.php">Tạo Chứng Chỉ</a></li>
+                      <li><a href="all_degree.php">Tất Cả Chứng Chỉ</a></li>
+                    </ul>
+                  </li>
+                  <li><a> Khoá Học <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="form_courses.php">Tạo Khoá Học</a></li>
+                      <li><a href="all_courses.php">Tất Cả Khoá Học</a></li>
+                    </ul>
+                  </li>
+                  <li><a> Tài Liệu <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="form_document.php">Nhập tài liệu</a></li>
+                      <li><a href="all_document.php">Tất Cả Tài liệu</a></li>
+                    </ul>
+                  </li>
+                  <li><a> Tin Tức <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="form_news.php">Tạo Tin Tức</a></li>
+                      <li><a href="all_news.php">Tất Cả Tin Tức</a></li>
+                    </ul>
+                  </li>
+                  <li><a> Chi <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="form_spending.php">Chi</a></li>
+                      <li><a href="all_spending.php">Tất cả chi</a></li>
+                    </ul>
+                  </li>
+                  <li><a> Báo Cáo <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="report_in.php">Báo cáo thu</a></li>
+                      <li><a href="report_out.php">Báo cáo chi</a></li>
+                      <li><a href="report_salary.php">Báo lương nhân viên</a></li>
+                      <li><a href="report_all.php">Báo Tổng </a></li>
+                    </ul>
+                  </li>
+                 <?php }
+                 else {
+                 ?>
+                 <li><a href="my_class.php">Lớp của tôi</a>
+                  </li>
+                  <li><a href="schedule.php"> Lịch  </a>
+                  </li>
+                  <li><a> Công <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="my_worktime.php">Xem lịch sử chấm công</a></li>
+                      <li><a href="my_salary.php">Lương</a></li>
+                    </ul>
+                  </li>
+                  <?php }?>
+                </ul>
+              </div>
 
-                    </div>
-                    <!-- /sidebar menu -->
+            </div>
 
-                    <!-- /menu footer buttons -->
-                    <div class="sidebar-footer hidden-small">
-                        <a data-toggle="tooltip" data-placement="top" title="FullScreen">
-                            <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
-                        </a>    
-                        <a data-toggle="tooltip" data-placement="top" title="Logout" href="login.html">
-                            <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
-                        </a>
-                    </div>
+            <!-- /sidebar menu -->
+
+            <!-- /menu footer buttons -->
+            <div class="sidebar-footer hidden-small">
+              <a data-toggle="tooltip" data-placement="top" title="Logout" href="../php/logout.php">
+                <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+              </a>
+              <a data-toggle="tooltip" data-placement="top" title="Profile" href="profile.php">
+                <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+              </a>
+              <?php  
+                if($_SESSION['level'] == 6){
+              ?>
+              <a data-toggle="tooltip" data-placement="top" title="Settings" href="setting.php">
+                <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+              </a>
+              <?php }   ?>
+            </div>
                     <!-- /menu footer buttons -->
                 </div>
             </div>
 
             <!-- top navigation -->
-            <div class="top_nav">
-                <div class="nav_menu">
-                    <div class="nav toggle">
-                        <a id="menu_toggle"><i class="fa fa-bars"></i></a>
-                    </div>
-                    <nav class="nav navbar-nav">
-                        <ul class=" navbar-right">
-                            <li class="nav-item dropdown open" style="padding-left: 15px;">
-                                <a href="javascript:;" class="user-profile dropdown-toggle" aria-haspopup="true" id="navbarDropdown" data-toggle="dropdown" aria-expanded="false">
-                                    <img src="images/img.jpg" alt="">John Doe
-                                </a>
-                                <div class="dropdown-menu dropdown-usermenu pull-right" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="javascript:;"> Profile</a>
-                                    <a class="dropdown-item" href="javascript:;">
-                                        <span class="badge bg-red pull-right">50%</span>
-                                        <span>Settings</span>
-                                    </a>
-                                    <a class="dropdown-item" href="javascript:;">Help</a>
-                                    <a class="dropdown-item" href="login.html"><i class="fa fa-sign-out pull-right"></i> Log Out</a>
-                                </div>
-                            </li>
 
-                            <li role="presentation" class="nav-item dropdown open">
-                                <ul class="dropdown-menu list-unstyled msg_list" role="menu" aria-labelledby="navbarDropdown1">
-                                    <li class="nav-item">
-                                        <a class="dropdown-item">
-                                            <span class="image"><img src="images/img.jpg" alt="Profile Image" /></span>
-                                            <span>
-                                                <span>John Smith</span>
-                                                <span class="time">3 mins ago</span>
-                                            </span>
-                                            <span class="message">
-                                                Film festivals used to be do-or-die moments for movie makers. They were where...
-                                            </span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="dropdown-item">
-                                            <span class="image"><img src="images/img.jpg" alt="Profile Image" /></span>
-                                            <span>
-                                                <span>John Smith</span>
-                                                <span class="time">3 mins ago</span>
-                                            </span>
-                                            <span class="message">
-                                                Film festivals used to be do-or-die moments for movie makers. They were where...
-                                            </span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="dropdown-item">
-                                            <span class="image"><img src="images/img.jpg" alt="Profile Image" /></span>
-                                            <span>
-                                                <span>John Smith</span>
-                                                <span class="time">3 mins ago</span>
-                                            </span>
-                                            <span class="message">
-                                                Film festivals used to be do-or-die moments for movie makers. They were where...
-                                            </span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="dropdown-item">
-                                            <span class="image"><img src="images/img.jpg" alt="Profile Image" /></span>
-                                            <span>
-                                                <span>John Smith</span>
-                                                <span class="time">3 mins ago</span>
-                                            </span>
-                                            <span class="message">
-                                                Film festivals used to be do-or-die moments for movie makers. They were where...
-                                            </span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <div class="text-center">
-                                            <a class="dropdown-item">
-                                                <strong>See All Alerts</strong>
-                                                <i class="fa fa-angle-right"></i>
-                                            </a>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </nav>
-                </div>
-            </div>
             <!-- /top navigation -->
 
             <!-- page content -->
@@ -266,7 +207,7 @@
                 <div class="">
                     <div class="page-title">
                         <div class="title_left">
-                            <h3>Thêm mới Nhân Viên</h3>
+                            <h3>Sửa Nhân Viên</h3>
                         </div>
                     </div>
                     <div class="clearfix"></div>

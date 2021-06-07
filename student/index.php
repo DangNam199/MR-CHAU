@@ -1,5 +1,8 @@
 <?php   
       include '../php/session.php'; 
+      if($_SESSION['level'] != 'hocvien'){
+        header("location: ../administration/login.php");
+      }
 ?>
 
 <!DOCTYPE html>
@@ -11,7 +14,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Gentelella Alela! | </title>
+    <title><?php
+        include '../php/general_setting.php';
+    echo $res_setting['name'];?> </title>
 
     <!-- Bootstrap -->
     <link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
