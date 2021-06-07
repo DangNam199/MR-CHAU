@@ -1698,5 +1698,19 @@ button{
   text-transform: uppercase;
   text-decoration: none;
 }
+.login a {
+  display: block;
+ padding: 10px 20px;
+  border-radius: 4px;
+  background: #a71e23;
+  margin-top: 10px;
+  outline: none;
+  color: #ffffff;
+  font-family: Montserrat-SemiBold;
+  text-transform: uppercase;
+  border: none;
+  box-shadow: -1px 0px 5px 5px #a71e238c;
+
+}
 
 /*# sourceMappingURL=style.css.map */

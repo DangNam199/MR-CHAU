@@ -1,37 +1,27 @@
 <?php 
-include '../php/connect.php';
-include '../php/general_setting.php';
-    if (isset($_POST['submit']) && $_POST['datepicker']!= ''){
-        $all = $_POST['datepicker'];
-        $all = explode('-', $all);
-        $date = $all[0];
-        $year = $all[1];
-        $sql_in = "SELECT *  FROM hocvien WHERE month(ngaynhaphoc) = $date  and YEAR(ngaynhaphoc) = $year ORDER BY ngaynhaphoc ";
-        $res_in = mysqli_query($conn,$sql_in);
-    }
-    
+    include '../php/connect.php';
     include '../php/session.php';
-    if ($_SESSION['level'] != 5 and $_SESSION['level'] != 6){
-      header("location: index.php");
-    }
+
+    $sql = "SELECT * FROM lienhe where state = 'draft'";
+    $res = mysqli_query($conn, $sql);
+
+
+    
 ?>
-
-
-
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
+  <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <!-- Meta, title, CSS, favicons, etc. -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title><?=$res_setting['name']?> </title>
+    <title>Trung tâm MR.CHAU</title>
 
     <!-- Bootstrap -->
     <link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <!-- Font Awesome -->
     <link href="../vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
     <!-- NProgress -->
@@ -39,34 +29,44 @@ include '../php/general_setting.php';
 
     <!-- Custom Theme Style -->
     <link href="../build/css/custom.min.css" rel="stylesheet">
-</head>
 
-<body class="nav-md">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+
+    <!-- thư viên để thông báo -->
+    <link href="../vendors/pnotify/dist/pnotify.css" rel="stylesheet">
+    <link href="../vendors/pnotify/dist/pnotify.buttons.css" rel="stylesheet">
+    <link href="../vendors/pnotify/dist/pnotify.nonblock.css" rel="stylesheet">
+
+
+ 
+  </head>
+
+  <body class="nav-md">
     <div class="container body">
-        <div class="main_container">
+      <div class="main_container">
+        
         <div class="col-md-3 left_col">
-          <div class="left_col scroll-view">
+            <div class="left_col scroll-view">
 
-            <div class="clearfix"></div>
+              <div class="clearfix"></div>
 
-            <!-- menu profile quick info -->
-            <div class="profile clearfix">
-              <div class="profile_pic">
-              <?php 
-                    echo '<img src="data:image/jpeg;base64,'.base64_encode($_SESSION['avatar'] ).'" class="img-circle profile_img" />';
-              ?>
+              <!-- menu profile quick info -->
+              <div class="profile clearfix">
+                <div class="profile_pic">
+                  <?php
+                echo '<img src="data:image/jpeg;base64,'.base64_encode($_SESSION['avatar'] ).'" class="img-circle profile_img" />'; ?>
+                </div>
+                <div class="profile_info">
+                  <span>Welcome,</span>
+                  <h2><?=$_SESSION['name'] ?></h2>
+                </div>
               </div>
-              <div class="profile_info">
-                <span>Welcome,</span>
-                <h2><?=$_SESSION['name'] ?></h2>
-              </div>
-            </div>
-            <!-- /menu profile quick info -->
+              <!-- /menu profile quick info -->
 
-            <br />
+              <br />
 
-            <!-- sidebar menu -->
-            <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+              <!-- sidebar menu -->
+              <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
               <div class="menu_section">
                 <h3>General</h3>
                 <ul class="nav side-menu">
@@ -173,143 +173,86 @@ include '../php/general_setting.php';
               <a data-toggle="tooltip" data-placement="top" title="Logout" href="../php/logout.php">
                 <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
               </a>
-              <?php  
-                if($_SESSION['level'] == 6){
-              ?>
-              <a data-toggle="tooltip" data-placement="top" title="Settings" href="setting.php">
-                <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
-              </a>
-              <?php }   ?>
             </div>
-            <!-- /sidebar menu -->
+              <!-- /sidebar menu -->
 
-          </div>
+            </div>
         </div>
 
-        <!-- top navigation --> 
-            <!-- /top navigation -->
+        <!-- top navigation -->
+        <!-- top navigation -->
 
-            <!-- page content -->
-            <div class="right_col" role="main">
-                <div class="">
-                    <div class="page-title">
-                        <div class="title_left">
-                            <h3>Danh sách học phí</h3>
-                        </div>
-                    </div>
-                    <div class="clearfix"></div>
+        <!-- page content -->
+        <div class="right_col" role="main">
+          <div class="">
+            <div class="page-title">
+              <div class="title_left">
+                <h3>Cài đặt chung</h3> 
+              </div>
 
-                    <div class="row">
-                        <div class="col-md-12 col-sm-12">
-                            <div class="x_panel">
-                            <div class="table-responsive">
-                                <p>Chọn tháng báo cáo</p>
-                                <form method = "post">
-                            <input type="text" class="form-control" name="datepicker" id="datepicker" />
-                            <input type="submit" class="form-control" name="submit"/>
-                            </form>
+            <div class="clearfix"></div>
 
-                      <table class="table table-striped jambo_table bulk_action bulk_action">
-                        <thead>
-                          <tr class="headings">
-                            <th class="column-title">Mã học viên </th>
-                            <th class="column-title">Tên học viên </th>
-                            <th class="column-title">Ngày nhập học </th>
-                            <th class="column-title">Lớp</th>
-                            <th class="column-title">Tình trạng học phí </th>
-                            </th>
-                          </tr>
-                        </thead>
+            <div class="row">
+                <div class="x_panel">
+                  <div class="x_content">
+                      <div class="col-md-12 col-sm-12  text-center">
+                      <div class="clearfix"></div>
+                      <div class="table-responsive">
+                      <?php 
+                        if(isset($_SESSION['thongbao'])){
+                          echo '<p>'.$_SESSION['thongbao'].'</p>';
+                          unset($_SESSION['thongbao']);
+                        }
+                      ?>
+                      <table class="table table-striped jambo_table bulk_action">
+                      
                         <tbody>
-                            <?php 
-                                if(isset($_POST['submit'])){
-                                while($row = mysqli_fetch_assoc($res_in)) {
-                            ?>
-                        <tr>
-                            <td><?=$row['id']?></td>
-                            <td><?=$row['name']?></td>
-                            <td><?=$row['ngaynhaphoc']?></td>
-                           
-                            <?php
-                           $sql_class = "SELECT * FROM class where id = ".$row['class_id'];
-                           $class_name = mysqli_fetch_array(mysqli_query($conn, $sql_class))['name'];
-                           if ($class_name != ''){
-                           echo " <td>$class_name</td>";
-                          }
-                          else {
-                            echo 'Chưa có lớp ';
-                          }
-                            if($row["tinhtranghocphi"] == 1){
-                              echo "<td><div class='btn btn-success'>Đã đóng</div></td>";
-                            }
-                            else {
-                              echo "<td><div class='btn btn-danger'>Chưa đóng</div></td>";
-                            }
-                          
-                          }}?>
-                        </tr>
+
+                                <tr class="even pointer" id="tr-<?=$row['id']?>">
+                            <td class=" ">Thông tin chung về trung tâm</td>
+                            <td class=" "><a  class='btn btn-primary' href = 'general_setting.php' >Cài đặt</a></td>
+                          </tr>
+                          <tr class="even pointer" id="tr-<?=$row['id']?>">
+                            <td class=" ">Mạng xã hội</td>
+                            <td class=" "><a  class='btn btn-primary' href = 'social_setting.php' >Cài đặt</a></td>
+                          </tr>
+                          <tr class="even pointer" id="tr-<?=$row['id']?>">
+                            <td class=" ">Slideshow</td>
+                            <td class=" "><a  class='btn btn-primary' href = 'slideshow_setting.php' >Cài đặt</a></td>
+                          </tr>
+
                         </tbody>
-                      </table>
-                    </div>       
-                                </div>
-                            </div>
-                        </div>
+                        </table>
                     </div>
+                  </div>
                 </div>
             </div>
-            <!-- /page content -->
-
-            <!-- footer content -->
-            <footer>
-            </footer>
-            <!-- /footer content -->
+          </div>
         </div>
+              
+      </div>
     </div>
 
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-    <script src="../vendors/validator/multifield.js"></script>
-    <script src="../vendors/validator/validator.js"></script>
-    
-    <!-- Javascript functions	-->
-	<script>
-		function hideshow(){
-			var password = document.getElementById("password1");
-			var slash = document.getElementById("slash");
-			var eye = document.getElementById("eye");
-			
-			if(password.type === 'password'){
-				password.type = "text";
-				slash.style.display = "block";
-				eye.style.display = "none";
-			}
-			else{
-				password.type = "password";
-				slash.style.display = "none";
-				eye.style.display = "block";
-			}
-
-		}
-	</script>
-
-    <script type="text/javascript">
-    $(function () {  
-    $("#datepicker").datepicker({         
-        format: "mm-yyyy",
-        startView: "months", 
-        minViewMode: "months"
-    });
-    });
-    </script>
 
     <script src="../vendors/jquery/dist/jquery.min.js"></script>
-    <script src="../vendors/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap -->
+   <script src="../vendors/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- FastClick -->
     <script src="../vendors/fastclick/lib/fastclick.js"></script>
+    <!-- NProgress -->
     <script src="../vendors/nprogress/nprogress.js"></script>
+    <!-- bootstrap-progressbar -->
+    <script src="../vendors/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
+    <!-- iCheck -->
+    <script src="../vendors/iCheck/icheck.min.js"></script>
+    <!-- PNotify -->
+    <!-- thư viên để thông báo -->
+    <script src="../vendors/pnotify/dist/pnotify.js"></script>
+    <script src="../vendors/pnotify/dist/pnotify.buttons.js"></script>
+    <script src="../vendors/pnotify/dist/pnotify.nonblock.js"></script>
+
+    <!-- Custom Theme Scripts -->
     <script src="../build/js/custom.min.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/css/datepicker.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/js/bootstrap-datepicker.min.js"></script>
-
-</body>
-
+  </body>
 </html>

@@ -1,6 +1,7 @@
 <?php 
     include '../php/connect.php';
     include '../php/session.php';
+    include '../php/general_setting.php';
     if ($_SESSION['level'] != 5 and $_SESSION['level'] != 6){
       header("location: index.php");
     }
@@ -31,7 +32,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Contact Form | Gentelella Alela! by Colorlib</title>
+    <title><?=$res_setting['name']?> </title>
 
     <!-- Bootstrap -->
     <link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -176,6 +177,13 @@
               <a data-toggle="tooltip" data-placement="top" title="Logout" href="../php/logout.php">
                 <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
               </a>
+              <?php  
+                if($_SESSION['level'] == 6){
+              ?>
+              <a data-toggle="tooltip" data-placement="top" title="Settings" href="setting.php">
+                <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+              </a>
+              <?php }   ?>
             </div>
             <!-- /sidebar menu -->
 
@@ -191,19 +199,6 @@
               <div class="title_left">
                 <h3>Danh sách tin tức</h3>
               </div>
-
-              <div class="title_right">
-                <div class="col-md-5 col-sm-5  form-group pull-right top_search">
-                  <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search for...">
-                    <span class="input-group-btn">
-                      <button class="btn btn-default" type="button">Go!</button>
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
             <div class="clearfix"></div>
 
             <div class="row">

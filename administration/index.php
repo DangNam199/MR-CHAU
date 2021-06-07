@@ -2,6 +2,7 @@
       include '../php/session.php'; 
       include '../php/auto_admin.php';
       include '../php/auto_student.php';
+      include '../php/general_setting.php';
 ?>
 
 <!DOCTYPE html>
@@ -13,7 +14,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Gentelella Alela! | </title>
+    <title><?=$res_setting['name']?> </title>
 
     <!-- Bootstrap -->
     <link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -33,9 +34,6 @@
       <div class="main_container">
         <div class="col-md-3 left_col">
           <div class="left_col scroll-view">
-            <div class="navbar nav_title" style="border: 0;">
-              <a href="index.html" class="site_title"><i class="fa fa-paw"></i> <span>Gentelella Alela!</span></a>
-            </div>
 
             <div class="clearfix"></div>
 
@@ -163,6 +161,13 @@
               <a data-toggle="tooltip" data-placement="top" title="Logout" href="../php/logout.php">
                 <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
               </a>
+              <?php  
+                if($_SESSION['level'] == 6){
+              ?>
+              <a data-toggle="tooltip" data-placement="top" title="Settings" href="setting.php">
+                <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+              </a>
+              <?php }   ?>
             </div>
             <!-- /menu footer buttons -->
           </div>

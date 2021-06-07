@@ -516,13 +516,13 @@
         },
         success: function (data) {
           if (data =="success"){
-            setTimeout(function() {
-              new PNotify({
+            new PNotify({
                 title: 'Thành công',
                 text: 'Lưu trữ nhân thành công',
                 type: 'success',
                 styling: 'bootstrap3'
               });
+            setTimeout(function() {
               window.location.replace("contacts.php");
               }, 3000);
            }

@@ -3,6 +3,7 @@
     include '../php/weekday.php'; 
     include '../php/auto_student.php';
     include '../php/session.php';
+    include '../php/general_setting.php';
     if ($_SESSION['level'] != 5 and $_SESSION['level'] != 6){
       header("location: index.php");
     }
@@ -39,7 +40,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Gentelella Alela! | </title>
+    <title><?=$res_setting['name'] ?></title>
 
     <!-- Bootstrap -->
     <link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -194,6 +195,13 @@
               <a data-toggle="tooltip" data-placement="top" title="Logout" href="../php/logout.php">
                 <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
               </a>
+              <?php  
+                if($_SESSION['level'] == 6){
+              ?>
+              <a data-toggle="tooltip" data-placement="top" title="Settings" href="setting.php">
+                <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+              </a>
+              <?php }   ?>
             </div>
             <!-- /sidebar menu -->
 

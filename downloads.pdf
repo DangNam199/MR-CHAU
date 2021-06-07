@@ -1,2 +1,0 @@
-SELECT * FROM homework_student_rel WHERE student_id = '154' and homework_id = '12'<br />
-<b>Notice</b>:  Undefined variable: name in <b>C:\xampp\htdocs\mrchau\administration\downloads.php</b> on line <b>29</b><br />

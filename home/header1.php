@@ -1,5 +1,6 @@
 <?php
 include '../php/connect.php';
+include '../php/general_setting.php';
 ?>
 
 <!DOCTYPE html>
@@ -8,7 +9,7 @@ include '../php/connect.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MsChâu Ielts</title>
+    <title><?=$res_setting['name'] ?></title>
     <!-- Plugin -->
     <link rel="stylesheet" href="../build/css/bootstrap.min.css">
     <!-- CSS -->
@@ -24,10 +25,17 @@ include '../php/connect.php';
 <header>
     <div class="n-header">
         <div class="n-header-menu d-none d-lg-block">
+        <div class="d-flex justify-content-end mt-2 login">
+                <a href="../administration/login.php ">Đăng nhập</a>
+            </div>
             <div class="container">
                 <ul>
                     <li class="mr-5">
-                        <a href="index.php"><img src="../home/images/logo.png" alt=""></a>
+                        <a href="index.php">
+                        <?php 
+                        echo '<img src="data:image/jpeg;base64,'.base64_encode($res_setting['avatar'] ).'" class="img-circle profile_img" />';
+                        ?>
+                        </a>
                     </li>
                     <li><a href="aboutus.php">VỀ CHÚNG TÔI</a></li>
 

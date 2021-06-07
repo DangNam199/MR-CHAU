@@ -21,7 +21,7 @@
         $listen = $listens[$count];
         $write = $writes[$count];
         $student_id = $row['id'];
-        $sql_insert .= "INSERT INTO `officail_mark`(`id`, `student_id`, `reading`, `listening`, `speaking`, `writing`) 
+        $sql_insert .= "INSERT INTO `official_mark`(`id`, `student_id`, `reading`, `listening`, `speaking`, `writing`) 
         VALUES (null,'$student_id','$read','$listen','$speak','$write');";
         $count ++;
       }
@@ -254,6 +254,7 @@
                             <th class="column-title">Điểm Nói </th>
                             <th class="column-title">Điểm Đọc </th>
                             <th class="column-title">Điểm Viết </th>
+                            <th class="column-title">Điểm trung bình </th>
                             
                           </tr>
                         </thead>

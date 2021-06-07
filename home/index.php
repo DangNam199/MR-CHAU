@@ -1,5 +1,8 @@
 <?php
     include 'header1.php';
+    include '../php/weekday.php';
+    include '../php/general_setting.php';
+    
 ?>
 <?php
 if(isset($_POST['submit'])){
@@ -32,20 +35,21 @@ $res_user3 = mysqli_query($conn,$sql_user3);
 <main>
     <section class="n-main_carousel ">
         <div class="carousel" data-flickity='{ "prevNextButtons: false,groupCells": true,"wrapAround": true}'>
+            <?php 
+                $sql_slide = "SELECT * FROM slideshow where state='primary'";
+                $res_slide = mysqli_fetch_assoc(mysqli_query($conn, $sql_slide));
+            ?>
             <div class="carousel-cell">
-                <a href="#">
-                    <img src="../home/images/carousel1.jpg" alt="">
-                </a>
+            <?php
+                echo '<img src="data:image/jpeg;base64,'.base64_encode($res_slide['pic1'] ).'"  class="img-circle profile_img" />'; ?>
             </div>
             <div class="carousel-cell">
-                <a href="#">
-                    <img src="../home/images/carousel2.jpg" alt="">
-                </a>
+            <?php
+                echo '<img src="data:image/jpeg;base64,'.base64_encode($res_slide['pic2'] ).'"  class="img-circle profile_img" />'; ?>
             </div>
             <div class="carousel-cell">
-                <a href="#">
-                    <img src="../home/images/carousel3.jpg" alt="">
-                </a>
+            <?php
+                echo '<img  src="data:image/jpeg;base64,'.base64_encode($res_slide['pic3'] ).'"  class="img-circle profile_img" />'; ?>
             </div>
         </div>
         <div class="n-main-signup d-none d-xl-block">
@@ -71,16 +75,16 @@ $res_user3 = mysqli_query($conn,$sql_user3);
                 <div class="col-lg-6">
                     <div class="n-main-center-infor">
                         <h2>giới thiệu</h2>
-                        <h3>Anh Ngữ Ms.Châu</h3>
+                        <h3><?=$res_setting['name'] ?></h3>
                         <h3>Dare to change</h3>
                         <p class="mt-4">
-                            Tự hào là đơn vị đào tạo tiếng anh hàng đầu tại Hà Nội hiện nay. Với lộ trình học tập tinh gọn – hiệu quả cùng đội ngũ giảng viên, trợ giảng nhiệt huyết, giàu kinh nghiệm, Anh ngữMs.Châu đã đã giúp hàng chục nghìn học viên khơi dậy niềm đam mê, xóa bỏ nỗi sợ tiếng anh và đạt điểm số cao trong các kỳ thi mang tính chất học thuật như TOEIC, IELTS và THI ĐẠI HỌC...
+                            <?=$res_setting['description']?>
                         </p>
                         <a href="#"> Xem chi tiết</a>
                     </div>
                 </div>
                 <div class="col-lg-6">
-                    <iframe width="570" height="315" src="https://www.youtube.com/embed/Ba9XqG19oeg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                <iframe width="570" height="315" src="<?=$res_social_setting['youtube_video1']?>" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                 </div>
             </div>
         </div>
@@ -91,9 +95,9 @@ $res_user3 = mysqli_query($conn,$sql_user3);
             <div class="row">
                 <div class="col-md-4">
                     <div class="n-main-reason-choose">
-                        <h4>Anh Ngữ Ms.Châu</h4>
+                        <h4></h4>
                         <p>
-                            Được thành lập từ năm 2014, sau hơn 6 năm phát triển, Anh Ngữ Ms.Châu đã trở thành đơn vị đào tạo tiếng Anh hàng đầu tại Việt Nam.
+                            Được thành lập từ năm 2014, chúng tôi đã trở thành đơn vị đào tạo tiếng Anh hàng đầu tại Việt Nam.
                         </p>
                     </div>
                 </div>
@@ -101,7 +105,7 @@ $res_user3 = mysqli_query($conn,$sql_user3);
                     <div class="n-main-reason-tranning">
                         <img src="../home/images/img-4.png" alt="">
                         <p>
-                            Đào tạo hơn 10.000 bạn trẻ mất gốc tiếng Anh, sở hữu chứng chỉ TOIEC, IELTS với điểm số cao.
+                            Đào tạo hơn 10.000 bạn trẻ mất gốc tiếng Anh, sở hữu chứng chỉ IELTS với điểm số cao.
                         </p>
                     </div>
                 </div>
@@ -109,7 +113,7 @@ $res_user3 = mysqli_query($conn,$sql_user3);
                     <div class="n-main-reason-tranning">
                         <img src="../home/images/img-5.png" alt="">
                         <p>
-                            Lộ trình học tại trung tâm Ms.Châu được thiết kế theo giáo trình riêng, rõ ràng, tinh gọn và hiệu quả.
+                            Lộ trình học tại trung tâm được thiết kế theo giáo trình riêng, rõ ràng, tinh gọn và hiệu quả.
                         </p>
                     </div>
                 </div>
@@ -137,8 +141,7 @@ $res_user3 = mysqli_query($conn,$sql_user3);
             <h2 class="ml-1">các khóa học</h2>
             <div class="row">
                 <div class="col-lg-4">
-                    <h3>Trung tâm</h3>
-                    <h3>Anh Ngữ Ms.Châu</h3>
+                <h3><?=$res_setting['name'] ?></h3>
                 </div>
                 <div class="col-lg-8">
                     <p>
@@ -180,12 +183,11 @@ $res_user3 = mysqli_query($conn,$sql_user3);
             <h2 class="ml-1">tin tức và ưu đãi</h2>
             <div class="row">
                 <div class="col-lg-4">
-                    <h3>Trung tâm</h3>
-                    <h3>Anh Ngữ Ms.Châu</h3>
+                     <h3><?=$res_setting['name'] ?></h3>
                 </div>
                 <div class="col-lg-8">
                     <p>
-                        Anh ngữ Ms.Châu cập nhật thường xuyên và liên tục những thông tin bên lề kỳ thi TOEIC. Không chỉ đem lại tin tức, đây còn là nguồn tài liệu bổ ích về tiếng Anh đồng thời là nơi cung cấp thông tin về những ưu đãi khủng theo từng khóa học.
+                        Anh ngữ Ms.Châu cập nhật thường xuyên và liên tục những thông tin bên lề kỳ thi IELTS. Không chỉ đem lại tin tức, đây còn là nguồn tài liệu bổ ích về tiếng Anh đồng thời là nơi cung cấp thông tin về những ưu đãi khủng theo từng khóa học.
                     </p>
                 </div>
             </div>
@@ -193,7 +195,7 @@ $res_user3 = mysqli_query($conn,$sql_user3);
                 <div class="row">
                     <div class="col-lg-6">
                         <div class="n-main-news-video-left">
-                            <iframe width="100%" height="350" src="https://www.youtube.com/embed/FeKGaATWeQk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                            <iframe width="100%" height="350" src="<?=$res_social_setting['youtube_video2'] ?>" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                         </div>
                     </div>
                     <div class="col-lg-6">
@@ -223,15 +225,20 @@ $res_user3 = mysqli_query($conn,$sql_user3);
                                 <strong > Ưu đãi áp dụng cho những học viên đăng ký khóa học trước ngày khai giảng 10 ngày</strong>
                             </p>
                             <br>
-
-                            <h6>LỊCH KHAI GIẢNG KHÓA TOEIC 0 -500+ TỪ MẤT GỐC</h6>
+                            <h6>LỊCH KHAI Lớp mới</h6>
+                            <?php 
+                                $sql_class= "SELECT * FROM `all_class` where state = 'waiting'";
+                                $res_class = mysqli_query($conn, $sql_class);
+                                while($row_class = mysqli_fetch_assoc($res_class)){
+                                    $arr = getListWeekday($row_class['weekdays']);
+                            ?>
                             <h5>
-                                ➤  Lớp A144: Thứ 2 và Thứ 5, Thời gian: 19:30, Khai giảng 11/3/2021
+                                ➤<?=$row_class['class_name']?>:<br> <?php foreach ($arr as $r){
+                                  echo $r . ' ';
+                                }?>, Thời gian: <?=$row_class['time_from']?> - <?=$row_class['time_from'] ?>.<br> Khai giảng <?=$row_class['date_from'] ?> - <?=$row_class['date_to'] ?>
                             </h5>
-                            <h5>➤  Lớp A145: Thứ 4 và Thứ 7, Thời gian: 18:00, Khai giảng 31/3/2021</h5>
-                            <h6 class="mt-2">
-                                THÔNG TIN VỀ LỊCH KHAI GIẢNG THÁNG 2+3: <span><a href="#">TẠI ĐÂY RÚT GỌN</a></span>
-                            </h6>
+
+                            <?php } ?>
                         </div>
 
                     </div>
@@ -252,11 +259,7 @@ $res_user3 = mysqli_query($conn,$sql_user3);
                             <h4>
                                 <a href="#">
                                     <svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="clock" class="svg-inline--fa fa-clock fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm61.8-104.4l-84.9-61.7c-3.1-2.3-4.9-5.9-4.9-9.7V116c0-6.6 5.4-12 12-12h32c6.6 0 12 5.4 12 12v141.7l66.8 48.6c5.4 3.9 6.5 11.4 2.6 16.8L334.6 349c-3.9 5.3-11.4 6.5-16.8 2.6z"></path></svg>
-                                    <span> 18-03-2021</span>
-                                </a>
-                                <a class="ml-3" href="#">
-                                    <svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="eye" class="svg-inline--fa fa-eye fa-w-18" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="currentColor" d="M288 144a110.94 110.94 0 0 0-31.24 5 55.4 55.4 0 0 1 7.24 27 56 56 0 0 1-56 56 55.4 55.4 0 0 1-27-7.24A111.71 111.71 0 1 0 288 144zm284.52 97.4C518.29 135.59 410.93 64 288 64S57.68 135.64 3.48 241.41a32.35 32.35 0 0 0 0 29.19C57.71 376.41 165.07 448 288 448s230.32-71.64 284.52-177.41a32.35 32.35 0 0 0 0-29.19zM288 400c-98.65 0-189.09-55-237.93-144C98.91 167 189.34 112 288 112s189.09 55 237.93 144C477.1 345 386.66 400 288 400z"></path></svg>
-                                    <span> 115 lượt xem</span>
+                                    <span> <?=$row['date']?></span>
                                 </a>
                             </h4>
                         </div>
@@ -273,8 +276,7 @@ $res_user3 = mysqli_query($conn,$sql_user3);
             <h2 class="ml-1">tin tức và ưu đãi</h2>
             <div class="row">
                 <div class="col-lg-4">
-                    <h3>Trung tâm</h3>
-                    <h3>Anh Ngữ Ms.Châu</h3>
+                    <h3><?=$res_setting['name'] ?></h3>
                 </div>
                 <div class="col-lg-8">
                     <p>
@@ -302,7 +304,7 @@ $res_user3 = mysqli_query($conn,$sql_user3);
                                     SINH VIÊN
                                 </h3>
                                 <p>
-                                    Cô Vân Anh rất đáng yêu và các bạn trợ giảng luôn take care tận tình, cảm giác đi học ở trung tâm mọi người gắn bó như gia đình
+                                    Giảng viên rất đáng yêu và các bạn trợ giảng luôn take care tận tình, cảm giác đi học ở trung tâm mọi người gắn bó như gia đình
                                 </p>
                             </div>
                         </div>
@@ -325,7 +327,7 @@ $res_user3 = mysqli_query($conn,$sql_user3);
                                     SINH VIÊN
                                 </h3>
                                 <p>
-                                    Cô Vân Anh rất đáng yêu và các bạn trợ giảng luôn take care tận tình, cảm giác đi học ở trung tâm mọi người gắn bó như gia đình
+                                    Giảng viên rất đáng yêu và các bạn trợ giảng luôn take care tận tình, cảm giác đi học ở trung tâm mọi người gắn bó như gia đình
                                 </p>
                             </div>
                         </div>
@@ -348,7 +350,7 @@ $res_user3 = mysqli_query($conn,$sql_user3);
                                     SINH VIÊN
                                 </h3>
                                 <p>
-                                    Cô Vân Anh rất đáng yêu và các bạn trợ giảng luôn take care tận tình, cảm giác đi học ở trung tâm mọi người gắn bó như gia đình
+                                   Giảng viên rất đáng yêu và các bạn trợ giảng luôn take care tận tình, cảm giác đi học ở trung tâm mọi người gắn bó như gia đình
                                 </p>
                             </div>
                         </div>
@@ -371,7 +373,7 @@ $res_user3 = mysqli_query($conn,$sql_user3);
                                     SINH VIÊN
                                 </h3>
                                 <p>
-                                    Cô Vân Anh rất đáng yêu và các bạn trợ giảng luôn take care tận tình, cảm giác đi học ở trung tâm mọi người gắn bó như gia đình
+                                    Giảng viên rất đáng yêu và các bạn trợ giảng luôn take care tận tình, cảm giác đi học ở trung tâm mọi người gắn bó như gia đình
                                 </p>
                             </div>
                         </div>

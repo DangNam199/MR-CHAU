@@ -20,8 +20,8 @@
           }
           $temp_count++;
         }
-        $sql_mark = "SELECT * FROM officail_mark where student_id in $list_id";
-        echo $sql_mark;
+        $sql_mark = "SELECT * FROM official_mark where student_id in $list_id";
+        $res_mark = mysqli_query($conn, $sql_mark);
     }
 
     
@@ -54,6 +54,8 @@
     <link href="../vendors/pnotify/dist/pnotify.css" rel="stylesheet">
     <link href="../vendors/pnotify/dist/pnotify.buttons.css" rel="stylesheet">
     <link href="../vendors/pnotify/dist/pnotify.nonblock.css" rel="stylesheet">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
 
 
  
@@ -244,46 +246,32 @@
                             <th class="column-title">Điểm Nói </th>
                             <th class="column-title">Điểm Đọc </th>
                             <th class="column-title">Điểm Viết </th>
-                            
+                            <th class="column-title">Điểm trung bình </th>
                           </tr>
                         </thead>
                       
                         <tbody>
                           <form method = "post">
                             <?php 
-                            $count = 0;
-                            $sql_second = "SELECT * FROM hocvien WHERE class_id = " .$_GET['class_id']. " ORDER BY id ASC";
-                            $res_second = mysqli_query($conn, $sql_second);
-                            while($row = mysqli_fetch_assoc($res_second)) {
+                            while($row = mysqli_fetch_assoc($res_mark)) {
                               ?> 
                                 <tr class="even pointer">
-                            <td class=" "><?=$row['id']?></td>
-                            <td class=" "><?=$row['name']?></td>
-                            <td>
-                            <input type="number" name="listen[]" min="0" max="10">
-                            </td>
-                            <td>
-                            <input type="number" name="speak[]" min="0" max="10">
-                            </td>
-                            <td>
-                            <input type="number" name="read[]" min="0" max="10">
-                            </td>
-                            <td>
-                            <input type="number" name="write[]" min="0" max="10">
-                            </td>
+                            <td class=" "><?=$row['student_id']?></td>
+                            <?php 
+                              $sql_student_name = "SELECT name from hocvien where id = ". $row['student_id'];
+                              $name = mysqli_fetch_assoc(mysqli_query($conn, $sql_student_name))['name'];
+                            ?>
+                            <td class=" "><?=$name?></td>
+                            <td class=" "><?=$row['listening']?></td>
+                            <td class=" "><?=$row['speaking']?></td>
+                            <td class=" "><?=$row['reading']?></td>
+                            <td class=" "><?=$row['writing']?></td>
+                            <td class=" "><?=$row['total']?></td>
                           </tr>
                           
                           <?php }?>
                         </tbody>
                         </table>
-                        <div class="ln_solid">
-                            <div class="form-group">
-                                <div class="col-md-6 offset-md-3">
-                                    <button type='submit' name='submit' value='submit' class="btn btn-primary">Tạo mới</button>
-                                </div>  
-                            </div>
-                        </div>
-                      </form>
                     </div>
                   </div>
                 </div>
@@ -293,6 +281,7 @@
               
       </div>
     </div>
+    
 
 
     <script src="../vendors/jquery/dist/jquery.min.js"></script>

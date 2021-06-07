@@ -1,12 +1,48 @@
 <?php 
     include '../php/connect.php';
     include '../php/session.php';
+    $sql_setting = "SELECT * FROM general_setting";
+    $res_setting = mysqli_fetch_assoc(mysqli_query($conn, $sql_setting));
+    $old_address  = $res_setting['address'];
+    $old_contact = $res_setting['contact'];
+    $old_name = $res_setting['name'];
+    $old_description = $res_setting['description'];
+    $old_full_name = $res_setting['full_name'];
+    $old_avatar = $res_setting['avatar'];
 
-    if (isset($_GET['class_id'])){
-      $class_id = $_GET['class_id'];
-      $sql = "SELECT hocvien.name as 'student_name', hocvien.id as 'student_id', mark.class_id as 'class_id' ,mark.mark as 'mark', mark.type as 'type', mark.date as 'mark_date' from mark INNER JOIN hocvien on mark.student_id = hocvien.id WHERE mark.class_id = ". $_GET['class_id'] ." ORDER BY `mark_date` ";
-      $res = mysqli_query($conn, $sql);
+    $old_working_time = $res_setting['working_time'];
 
+    if (isset($_POST['submit']))
+    {
+      $new_name = $_POST['name'];
+      $new_description = $_POST['description'];
+      $new_address = $_POST['address'];
+      $new_contact = $_POST['contact'];
+      $new_working_time = $_POST['working_time'];
+      $new_phone = $_POST['contact'];
+      $new_full_name = $_POST['full_name'];
+      if (empty($_FILES['image']['tmp_name'])==false){
+        $file = addslashes(file_get_contents($_FILES['image']['tmp_name']));
+        $sql = "UPDATE `general_setting` SET `address`='$new_address',`contact`='$new_contact', `avatar` = '$file',
+        `name`='$new_name',`description`='$new_description',`working_time`='$new_working_time', `full_name`='$new_full_name' WHERE state='primary'";
+        $res = mysqli_query($conn, $sql);
+        if ($res){
+          header("location: setting.php");
+          $_SESSION['thongbao']= "Cập nhật thành công";
+        }
+        else {
+          echo $sql;
+        }
+      }
+      else {
+        $sql = "UPDATE `general_setting` SET `address`='$new_address',`contact`='$new_contact',
+        `name`='$new_name',`description`='$new_description',`working_time`='$new_working_time', `full_name`='$new_full_name' WHERE state='primary'";
+        $res = mysqli_query($conn, $sql);
+        if ($res){
+          header("location: setting.php");
+          $_SESSION['thongbao']= "Cập nhật thành công";
+        }
+      }
     }
 
     
@@ -39,8 +75,6 @@
     <link href="../vendors/pnotify/dist/pnotify.css" rel="stylesheet">
     <link href="../vendors/pnotify/dist/pnotify.buttons.css" rel="stylesheet">
     <link href="../vendors/pnotify/dist/pnotify.nonblock.css" rel="stylesheet">
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
 
 
  
@@ -168,7 +202,7 @@
                   <?php }?>
                 </ul>
               </div>
-
+                
             </div>
 
             <!-- /sidebar menu -->
@@ -178,6 +212,8 @@
               <a data-toggle="tooltip" data-placement="top" title="Logout" href="../php/logout.php">
                 <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
               </a>
+            </div>
+
             </div>
               <!-- /sidebar menu -->
 
@@ -192,7 +228,7 @@
           <div class="">
             <div class="page-title">
               <div class="title_left">
-                <h3>Điểm Học Viên</h3> 
+                <h3>Thông tin chung</h3> 
                 <?php 
                   if (isset($_SESSION['notification'])){
                     echo '<p>'. $_SESSION['notification'] . '</p>';
@@ -200,18 +236,6 @@
                   }
                 ?>
               </div>
-
-              <div class="title_right">
-                <div class="col-md-5 col-sm-5  form-group pull-right top_search">
-                  <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search for...">
-                    <span class="input-group-btn">
-                      <button class="btn btn-default" type="button">Go!</button>
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
 
             <div class="clearfix"></div>
 
@@ -221,12 +245,56 @@
                       <div class="col-md-12 col-sm-12  text-center">
                       <div class="clearfix"></div>
                       <div class="table-responsive">
-                      <div class="form-group">
-                      </div> 
-                      <div class="container">
-                        <canvas id="myChart"></canvas>
-                      </div>
-                    </div>
+
+                        <div class="x_content">
+                                    <form method="post" enctype="multipart/form-data">
+                                        <div class="field item form-group">
+                                            <label class="col-form-label col-md-3 col-sm-3  label-align">Tên Trung Tâm<span class="required">*</span></label>
+                                            <div class="col-md-6 col-sm-6">
+                                                <input class="form-control" value="<?=$old_name?>"  name="name" required="required" type="text" />
+                                            </div>
+                                        </div>
+                                        <div class="field item form-group">
+                                            <label class="col-form-label col-md-3 col-sm-3  label-align">Tên Đầy đủ<span class="required">*</span></label>
+                                            <div class="col-md-6 col-sm-6">
+                                                <input class="form-control"  name="full_name" value="<?=$old_full_name?>" required="required" type="text" />
+                                            </div> 
+                                        </div>
+                                        <div class="field item form-group">
+                                            <label class="col-form-label col-md-3 col-sm-3  label-align">Mô tả về trung tâm<span class="required">*</span></label>
+                                            <div class="col-md-6 col-sm-6">
+                                                <input class="form-control"  name="description" value="<?=$old_description?>" required="required" type="text" />
+                                            </div> 
+                                        </div>
+                                        <div class="field item form-group">
+                                            <label class="col-form-label col-md-3 col-sm-3  label-align">Địa Chỉ<span class="required">*</span></label>
+                                            <div class="col-md-6 col-sm-6">
+                                                <input class="form-control"  name="address" value="<?=$old_description?>"  type="text" /></div>
+                                        </div>
+                                        <div class="field item form-group">
+                                            <label class="col-form-label col-md-3 col-sm-3  label-align">Liên Hệ<span class="required">*</span></label>
+                                            <div class="col-md-6 col-sm-6">
+                                                <input class="form-control" type="text" name='contact' value="<?=$old_contact?>" required='required' /></div>
+                                        </div>
+                                        <div class="field item form-group">
+                                            <label class="col-form-label col-md-3 col-sm-3  label-align">Giờ làm việc<span class="required">*</span></label>
+                                            <div class="col-md-6 col-sm-6">
+                                                <input class="form-control" class='text' type="text" value="<?=$old_working_time?>"  name="working_time" required='required'></div>
+                                        </div>
+                                        <div class="field item form-group">
+                                            <label class="col-form-label col-md-3 col-sm-3  label-align">Logo<span class="required">*</span></label>
+                                            <div class="col-md-6 col-sm-6">
+                                                <input class="form-control" type="file" name="image"/></div>
+                                        </div>
+                                        <div class="ln_solid">
+                                            <div class="form-group">
+                                                <div class="col-md-6 offset-md-3">
+                                                    <button type='submit' name='submit' class="btn btn-primary">Tạo mới</button>
+                                                    <button type='reset' class="btn btn-success">Nhập lại</button>
+                                                </div>  
+                                            </div>
+                                    </form>
+                                </div>
                   </div>
                 </div>
             </div>
@@ -236,83 +304,13 @@
       </div>
     </div>
 
-    <script>
-    function showGraph(data){    
-    console.log(data);
-    let myChart = document.getElementById('myChart').getContext('2d');
-    // Global Options
-    Chart.defaults.global.defaultFontFamily = 'Lato';
-    Chart.defaults.global.defaultFontSize = 18;
-    Chart.defaults.global.defaultFontColor = '#777';
-
-    let massPopChart = new Chart(myChart, {
-      type:'bar', // bar, horizontalBar, pie, line, doughnut, radar, polarArea
-      data:{
-        labels: [1,2,3,4],
-        datasets:[{
-          label:'Nghe',
-          data: [4,2,3,4],
-          //backgroundColor:'green'
-          borderWidth:6,
-          borderColor:'#4287f5',
-          hoverBorderWidth:3,
-          hoverBorderColor:'#000'
-        },
-        {
-          label:'Nói',
-          data: [4,2,9,7],
-          //backgroundColor:'green'
-          borderWidth:6,
-          borderColor:'#42c5f5',
-          hoverBorderWidth:3,
-          hoverBorderColor:'#000'
-        },
-        {
-          label:'Đọc',
-          data: [7,2,6,4],
-          //backgroundColor:'green'
-          borderWidth:6,
-          borderColor:'#f59e42',
-          hoverBorderWidth:3,
-          hoverBorderColor:'#000'
-        },
-        {
-          label:'Viết',
-          data: [4,5,10,4],
-         // backgroundColor:'white',
-          borderWidth:6,
-          borderColor:'#eb4034',
-          hoverBorderWidth:3,
-          hoverBorderColor:'#eb4034'
-        }
-      ]
-      },
-      options: {
-        scales: {
-          spanGaps: true,
-        }
-    }      
-    });}
-    var all_data;
-    function getData(){
-      var res = [];
-      $.ajax({
-        type: "POST",
-        url: "../php/mark_chart.php",
-        async: false,
-        success: function(data){
-          res = JSON.parse(data);
-        },
-      });
-      return res;
-    }
-    all_data = getData();
-    showGraph(all_data);
-      
-
-  </script>
 
 
+    <!-- mẫu xoá -->
+    <!-- hết mẫu xoá -->
+    <!-- jQuery -->
+    
+    <!-- jQuery -->
     <script src="../vendors/jquery/dist/jquery.min.js"></script>
     <!-- Bootstrap -->
    <script src="../vendors/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
@@ -322,9 +320,6 @@
     <script src="../vendors/nprogress/nprogress.js"></script>
     <!-- bootstrap-progressbar -->
     <script src="../vendors/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
-
-    <script src="../vendors/Chart.js/dist/Chart.min.js"></script>
-
     <!-- iCheck -->
     <script src="../vendors/iCheck/icheck.min.js"></script>
     <!-- PNotify -->
