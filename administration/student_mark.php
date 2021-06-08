@@ -284,7 +284,6 @@
 
     <script>
     function showGraph(data){    
-    console.log(data);
     let myChart = document.getElementById('myChart').getContext('2d');
     // Global Options
     Chart.defaults.global.defaultFontFamily = 'Lato';

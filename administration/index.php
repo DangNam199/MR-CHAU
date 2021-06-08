@@ -206,6 +206,8 @@
                   <div class="count"><?php echo mysqli_fetch_assoc($res_count)['count_id']; ?></div>
                   <h3>Học viên tiềm năng mới</h3>
                   <a href="contact_us.php" > Xem</a>
+                  <br>
+                  <a href="lead_student.php" > Xem tất cả học viên tiềm năng</a>
                 </div>
               <?php } ?>
               

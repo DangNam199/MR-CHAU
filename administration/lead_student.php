@@ -1,17 +1,13 @@
 <?php 
 include '../php/connect.php';
+include '../php/general_setting.php';
     if (isset($_POST['submit']) && $_POST['datepicker'] != ''){
         $all = $_POST['datepicker'];
         $all = explode('-', $all);
         $date = $all[0];
         $year = $all[1];
-        $sql_paid = "SELECT sum(paied) as 'sum_paid'  FROM pay_salary WHERE month(pay_salary.date) = $date  and YEAR(pay_salary.date) = $year and `state` = 'paid'";
-        $res_paid = mysqli_fetch_assoc( mysqli_query($conn,$sql_paid))['sum_paid'];
-        $sql_spending = "SELECT SUM(price) as 'sum_price' from spending WHERE month(spending.date) = $date  and YEAR(spending.date) = $year";
-        $res_spending = mysqli_fetch_assoc(mysqli_query($conn, $sql_spending))['sum_price'];
-        $total_out = intval($res_paid) + intval($res_spending);
-        $sql_in = "SELECT SUM(paid) as 'sum_pay', COUNT(invoice.student_id) as 'student_count', invoice.date, course.tenKH  FROM invoice INNER JOIN course on invoice.course_id = course.id  WHERE month(invoice.date) = $date  and YEAR(invoice.date) = $year GROUP BY `course_id`";
-        $res_in = mysqli_fetch_assoc( mysqli_query($conn,$sql_in))['sum_pay'];
+        $sql_in = "SELECT *  FROM lienhe WHERE month(date) = $date  and YEAR(date) = $year and state = 'contacted' ORDER BY date ";
+        $res_in = mysqli_query($conn,$sql_in);
     }
     
     include '../php/session.php';
@@ -32,9 +28,7 @@ include '../php/connect.php';
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title><?php
-        include '../php/general_setting.php';
-    echo $res_setting['name'];?> </title>
+    <title><?=$res_setting['name']?> </title>
 
     <!-- Bootstrap -->
     <link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -43,8 +37,14 @@ include '../php/connect.php';
     <!-- NProgress -->
     <link href="../vendors/nprogress/nprogress.css" rel="stylesheet">
 
+    <link href="../vendors/pnotify/dist/pnotify.css" rel="stylesheet">
+    <link href="../vendors/pnotify/dist/pnotify.buttons.css" rel="stylesheet">
+    <link href="../vendors/pnotify/dist/pnotify.nonblock.css" rel="stylesheet">
+
     <!-- Custom Theme Style -->
     <link href="../build/css/custom.min.css" rel="stylesheet">
+
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
 </head>
 
@@ -204,45 +204,59 @@ include '../php/connect.php';
                 <div class="">
                     <div class="page-title">
                         <div class="title_left">
-                            <h3>Báo cáo doanh thu</h3>
+                            <h3>Học viên tiềm năng</h3>
                         </div>
-                        <a href="report_year.php" class = 'btn btn-primary' >Báo cáo theo năm</a>
                     </div>
                     <div class="clearfix"></div>
-
+                    <p  hidden></p>
                     <div class="row">
                         <div class="col-md-12 col-sm-12">
                             <div class="x_panel">
                             <div class="table-responsive">
-                                <p>Chọn tháng báo cáo</p>
+                                <p>Học viên tiềm năng đã liên lạc</p>
                                 <form method = "post">
                             <input type="text" class="form-control" name="datepicker" id="datepicker" />
                             <input type="submit" class="form-control" name="submit"/>
                             </form>
-                      <?php 
-                      if (isset($_POST['submit']) && isset($_POST['datepicker']) && $_POST['datepicker'] != ''){
-                      ?>
+
                       <table class="table table-striped jambo_table bulk_action bulk_action">
                         <thead>
                           <tr class="headings">
-                            <th class="column-title">Tổng thu </th>
-                            <th class="column-title">Tổng chi </th>
-                            <th class="column-title">Lãi </th>
+                            <th class="column-title">Tên học viên </th>
+                            <th class="column-title">Email </th>
+                            <th class="column-title">Số điện thoại</th>
+                            <th class="column-title">Ghi chú </th>
+                            <th class="column-title">Ngày tạo yêu cầu </th>
+                            <th class="column-title">Ngày ngày liên lạc lại </th>
+                            <th class="column-title">Ngày ngày liên lạc lại </th>
                           </tr>
                         </thead>
                         <tbody>
+                            <?php 
+                                if(isset($_POST['submit']) && $_POST['datepicker'] != ''){
+                                  echo "<p id='date' hidden>$date</p>";
+                                  echo "<p id='year' hidden>$year</p>";
+                                while($row = mysqli_fetch_assoc($res_in)) {
+                            ?>
                         <tr>
-                          <td id="in" ><?=$res_in?></td>
-                          <td id="out" ><?=$res_paid?></td>
-                          <td><?=$res_in - $res_paid?></td>
+                            <td id ='name-<?=$row['id']?>'><?=$row['hoten']?></td>
+                            <td id ='email-<?=$row['id']?>' ><?=$row['email']?></td>
+                            <td id ='phone-<?=$row['id']?>' ><?=$row['sodienthoai']?></td>
+                            <td><?=$row['ghichu']?></td>
+                            <td><?=$row['date']?></td>
+                            <td><?=$row['date_again']?></td>
+                            <td><button class = 'btn btn-primary' onclick="create_student(<?=$row['id']?>)">Tạo học viên</button></td>
+                            <?php }}?>
                         </tr>
                         </tbody>
                       </table>
+                      <?php 
+                        if(isset($_POST['submit'])){
+                      ?>
                       <div class='container'>
                       <canvas id="myChart"></canvas>    
                       </div>
                       <?php }?>
-                      
                     </div>       
                                 </div>
                             </div>
@@ -260,16 +274,183 @@ include '../php/connect.php';
     </div>
 
 
+    <div class="modal" id="myModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Tạo học viên</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+            <div class="field item form-group">
+                <label class="col-form-label col-md-3 col-sm-3  label-align">Họ Và Tên<span class="required">*</span></label>
+                <div class="col-md-6 col-sm-6">
+                    <input class="form-control" data-validate-length-range="6" data-validate-words="2" id="name_input" required="required" />
+                </div>
+            </div>
+            <div class="field item form-group">
+                <label class="col-form-label col-md-3 col-sm-3  label-align">Địa Chỉ<span class="required">*</span></label>
+                <div class="col-md-6 col-sm-6">
+                    <input class="form-control" class='optional' id="address_input" data-validate-length-range="5,15" type="text" /></div>
+            </div>
+            <div class="field item form-group">
+                <label class="col-form-label col-md-3 col-sm-3  label-align">Email<span class="required">*</span></label>
+                <div class="col-md-6 col-sm-6">
+                    <input class="form-control" type="email" class='email' id="email_input" data-validate-linked='email' required='required' /></div>
+            </div>
+            <div class="item form-group">
+                <label class="col-form-label col-md-3 col-sm-3 label-align">Gender</label>
+                <div class="col-md-6 col-sm-6 ">
+                <select id="gender_input" class="form-control"> 
+                    <option value="male">Nam</option>
+                    <option value="female">Nữ</option>
+                </select>
+                </div>
+                </div>
+            <div class="field item form-group">
+                <label class="col-form-label col-md-3 col-sm-3  label-align">Date<span class="required">*</span></label>
+                <div class="col-md-6 col-sm-6">
+                    <input class="form-control" class='date' type="date" id="dob_input" required='required'></div>
+            </div>
+
+            <div class="field item form-group">
+                <label class="col-form-label col-md-3 col-sm-3  label-align">Số điện thoại<span class="required">*</span></label>
+                <div class="col-md-6 col-sm-6">
+                    <input class="form-control" type="tel" class='tel' id="phone_input" required='required' data-validate-length-range="8,20" /></div>
+            </div>
+            <div class="field item form-group">
+                <label class="col-form-label col-md-3 col-sm-3  label-align">Avatar<span class="required">*</span></label>
+                <div class="col-md-6 col-sm-6">
+                    <input class="form-control" type="file" id='image' name="image" required='required'/></div>
+            </div>
+            </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+      <button type="button" class="btn btn-primary" onclick="submit()">Tạo</button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script src="../vendors/validator/multifield.js"></script>
     <script src="../vendors/validator/validator.js"></script>
     
     <!-- Javascript functions	-->
 	<script>
-		function showGraph(){    
-      var report_in = parseInt($("#in").text());
-      var report_out = parseInt($("#out").text());
-      data = [report_in, report_out];
+		function hideshow(){
+			var password = document.getElementById("password1");
+			var slash = document.getElementById("slash");
+			var eye = document.getElementById("eye");
+			
+			if(password.type === 'password'){
+				password.type = "text";
+				slash.style.display = "block";
+				eye.style.display = "none";
+			}
+			else{
+				password.type = "password";
+				slash.style.display = "none";
+				eye.style.display = "block";
+			}
+
+		}
+    var name, email, phone, id;
+    function create_student(this_id){
+      $("#address_input").val("");
+      $("#dob_input").val("");
+      $("#image").val("");
+      id = this_id;
+      name = $("#name-"+id).text();
+      email = $("#email-"+id).text();
+      phone = $("#phone-"+id).text();
+      $("#myModal").modal('show');  
+      $("#name_input").val(name);
+      $("#email_input").val(email);
+      $("#phone_input").val(phone);
+    }
+    function submit(){
+      name = $("#name_input").val();
+      email =  $("#email_input").val();
+      phone = $("#phone_input").val();
+      address = $("#address_input").val();
+      dob = $("#dob_input").val();
+      gender = $("#gender_input").val();
+      var files = $('#image')[0].files;
+      console.log(files);
+      var formData = new FormData();
+      formData.append('name', name);
+      formData.append('email', email);
+      formData.append('phone', phone);
+      formData.append('address', address);
+      formData.append('dob', dob);
+      formData.append('gender', gender);
+      formData.append('lead_id', id);
+      formData.append('avatar', files[0]);
+      $.ajax({
+              type:'post',
+              url: '../php/ajax/ajax_lead.php',
+              contentType: false,
+              processData: false,
+              data: formData,
+              success: function(data){
+                if (data == "success"){
+                  new PNotify({
+                                  title: 'Thành công',
+                                  text: 'Cập nhật thành công',
+                                  type: 'success',
+                                  styling: 'bootstrap3'
+                              });
+                              setTimeout(function() {
+              window.location.replace("all_student.php");
+              }, 3000);
+                }
+                else if (data =="fail"){
+                  new PNotify({
+                                  title: 'Thất bại',
+                                  text: 'Cập nhật thất bại',
+                                  type: 'success',
+                                  styling: 'bootstrap3'
+                              });
+                }
+                $('#myModal').modal('toggle');
+              }
+              });
+    }
+	</script>
+  <script>
+    var all_data, date, year;
+    function getData(){
+      date = $("#date").text();
+      year = $("#year").text();
+      var res = [];
+      $.ajax({  
+        type: "POST",
+        url: "../php/chart_lead.php",
+        data : {
+          date: date,
+          year: year
+        },
+        async: false,
+        success: function(data){
+          res = data.split(',');
+        },
+      });
+      console.log("aaaaa"+res);
+      return res;
+    }
+    all_data = getData();
+    showGraph(all_data);
+    function showGraph(data){    
+      console.log(data);
     let myChart = document.getElementById('myChart').getContext('2d');
     // Global Options
     Chart.defaults.global.defaultFontFamily = 'Lato';
@@ -280,8 +461,8 @@ include '../php/connect.php';
       type:'pie', // bar, horizontalBar, pie, line, doughnut, radar, polarArea
       data:{
       labels: [
-        'Thu',
-        'Chi',
+        'Thành Công',
+        'Chưa rõ',
       ],
       datasets: [{
         label: 'Tỉ lệ',
@@ -298,7 +479,7 @@ include '../php/connect.php';
         maintainAspectRatio: false,
         title:{
           display:true,
-          text:'Báo cáo thu chi',
+          text:'Tỉ lệ thu hút học viên',
           fontSize:25
         },
         legend:{
@@ -321,10 +502,10 @@ include '../php/connect.php';
         }
       }
     });}
-    showGraph();
-	</script>
 
-    <script type="text/javascript">
+      
+  </script>
+      <script type="text/javascript">
     $(function () {  
     $("#datepicker").datepicker({         
         format: "mm-yyyy",
@@ -334,11 +515,16 @@ include '../php/connect.php';
     });
     </script>
 
+
     <script src="../vendors/jquery/dist/jquery.min.js"></script>
     <script src="../vendors/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../vendors/fastclick/lib/fastclick.js"></script>
     <script src="../vendors/nprogress/nprogress.js"></script>
     <script src="../build/js/custom.min.js"></script>
+    <script src="../vendors/pnotify/dist/pnotify.js"></script>
+    <script src="../vendors/pnotify/dist/pnotify.buttons.js"></script>
+    <script src="../vendors/pnotify/dist/pnotify.nonblock.js"></script>
+
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/css/datepicker.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/js/bootstrap-datepicker.min.js"></script>
 

@@ -39,9 +39,8 @@
       <div class="main_container">
       <div class="col-md-3 left_col">
           <div class="left_col scroll-view">
-            <div class="navbar nav_title" style="border: 0;">
-              <a href="index.html" class="site_title"><i class="fa fa-paw"></i> <span>Gentelella Alela!</span></a>
-            </div>
+
+
 
             <div class="clearfix"></div>
 
@@ -84,6 +83,9 @@
               <a data-toggle="tooltip" data-placement="top" title="Logout" href="../php/logout.php">
                 <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
               </a>
+              <a data-toggle="tooltip" data-placement="top" title="Profile" href="profile_student.php">
+                <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+              </a>
             </div>
             <!-- /menu footer buttons -->
           </div>
@@ -107,7 +109,7 @@
                       <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                       </li>
                       <li class="dropdown">
-                      
+                      <a >Xem quá trình điểm danh</a>
                       </li>
                       <li><a class="close-link"><i class="fa fa-close"></i></a>
                       </li>

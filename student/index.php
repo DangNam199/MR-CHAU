@@ -36,9 +36,7 @@
       <div class="main_container">
         <div class="col-md-3 left_col">
           <div class="left_col scroll-view">
-            <div class="navbar nav_title" style="border: 0;">
-              <a href="index.php" class="site_title"><i class="fa fa-paw"></i> <span>Gentelella Alela!</span></a>
-            </div>
+
 
             <div class="clearfix"></div>
 
@@ -80,6 +78,9 @@
             <div class="sidebar-footer hidden-small">
               <a data-toggle="tooltip" data-placement="top" title="Logout" href="../php/logout.php">
                 <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+              </a>
+              <a data-toggle="tooltip" data-placement="top" title="Profile" href="profile_student.php">
+                <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
               </a>
             </div>
             <!-- /menu footer buttons -->

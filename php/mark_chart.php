@@ -56,6 +56,9 @@
     array_push($return_arr,$temp_speak);
     array_push($return_arr,$temp_read);
     array_push($return_arr,$temp_write);
-    echo json_encode($return_arr);
+     echo json_encode($return_arr);
+    }
+    else {
+        echo 'fail';
     }
 ?>

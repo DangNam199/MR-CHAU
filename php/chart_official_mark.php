@@ -21,22 +21,34 @@
         $min = $res_max_min['min'];
         $label = array();
         $mark = array();
-        $count = 1;
+        $color = array();
+
         for ($i = $min; $i<=$max; $i += 0.5)
         {
             $label[] = floatval($i);
             $sql_count = "SELECT COUNT(id) as 'count_total' from official_mark where total = $i" ;
             $count = mysqli_fetch_assoc(mysqli_query($conn, $sql_count))['count_total'];
             $mark[] = floatval($count);
-            $count ++;
+            $color[] = getColor($i);
+
         }
         $temp_count = array();
         $return_arr = array();
-        $temp_count[] = $count;
-        array_push($return_arr, $temp_count);
         array_push($return_arr, $label);
         array_push($return_arr, $mark);
+        array_push($return_arr, $color);
         echo json_encode($return_arr);
 
-        
+        function getColor($num) {
+          $hash = md5('color' . $num); // modify 'color' to get a different palette
+          $return_arr = array(
+              hexdec(substr($hash, 0, 2)), // r
+              hexdec(substr($hash, 2, 2)), // g
+              hexdec(substr($hash, 4, 2))); //b
+          $red = $return_arr[0];
+          $green = $return_arr[1];
+          $blue = $return_arr[2];
+          $val = "rgba($red, $green, $blue, 0.6)";
+          return $val;
+      }
 ?>

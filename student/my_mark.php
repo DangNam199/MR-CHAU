@@ -17,6 +17,8 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
 
     <title><?php
         include '../php/general_setting.php';
@@ -49,9 +51,7 @@
       <div class="main_container">
       <div class="col-md-3 left_col">
           <div class="left_col scroll-view">
-            <div class="navbar nav_title" style="border: 0;">
-              <a href="index.php" class="site_title"><i class="fa fa-paw"></i> <span>Gentelella Alela!</span></a>
-            </div>
+
 
             <div class="clearfix"></div>
 
@@ -94,9 +94,12 @@
               <a data-toggle="tooltip" data-placement="top" title="Logout" href="../php/logout.php">
                 <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
               </a>
+              <a data-toggle="tooltip" data-placement="top" title="Profile" href="profile_student.php">
+                <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+              </a>
             </div>
             <!-- /menu footer buttons -->
-          </div>
+          </div>    
         </div>
 
 
@@ -111,17 +114,6 @@
                 <h3>Điểm của tôi</h3> 
               </div>
 
-              <div class="title_right">
-                <div class="col-md-5 col-sm-5  form-group pull-right top_search">
-                  <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search for...">
-                    <span class="input-group-btn">
-                      <button class="btn btn-default" type="button">Go!</button>
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
 
             <div class="clearfix"></div>
 
@@ -131,8 +123,7 @@
                       <div class="col-md-12 col-sm-12  text-center">
                       <div class="clearfix"></div>
                       <div class="table-responsive">
-                      
-                      <form  method="post" >
+                      <p id="student_id" hidden><?=$id?></p>
                       <table class="table table-striped jambo_table bulk_action">
                         <thead>
                           <tr class="headings">
@@ -170,7 +161,7 @@
                         </table>
 
                         <?php 
-                          $sql_official = "SELECT * FROM `officail_mark` where student_id = ". $id;
+                          $sql_official = "SELECT * FROM `official_mark` where student_id = ". $id;
                           $res_official = mysqli_query($conn, $sql_official);
                           if (mysqli_num_rows($res_official) > 0){
                         ?>
@@ -182,7 +173,7 @@
                             <th class="column-title">Điểm đọc </th>
                             <th class="column-title">Điểm viết </th>
                             <th class="column-title">Điểm nói </th>
-                            </th>
+                            <th>Điểm trung bình</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -192,13 +183,17 @@
                             <td class=" "><?=$row_official['reading']?></td>
                             <td class=" "><?=$row_official['writing']?></td>
                             <td class=" "><?=$row_official['speaking']?></td>
+                            <td class=" "><?=$row_official['total']?></td>
                           </tr>
                           <?php }?>
                         </tbody>
                         </table>
                         <?php }?>
                         </div>
-                      </form>
+
+                      <div class='container'>
+                      <canvas id="myChart"></canvas>    
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -221,10 +216,10 @@
     let massPopChart = new Chart(myChart, {
       type:'line', // bar, horizontalBar, pie, line, doughnut, radar, polarArea
       data:{
-        labels: data[0],
+        labels: ['2021-01-01','2021-01-02','2021-01-03','2021-01-04','2021-01-04'],
         datasets:[{
           label:'Nghe',
-          data: data[1],
+          data:  [5,7,5,5,7],
           //backgroundColor:'green'
           borderWidth:6,
           borderColor:'#4287f5',
@@ -233,7 +228,7 @@
         },
         {
           label:'Nói',
-          data: data[2],
+          data:  [6,6,7,5,7],
           //backgroundColor:'green'
           borderWidth:6,
           borderColor:'#42c5f5',
@@ -242,7 +237,7 @@
         },
         {
           label:'Đọc',
-          data: [10,,10],
+          data: [3,8,10,5,7],
           //backgroundColor:'green'
           borderWidth:6,
           borderColor:'#f59e42',
@@ -251,7 +246,7 @@
         },
         {
           label:'Viết',
-          data: data[4],
+          data:  [7,6,10,5,7],
          // backgroundColor:'white',
           borderWidth:6,
           borderColor:'#eb4034',
@@ -269,10 +264,13 @@
     var all_data;
     function getData(){
       var res = [];
+      var student_id = parseInt($("#student_id").text());
       $.ajax({
         type: "POST",
+        data : {
+          student_id: student_id
+        },
         url: "../php/mark_chart.php",
-        async: false,
         success: function(data){
           res = JSON.parse(data);
         },

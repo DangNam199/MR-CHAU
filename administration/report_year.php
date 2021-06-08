@@ -1,31 +1,10 @@
 <?php 
     include '../php/connect.php';
     include '../php/session.php';
+    if (isset($_POST['submit']) && $_POST['datepicker'] != ''){
+      $year = $_POST['datepicker'];
+    }
 
-    $class_id = 0;
-    if (isset($_GET['class_id'])){
-        $class_id = $_GET['class_id'];
-        $sql_student = "SELECT id from hocvien where class_id = ". $class_id;
-        $res_student = mysqli_query($conn, $sql_student);
-        $list_id = '(';
-        $count = mysqli_num_rows($res_student);
-        $temp_count = 0;
-        while($row_student = mysqli_fetch_assoc($res_student)){
-          $list_id .= $row_student['id'];
-          if ($temp_count == $count -1 ){
-            $list_id .= ')';
-          }
-          else {
-            $list_id .= ',';
-          }
-          $temp_count++;
-        }
-        $sql_mark = "SELECT * FROM official_mark where student_id in $list_id";
-        $res_mark = mysqli_query($conn, $sql_mark);
-    }
-    else {
-      header("location: index.php");
-    }
 
     
 ?>
@@ -231,65 +210,31 @@
                 ?>
               </div>
 
-              <div class="title_right">
-                <div class="col-md-5 col-sm-5  form-group pull-right top_search">
-                  <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search for...">
-                    <span class="input-group-btn">
-                      <button class="btn btn-default" type="button">Go!</button>
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
             <div class="clearfix"></div>
+            <p>Chọn năm báo cáo</p>
+                  <form method = "post">
+              <input type="text" class="form-control" name="datepicker" id="datepicker" />
+              <input type="submit" class="form-control" name="submit"/>
+              </form>
 
+            <?php 
+              if (isset($_POST['submit']) && $_POST['datepicker'] != ''){
+                echo "<p id='year' hidden>$year</p>";}
+            ?>
             <div class="row">
                 <div class="x_panel">
                   <div class="x_content">
                       <div class="col-md-12 col-sm-12  text-center">
                       <div class="clearfix"></div>
                       <div class="table-responsive">
-                      
-                      <table class="table table-striped jambo_table bulk_action">
-                        <thead>
-                          <tr class="headings">
-                            <th class="column-title">Mã học viên </th>
-                            <th class="column-title">Tên học viên </th>
-                            <th class="column-title">Điểm Nghe </th>
-                            <th class="column-title">Điểm Nói </th>
-                            <th class="column-title">Điểm Đọc </th>
-                            <th class="column-title">Điểm Viết </th>
-                            <th class="column-title">Điểm trung bình </th>
-                          </tr>
-                        </thead>
-                      
-                        <tbody>
-                          <form method = "post">
-                            <?php 
-                            while($row = mysqli_fetch_assoc($res_mark)) {
-                              ?> 
-                                <tr class="even pointer">
-                            <td class=" "><?=$row['student_id']?></td>
-                            <?php 
-                              $sql_student_name = "SELECT name from hocvien where id = ". $row['student_id'];
-                              $name = mysqli_fetch_assoc(mysqli_query($conn, $sql_student_name))['name'];
-                            ?>
-                            <td class=" "><?=$name?></td>
-                            <td class=" "><?=$row['listening']?></td>
-                            <td class=" "><?=$row['speaking']?></td>
-                            <td class=" "><?=$row['reading']?></td>
-                            <td class=" "><?=$row['writing']?></td>
-                            <td class=" "><?=$row['total']?></td>
-                          </tr>
-                          
-                          <?php }?>
-                        </tbody>
-                        </table>
-                        <div class='container'>
-                      <canvas id="myChart"></canvas>    
+                      <?php if (isset($_POST['submit']) && $_POST['datepicker'] != ''){?>
+                      <div class='container'>
+                        <canvas id="myChart"></canvas>    
                       </div>
+                      <div class='container'>
+                        <canvas id="myChart1"></canvas>    
+                      </div>
+                      <?php } ?>
                     </div>
                   </div>
                 </div>
@@ -311,22 +256,31 @@
     let massPopChart = new Chart(myChart, {
       type:'bar', // bar, horizontalBar, pie, line, doughnut, radar, polarArea
       data:{
-        labels:data[0],
+        labels:['Tháng 1', 'Tháng 2', 'Tháng 3' , 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'],
         datasets:[{
-          label:'Điểm',
-          data: data[1],
-          //backgroundColor:'green',
-          backgroundColor: data[2],
+          label:'Thu',
+          data: data[0],
+          backgroundColor:'#f56f42',
           borderWidth:1,
           borderColor:'#777',
           hoverBorderWidth:3,
           hoverBorderColor:'#000'
-        }]
+        },
+        {
+          label:'Chi',
+          data: data[1],
+          backgroundColor:'#42f5a4',
+          borderWidth:1,
+          borderColor:'#777',
+          hoverBorderWidth:3,
+          hoverBorderColor:'#000'
+        }
+      ]
       },
       options:{
         title:{
           display:true,
-          text:'Phổ điểm',
+          text:'Biểu đồ cột thu chi',
           fontSize:25
         },
         legend:{
@@ -351,10 +305,14 @@
     });}
     var all_data;
     function getData(){
+      var year = parseInt( $("#year").text());
       var res = [];
       $.ajax({
         type: "POST",
-        url: "../php/chart_official_mark.php",
+        url: "../php/chart_year.php",
+        data: {
+          year: year
+        },
         async: false,
         success: function(data){
           res = JSON.parse(data);
@@ -364,9 +322,77 @@
     }
     all_data = getData();
      showGraph(all_data);
+     showGraph1(all_data);
+     function sumArr(total, num) {
+      return total + num;
+    }
+    function showGraph1(data){    
+     var total_in = data[0].reduce(sumArr);
+     var total_out = data[1].reduce(sumArr);
+     console.log(total_in);
+    let myChart = document.getElementById('myChart1').getContext('2d');
+    // Global Options
+    Chart.defaults.global.defaultFontFamily = 'Lato';
+    Chart.defaults.global.defaultFontSize = 18;
+    Chart.defaults.global.defaultFontColor = '#777';
+
+    let massPopChart = new Chart(myChart, {
+      type:'pie', // bar, horizontalBar, pie, line, doughnut, radar, polarArea
+      data:{
+      labels: [
+        'Thu',
+        'Chi',
+      ],
+      datasets: [{
+        label: 'Tỉ lệ',
+        data: [total_in, total_out],
+        backgroundColor: [
+          'rgb(255, 99, 132)',
+          'rgb(54, 162, 235)',
+        ],
+        hoverOffset: 4
+      }]
+    },
+      options:{
+        responsive: true,
+        maintainAspectRatio: false,
+        title:{
+          display:true,
+          text:'Biểu đồ tròn thu chi',
+          fontSize:25
+        },
+        legend:{
+          display:true,
+          position:'right',
+          labels:{
+            fontColor:'#000'
+          }
+        },
+        layout:{
+          padding:{
+            left:50,
+            right:0,
+            bottom:0,
+            top:0
+          }
+        },
+        tooltips:{
+          enabled:true
+        }
+      }
+    });}
       
 
   </script>
+      <script type="text/javascript">
+    $(function () {  
+    $("#datepicker").datepicker({         
+        format: "yyyy",
+        startView: "years", 
+        minViewMode: "years"
+    });
+    });
+    </script>
 
     <script src="../vendors/jquery/dist/jquery.min.js"></script>
     <!-- Bootstrap -->
@@ -385,7 +411,12 @@
     <script src="../vendors/pnotify/dist/pnotify.buttons.js"></script>
     <script src="../vendors/pnotify/dist/pnotify.nonblock.js"></script>
 
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/css/datepicker.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/js/bootstrap-datepicker.min.js"></script>
+
     <!-- Custom Theme Scripts -->
     <script src="../build/js/custom.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/css/datepicker.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/js/bootstrap-datepicker.min.js"></script>
   </body>
 </html>

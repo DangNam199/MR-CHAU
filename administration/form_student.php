@@ -229,57 +229,57 @@ if (isset($_POST['submit']) && empty($_FILES['image']['tmp_name'])==false){
                                     <div class="clearfix"></div>
                                 </div>
                                 <div class="x_content">
-                                    <form  action="form_student.php" method="post" enctype="multipart/form-data">
-                                        <div class="field item form-group">
-                                            <label class="col-form-label col-md-3 col-sm-3  label-align">Họ Và Tên<span class="required">*</span></label>
-                                            <div class="col-md-6 col-sm-6">
-                                                <input class="form-control" data-validate-length-range="6" data-validate-words="2" name="user_name" required="required" />
-                                            </div>
-                                        </div>
-                                        <div class="field item form-group">
-                                            <label class="col-form-label col-md-3 col-sm-3  label-align">Địa Chỉ<span class="required">*</span></label>
-                                            <div class="col-md-6 col-sm-6">
-                                                <input class="form-control" class='optional' name="address" data-validate-length-range="5,15" type="text" /></div>
-                                        </div>
-                                        <div class="field item form-group">
-                                            <label class="col-form-label col-md-3 col-sm-3  label-align">Email<span class="required">*</span></label>
-                                            <div class="col-md-6 col-sm-6">
-                                                <input class="form-control" type="email" class='email' name="email" data-validate-linked='email' required='required' /></div>
-                                        </div>
-                                        <div class="item form-group">
-											                      <label class="col-form-label col-md-3 col-sm-3 label-align">Gender</label>
-											                      <div class="col-md-6 col-sm-6 ">
-                                            <select name="gender" class="form-control"> 
-                                                <option value="male">Nam</option>
-                                                <option value="female">Nữ</option>
-                                            </select>
-											                      </div>
-										                        </div>
-                                        <div class="field item form-group">
-                                            <label class="col-form-label col-md-3 col-sm-3  label-align">Date<span class="required">*</span></label>
-                                            <div class="col-md-6 col-sm-6">
-                                                <input class="form-control" class='date' type="date" name="dob" required='required'></div>
-                                        </div>
+                                      <form  action="form_student.php" method="post" enctype="multipart/form-data">
+                                          <div class="field item form-group">
+                                              <label class="col-form-label col-md-3 col-sm-3  label-align">Họ Và Tên<span class="required">*</span></label>
+                                              <div class="col-md-6 col-sm-6">
+                                                  <input class="form-control" data-validate-length-range="6" data-validate-words="2" name="user_name" required="required" />
+                                              </div>
+                                          </div>
+                                          <div class="field item form-group">
+                                              <label class="col-form-label col-md-3 col-sm-3  label-align">Địa Chỉ<span class="required">*</span></label>
+                                              <div class="col-md-6 col-sm-6">
+                                                  <input class="form-control" class='optional' name="address" data-validate-length-range="5,15" type="text" /></div>
+                                          </div>
+                                          <div class="field item form-group">
+                                              <label class="col-form-label col-md-3 col-sm-3  label-align">Email<span class="required">*</span></label>
+                                              <div class="col-md-6 col-sm-6">
+                                                  <input class="form-control" type="email" class='email' name="email" data-validate-linked='email' required='required' /></div>
+                                          </div>
+                                          <div class="item form-group">
+                                              <label class="col-form-label col-md-3 col-sm-3 label-align">Gender</label>
+                                              <div class="col-md-6 col-sm-6 ">
+                                              <select name="gender" class="form-control"> 
+                                                  <option value="male">Nam</option>
+                                                  <option value="female">Nữ</option>
+                                              </select>
+                                              </div>
+                                              </div>
+                                          <div class="field item form-group">
+                                              <label class="col-form-label col-md-3 col-sm-3  label-align">Date<span class="required">*</span></label>
+                                              <div class="col-md-6 col-sm-6">
+                                                  <input class="form-control" class='date' type="date" name="dob" required='required'></div>
+                                          </div>
 
-                                        <div class="field item form-group">
-                                            <label class="col-form-label col-md-3 col-sm-3  label-align">Số điện thoại<span class="required">*</span></label>
-                                            <div class="col-md-6 col-sm-6">
-                                                <input class="form-control" type="tel" class='tel' name="phone" required='required' data-validate-length-range="8,20" /></div>
-                                        </div>
-                                        <div class="field item form-group">
-                                            <label class="col-form-label col-md-3 col-sm-3  label-align">Avatar<span class="required">*</span></label>
-                                            <div class="col-md-6 col-sm-6">
-                                                <input class="form-control" type="file" id='image' name="image" required='required'/></div>
-                                        </div>
-                                        <div class="ln_solid">
-                                            <div class="form-group">
-                                                <div class="col-md-6 offset-md-3">
-                                                    <button type='submit' name='submit' class="btn btn-primary">Tạo mới</button>
-                                                    <button type='reset' class="btn btn-success">Nhập lại</button>
-                                                </div>  
-                                            </div>
-                                        </div>
-                                    </form>
+                                          <div class="field item form-group">
+                                              <label class="col-form-label col-md-3 col-sm-3  label-align">Số điện thoại<span class="required">*</span></label>
+                                              <div class="col-md-6 col-sm-6">
+                                                  <input class="form-control" type="tel" class='tel' name="phone" required='required' data-validate-length-range="8,20" /></div>
+                                          </div>
+                                          <div class="field item form-group">
+                                              <label class="col-form-label col-md-3 col-sm-3  label-align">Avatar<span class="required">*</span></label>
+                                              <div class="col-md-6 col-sm-6">
+                                                  <input class="form-control" type="file" id='image' name="image" required='required'/></div>
+                                          </div>
+                                          <div class="ln_solid">
+                                              <div class="form-group">
+                                                  <div class="col-md-6 offset-md-3">
+                                                      <button type='submit' name='submit' class="btn btn-primary">Tạo mới</button>
+                                                      <button type='reset' class="btn btn-success">Nhập lại</button>
+                                                  </div>  
+                                              </div>
+                                          </div>
+                                      </form>
                                 </div>
                             </div>
                         </div>

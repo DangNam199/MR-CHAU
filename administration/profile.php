@@ -1,22 +1,21 @@
 <?php
 include '../php/connect.php';
-session_start();
+include '../php/session.php';
 $ID = isset($_GET['id']) ? (int)$_GET['id'] : '';
 if(!empty($_POST['submit'])){//Khi chua bam nut Submit, gia tri cua no la "", trai lai, gia tri no se la "XAC NHAN"
     $user_name = $_POST['user_name'];
     $email =  $_POST['email'];
-    $password =  $_POST['password'];
-    $password = md5($password);
     $address =  $_POST['address'];
     $SoDT =  $_POST['SoDT'];
     $ChungChi =  $_POST['ChungChi'];
     $gender =  $_POST['gender'];
     $CMND =  $_POST['CMND'];
-    $sql = "UPDATE nhanvien SET TenNV = '$user_name', email = '$email', password = '$password', address = '$address', SoDT = '$SoDT', ChungChi = '$ChungChi', gender = '$gender' , CMND = '$CMND' WHERE id = '$ID'";
+    $id = $_SESSION['id'];
+    $sql = "UPDATE nhanvien SET TenNV = '$user_name', email = '$email', address = '$address', sdt = '$SoDT', ChungChi = '$ChungChi', gender = '$gender' , CMND = '$CMND' WHERE id = '$id'";
     $res = mysqli_query($conn, $sql);
     if($res){
-        echo "<script>alert('Tạo mới người dùng thành công');</script>";
-        header('location:../administration/contacts.php');
+        $_SESSION['name']=$user_name;
+        header('location:../administration/index.php');
     }
     else{
         echo $sql;
@@ -24,14 +23,13 @@ if(!empty($_POST['submit'])){//Khi chua bam nut Submit, gia tri cua no la "", tr
 }else{
     $ID = isset($_GET['id']) ? (int)$_GET['id'] : '';
 }
-if(!isset($_SESSION['user'])){
-    header('location: login.php');
-}
-else{
+
+
     $sql_user = "SELECT * FROM `nhanvien` WHERE email='". $_SESSION['user']. "' limit 1";
     $res_user = mysqli_query($conn,$sql_user);
     $row_user = mysqli_fetch_assoc($res_user);
-}
+
+
 ?>
 
 
@@ -70,11 +68,13 @@ else{
                   <!-- menu profile quick info -->
                   <div class="profile clearfix">
                       <div class="profile_pic">
-                          <img src="<?=$row_user['avatar']?>" class="img-circle profile_img" alt="avatar" title="avatar">
+                      <?php 
+                    echo '<img src="data:image/jpeg;base64,'.base64_encode($_SESSION['avatar'] ).'" class="img-circle profile_img" />';
+              ?>
                       </div>
                       <div class="profile_info">
                           <span>Welcome,</span>
-                          <h2><?=$row_user['TenNV'] ?></h2>
+                          <h2><?=$_SESSION['name']?></h2>
                       </div>
                   </div>
                   <!-- /menu profile quick info -->
@@ -253,11 +253,24 @@ else{
                                           <div class="col-md-6 col-sm-6">
                                               <input class="form-control" value="<?=$row_user['ChungChi']?>" name="ChungChi" data-validate-length-range="5,15" type="text" /></div>
                                       </div>
-                                      <div class="field item form-group">
-                                          <label class="col-form-label col-md-3 col-sm-3  label-align">Giới tính<span class="required">*</span></label>
-                                          <div class="col-md-6 col-sm-6">
-                                              <input class="form-control" value="<?=$row_user['gender']?>" name="gender" data-validate-length-range="5,15" type="text" /></div>
-                                      </div>
+                                      <div class="item form-group">
+											                      <label class="col-form-label col-md-3 col-sm-3 label-align">Gender</label>
+											                      <div class="col-md-6 col-sm-6 ">
+                                            <select name="gender" class="form-control"> 
+                                              <?php 
+                                                if ($row_user['gender'] == 'male'){
+                                              ?>
+                                                <option value="male" selected>Nam</option>
+                                                <option value="female">Nữ</option>
+                                                <?php } 
+                                                if ($row_user['gender'] == 'female'){
+                                                ?>
+                                                <option value="male" >Nam</option>
+                                                <option value="female" selected>Nữ</option>
+                                                <?php } ?>
+                                            </select>
+											                      </div>
+                                          </div>
                                       <div class="field item form-group">
                                           <label class="col-form-label col-md-3 col-sm-3  label-align">CMND<span class="required">*</span></label>
                                           <div class="col-md-6 col-sm-6">
@@ -267,7 +280,7 @@ else{
                                           <div class="form-group">
                                               <div class="col-md-6 offset-md-3">
                                                   <button type='submit' name='submit' class="btn btn-primary" value="submit">Lưu lại</button>
-                                                  <a href = "change_passwor.php" class="btn btn-primary">Đổi mật khẩu</a>
+                                                  <a href = "change_password.php" class="btn btn-primary">Đổi mật khẩu</a>
                                               </div>
                                           </div>
                                       </div>

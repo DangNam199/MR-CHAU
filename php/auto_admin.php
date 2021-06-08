@@ -51,8 +51,8 @@
                 $total = $row['sum_salary'] * $row['HSL'];
             }
             $sum = $row['sum_salary'];
-            $sql_pay  = "INSERT INTO `pay_salary`(`id`, `staff_id`, `date`, `paied`,`total`, `state`) 
-            VALUES (null,'$staff_id',now(),'$total', '$sum',`unpaid`)";
+            $sql_pay  = "INSERT INTO `pay_salary`(`id`, `staff_id`, `paied`,`total`, `state`) 
+            VALUES (null,'$staff_id','$total', '$sum',`unpaid`)";
             $res = mysqli_query($conn, $sql_pay);
         }
         }
