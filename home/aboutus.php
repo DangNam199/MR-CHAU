@@ -100,16 +100,16 @@ $res_user5 = mysqli_query($conn,$sql_user5);
                             Dare to change
                         </h3>
                         <p>
-                            Mr.Châu tự hào là đơn vị đào tạo Anh ngữ hàng đầu tại Việt Nam với sự tận tâm, chân thành và trách nhiệm. Được thành lập từ năm 2014, Mr.Châu đã trở thành nơi trao gửi niềm tin học tiếng Anh cho hàng ngàn học viên chuyên sâu trong 3 mảng đào tạo: Luyện thi TOEIC, tiếng Anh giao tiếp và luyện thi Đại học môn Anh, cho học viên trên khắp cả nước thông qua các lớp học offline, online và sách.
+                            Ms.Châu tự hào là đơn vị đào tạo Anh ngữ hàng đầu tại Việt Nam với sự tận tâm, chân thành và trách nhiệm. Được thành lập từ năm 2014, Mr.Châu đã trở thành nơi trao gửi niềm tin học tiếng Anh cho hàng ngàn học viên chuyên sâu trong 3 mảng đào tạo: Luyện thi TOEIC, tiếng Anh giao tiếp và luyện thi Đại học môn Anh, cho học viên trên khắp cả nước thông qua các lớp học offline, online và sách.
                         </p>
                     </div>
                 </div>
                 <div class="col-lg-8">
-                    <div class="row">
+                    <div class="carousel" data-flickity='{"cellAlign": "left", "freeScroll": true ,"pageDots": false}'>
                         <?php
                         while ($row = mysqli_fetch_array($res_user5)) {
                         ?>
-                        <div class="col-lg-6 mt-3">
+                        <div class="carousel-cell col-lg-4 ">
                             <div class="n-aboutus-lecturers-info">
                                 <a href="#">
                                     <?php echo '<img src="data:image/jpeg;base64,'.base64_encode($row['avatar']).'" class="img-circle profile_img avatar" />';
@@ -203,7 +203,7 @@ $res_user5 = mysqli_query($conn,$sql_user5);
     <div class="n-aboutus-parner">
             <div class="container">
                 <h2>đối tác của</h2>
-                <h3>trung tâm tiếng anh Mr.Châu</h3>
+                <h3>trung tâm tiếng anh Ms.Châu</h3>
                 <div class="n-aboutus-parner-trademark">
                     <div class="n-aboutus-parner-trademark-carousel"
                          data-flickity='{"imagesLoaded": true,"contain": true, "prevNextButtons": false, "pageDots": false }'>

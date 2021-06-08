@@ -25,7 +25,11 @@ include '../php/general_setting.php';
 <header>
     <div class="n-header">
         <div class="n-header-menu d-none d-lg-block">
+<<<<<<< Updated upstream
         <div class="d-flex justify-content-end mt-2 login">
+=======
+            <div class="d-flex justify-content-end mt-2 login">
+>>>>>>> Stashed changes
                 <a href="../administration/login.php ">Đăng nhập</a>
             </div>
             <div class="container">

@@ -1,6 +1,10 @@
 <?php
+<<<<<<< Updated upstream
 include '../php/general_setting.php';
 if(isset($_POST['submit'])){
+=======
+if(isset($_POST['send'])){
+>>>>>>> Stashed changes
     $username = $_POST['name'];
     $Email= $_POST['email'];
     $Phone = $_POST['phone'];
@@ -79,7 +83,7 @@ if(isset($_POST['submit'])){
                     <input type="text" name="name" placeholder="Họ và tên">
                     <input type="number" name="phone" placeholder="Số điện thoại">
                     <input type="text" name="email" placeholder="Email của bạn">
-                    <button type="submit" name="submit">Gửi</button>
+                    <button type="submit" name="send">Gửi</button>
                 </form>
             </div>
         </div>

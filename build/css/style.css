@@ -377,6 +377,7 @@ img {
       outline: none;
       text-transform: uppercase;
       border-radius: 50px;
+      cursor: pointer;
       border: none; }
     .n-footer-form button:hover {
       background: #fbbf46; }
@@ -457,6 +458,8 @@ img {
         margin-top: 10px;
         outline: none;
         color: #ffffff;
+        outline: none;
+        cursor: pointer;
         font-family: Montserrat-SemiBold;
         text-transform: uppercase;
         border: none;
@@ -1712,5 +1715,12 @@ button{
   box-shadow: -1px 0px 5px 5px #a71e238c;
 
 }
+<<<<<<< Updated upstream
+=======
+.login a:hover {
+text-decoration: none;
+
+}
+>>>>>>> Stashed changes
 
 /*# sourceMappingURL=style.css.map */
